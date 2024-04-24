@@ -101,7 +101,7 @@ int main(void)
   WRITE_REG(htim14.Instance->CCR1, 39);
   BatteryTester_WC1602A_clearDisplay();
   BatteryTester_WC1602A_writeLine(0, ">Settings", 9);
-  BatteryTester_WC1602A_writeLine(1, " Controlling", 12);
+  BatteryTester_WC1602A_writeLine(1, " Controlling\xb8", 13);
   HAL_Delay(10000);
   WRITE_REG(htim14.Instance->CCR1, 19);
   BatteryTester_WC1602A_writeInPos(0, 0, " ", 1);

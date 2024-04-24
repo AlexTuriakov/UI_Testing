@@ -24,7 +24,7 @@
 
 // Configuration
 
-#define GPIO_BUTTON_NOT_PRESSED                              (GPIO_PIN_RESET)
+#define GPIO_BUTTON_NOT_PRESSED                              (GPIO_PIN_SET)
 
 #define BUTTONS_LONG_PRESS_MS                                500
 #define BUTTONS_VERY_LONG_PRESS_MS                           3000
