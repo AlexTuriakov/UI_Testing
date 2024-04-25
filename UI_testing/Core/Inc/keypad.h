@@ -19,7 +19,6 @@
 
 #include "stm32f0xx_hal.h"
 
-
 /* Declarations and definitions ----------------------------------------------*/
 
 // Configuration
@@ -30,8 +29,11 @@
 #define BUTTONS_VERY_LONG_PRESS_MS                           3000
 
 typedef enum {
+	BUTTON_OK,
     BUTTON_UP,
     BUTTON_DOWN,
+	BUTTON_RIGHT,
+	BUTTON_LEFT,
     BUTTONS_NUM,
 } ButtonID;
 
@@ -62,8 +64,6 @@ typedef enum
   BUTTON_VERY_LONG_PRESS               = 3,
 } ButtonAction;
 
-
-
 /* Functions -----------------------------------------------------------------*/
 
 extern void BUTTON_Process();
@@ -71,6 +71,5 @@ extern void BUTTON_TimerProcess();
 extern ButtonAction BUTTON_GetAction(uint8_t index);
 extern void BUTTON_ResetActions();
 extern void BUTTON_Init();
-
 
 #endif /* INC_KEYPAD_H_ */

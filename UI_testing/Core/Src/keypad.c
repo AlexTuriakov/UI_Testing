@@ -2,7 +2,7 @@
  * keypad.c
  *
  *  Created on: Apr 24, 2024
- *      Author: Tyuryakov_OA
+ *      Author: not me (Tyuryakov_OA)
  */
 
 /**
@@ -12,12 +12,33 @@
   * @author         : TQFP (for https://microtechnics.ru/user-blogs/)
   ******************************************************************************
   */
-
-
+/*
+ * ************HOW USE***************
+ * 1. настроить таймер на срабатывание один раз в 1 мс.
+ * 2. прописать кнопку в файле .h в перечисление ButtonID
+ * 3. настраиваем задержки:
+ * 		#define BUTTONS_LONG_PRESS_MS                                1500
+ * 		#define BUTTONS_VERY_LONG_PRESS_MS                           3500
+ * 4. настроить константу GPIO_BUTTON_NOT_PRESSED.
+ * 5. указать в файле .c к каким ножкам подключены кнопки:
+ * 		static McuPin buttons[BUTTONS_NUM] = {{GPIOC, GPIO_PIN_13}};
+ * 6. добавить в проект библиотеку include «button.h»
+ * 7. в Callback от таймера вызвать BUTTON_TimerProcess().
+ * 8. работа с библиотекой сводится к вызову нескольких функций:
+ * 		while (1)
+ * 		{
+ * 		    BUTTON_Process();
+ * 		    if (BUTTON_GetAction(BUTTON_UP) == BUTTON_SHORT_PRESS)...
+ * 		    BUTTON_ResetActions();
+ * 9. вызвать  BUTTON_Init();
+ * 10.запустить таймер с прерыванием: HAL_TIM_Base_Start_IT(&htim6);
+ *
+*/
 
 /* Includes ------------------------------------------------------------------*/
 
 #include "keypad.h"
+#include "main.h"
 
 
 
@@ -25,8 +46,11 @@
 
 // Configuration
 
-static McuPin buttons[BUTTONS_NUM] = {{GPIOA, GPIO_PIN_2},
-                                      {GPIOA, GPIO_PIN_3}};
+static McuPin buttons[BUTTONS_NUM] = {{NC_GPIO_Port, NC_Pin},
+									{UP_GPIO_Port, UP_Pin},
+									{DOWN_GPIO_Port, DOWN_Pin},
+									{RIGHT_GPIO_Port, RIGHT_Pin},
+									{LEFT_GPIO_Port, LEFT_Pin}};
 
 // End of configuration
 
@@ -36,8 +60,6 @@ static uint16_t buttonPressCounter[BUTTONS_NUM];
 
 static ButtonAction buttonActions[BUTTONS_NUM];
 static ButtonState buttonState[BUTTONS_NUM];
-
-
 
 /* Functions -----------------------------------------------------------------*/
 
@@ -145,6 +167,7 @@ void BUTTON_Process()
 {
   BUTTON_LowLevelManager();
   BUTTON_HighLevelManager();
+
 }
 
 

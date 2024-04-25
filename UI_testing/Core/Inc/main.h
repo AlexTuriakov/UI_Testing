@@ -73,6 +73,16 @@ void Error_Handler(void);
 #define LCD_Enable_GPIO_Port GPIOB
 #define LCD_RS_Pin GPIO_PIN_15
 #define LCD_RS_GPIO_Port GPIOB
+#define UP_Pin GPIO_PIN_8
+#define UP_GPIO_Port GPIOA
+#define DOWN_Pin GPIO_PIN_9
+#define DOWN_GPIO_Port GPIOA
+#define LEFT_Pin GPIO_PIN_10
+#define LEFT_GPIO_Port GPIOA
+#define RIGHT_Pin GPIO_PIN_11
+#define RIGHT_GPIO_Port GPIOA
+#define NC_Pin GPIO_PIN_12
+#define NC_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
 

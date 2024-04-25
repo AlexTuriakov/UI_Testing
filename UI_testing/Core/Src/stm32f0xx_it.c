@@ -22,6 +22,7 @@
 #include "stm32f0xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "keypad.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -55,7 +56,7 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
-
+extern TIM_HandleTypeDef htim6;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -140,6 +141,24 @@ void SysTick_Handler(void)
 /* please refer to the startup file (startup_stm32f0xx.s).                    */
 /******************************************************************************/
 
-/* USER CODE BEGIN 1 */
+/**
+  * @brief This function handles TIM6 global and DAC channel underrun error interrupts.
+  */
+void TIM6_DAC_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM6_DAC_IRQn 0 */
 
+  /* USER CODE END TIM6_DAC_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim6);
+  /* USER CODE BEGIN TIM6_DAC_IRQn 1 */
+  CLEAR_BIT(TIM6->SR, TIM_SR_UIF);
+  /* USER CODE END TIM6_DAC_IRQn 1 */
+}
+
+/* USER CODE BEGIN 1 */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+	if(htim->Instance == TIM6){
+		BUTTON_TimerProcess();
+	}
+}
 /* USER CODE END 1 */

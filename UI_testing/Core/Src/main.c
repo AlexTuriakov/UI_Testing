@@ -22,6 +22,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "lcd_wc1602a.h"
+#include "keypad.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -40,6 +42,7 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+TIM_HandleTypeDef htim6;
 TIM_HandleTypeDef htim14;
 
 /* USER CODE BEGIN PV */
@@ -50,13 +53,13 @@ TIM_HandleTypeDef htim14;
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_TIM14_Init(void);
+static void MX_TIM6_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
 /* USER CODE END 0 */
 
 /**
@@ -89,13 +92,15 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_TIM14_Init();
+  MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
   if(HAL_TIM_PWM_Start(&htim14, TIM_CHANNEL_1) != HAL_OK){
 	  Error_Handler();
   }
   BatteryTester_WC1602A_init();
-  HAL_Delay(10000);
-  WRITE_REG(htim14.Instance->CCR1, 79);
+  HAL_Delay(3000);
+  BatteryTester_WC1602A_offCursor();
+  /*WRITE_REG(htim14.Instance->CCR1, 79);
   BatteryTester_WC1602A_offCursor();
   HAL_Delay(10000);
   WRITE_REG(htim14.Instance->CCR1, 39);
@@ -107,14 +112,48 @@ int main(void)
   BatteryTester_WC1602A_writeInPos(0, 0, " ", 1);
   BatteryTester_WC1602A_writeInPos(1, 0, ">", 1);
   BatteryTester_WC1602A_Setpos(1, 12);
-  BatteryTester_WC1602A_onCursor();
-  WRITE_REG(htim14.Instance->CCR1, 9);
+  BatteryTester_WC1602A_onCursor();*/
+  //WRITE_REG(htim14.Instance->CCR1, 9);
+  WRITE_REG(htim14.Instance->CCR1, 79);
+
+  if(HAL_TIM_Base_Start_IT(&htim6) != HAL_OK){
+	  Error_Handler();
+  }
+
+  BUTTON_Init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+      BUTTON_Process();
+	  if (BUTTON_GetAction(BUTTON_UP) == BUTTON_SHORT_PRESS)
+	  {
+		  BatteryTester_WC1602A_clearDisplay();
+		  BatteryTester_WC1602A_writeLine(0, "Btn Up", 6);
+
+	  }
+
+	  if (BUTTON_GetAction(BUTTON_DOWN) == BUTTON_SHORT_PRESS)
+	  {
+		  BatteryTester_WC1602A_clearDisplay();
+		  BatteryTester_WC1602A_writeLine(1, "Btn Down", 8);
+	  }
+
+	  if (BUTTON_GetAction(BUTTON_RIGHT) == BUTTON_SHORT_PRESS)
+	  {
+		  BatteryTester_WC1602A_clearDisplay();
+		  BatteryTester_WC1602A_writeLine(1, "Btn Right", 9);
+
+	  }
+	  if (BUTTON_GetAction(BUTTON_LEFT) == BUTTON_SHORT_PRESS)
+	  {
+		  BatteryTester_WC1602A_clearDisplay();
+		  BatteryTester_WC1602A_writeLine(0, "Btn Left", 8);
+
+	  }
+	  BUTTON_ResetActions();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -155,6 +194,44 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief TIM6 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM6_Init(void)
+{
+
+  /* USER CODE BEGIN TIM6_Init 0 */
+
+  /* USER CODE END TIM6_Init 0 */
+
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM6_Init 1 */
+
+  /* USER CODE END TIM6_Init 1 */
+  htim6.Instance = TIM6;
+  htim6.Init.Prescaler = 7;
+  htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim6.Init.Period = 999;
+  htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim6, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM6_Init 2 */
+
+  /* USER CODE END TIM6_Init 2 */
+
 }
 
 /**
@@ -216,6 +293,7 @@ static void MX_GPIO_Init(void)
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, LCD_D7_Pin|LCD_D6_Pin|LCD_D5_Pin|LCD_D4_Pin
@@ -229,6 +307,18 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : UP_Pin DOWN_Pin LEFT_Pin RIGHT_Pin */
+  GPIO_InitStruct.Pin = UP_Pin|DOWN_Pin|LEFT_Pin|RIGHT_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : NC_Pin */
+  GPIO_InitStruct.Pin = NC_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(NC_GPIO_Port, &GPIO_InitStruct);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 /* USER CODE END MX_GPIO_Init_2 */
