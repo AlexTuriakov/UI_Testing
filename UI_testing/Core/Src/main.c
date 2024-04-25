@@ -21,7 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "lcd_wc1602a.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -100,8 +100,8 @@ int main(void)
   HAL_Delay(10000);
   WRITE_REG(htim14.Instance->CCR1, 39);
   BatteryTester_WC1602A_clearDisplay();
-  BatteryTester_WC1602A_writeLine(0, ">Settings", 9);
-  BatteryTester_WC1602A_writeLine(1, " Controlling\xb8", 13);
+  BatteryTester_WC1602A_writeLine(0, ">Settings\x7e", 10);
+  BatteryTester_WC1602A_writeLine(1, " Controlling\x7e", 13);
   HAL_Delay(10000);
   WRITE_REG(htim14.Instance->CCR1, 19);
   BatteryTester_WC1602A_writeInPos(0, 0, " ", 1);

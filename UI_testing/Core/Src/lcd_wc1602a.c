@@ -54,19 +54,19 @@ void BatteryTester_WC1602A_init(){
 	BatteryTester_WC1602A_sendCommand(RS_OFF, ENTRY_MODE_SET);
 	BatteryTester_WC1602A_Delay(40);
 	BatteryTester_WC1602A_writeLine(0, "+<NESS GROUP", 12);
-	BatteryTester_WC1602A_writeLine(1, "R&D CENTER", 10);
+	BatteryTester_WC1602A_writeLine(1, "RnD CENTER", 10);
 }
 
 inline void BatteryTester_WC1602A_setDataOnBus(unsigned short data){
-	HAL_GPIO_WritePin(LCD_D7_GPIO_Port, LCD_D7_Pin, (eBitState_t)(data & (1 << 7)));
-	HAL_GPIO_WritePin(LCD_D6_GPIO_Port, LCD_D6_Pin, (eBitState_t)(data & (1 << 6)));
-	HAL_GPIO_WritePin(LCD_D5_GPIO_Port, LCD_D5_Pin, (eBitState_t)(data & (1 << 5)));
-	HAL_GPIO_WritePin(LCD_D4_GPIO_Port, LCD_D4_Pin, (eBitState_t)(data & (1 << 4)));
+	HAL_GPIO_WritePin(LCD_D7_GPIO_Port, LCD_D7_Pin, (data & (1 << 7)));
+	HAL_GPIO_WritePin(LCD_D6_GPIO_Port, LCD_D6_Pin, (data & (1 << 6)));
+	HAL_GPIO_WritePin(LCD_D5_GPIO_Port, LCD_D5_Pin, (data & (1 << 5)));
+	HAL_GPIO_WritePin(LCD_D4_GPIO_Port, LCD_D4_Pin, (data & (1 << 4)));
 #ifdef LCD_8_BIT
-	HAL_GPIO_WritePin(LCD_D3_GPIO_Port, LCD_D3_Pin, (eBitState_t)(data & (1 << 3)));
-	HAL_GPIO_WritePin(LCD_D2_GPIO_Port, LCD_D2_Pin, (eBitState_t)(data & (1 << 2)));
-	HAL_GPIO_WritePin(LCD_D1_GPIO_Port, LCD_D1_Pin, (eBitState_t)(data & (1 << 1)));
-	HAL_GPIO_WritePin(LCD_DO_GPIO_Port, LCD_DO_Pin, (eBitState_t)(data & 1));
+	HAL_GPIO_WritePin(LCD_D3_GPIO_Port, LCD_D3_Pin, (data & (1 << 3)));
+	HAL_GPIO_WritePin(LCD_D2_GPIO_Port, LCD_D2_Pin, (data & (1 << 2)));
+	HAL_GPIO_WritePin(LCD_D1_GPIO_Port, LCD_D1_Pin, (data & (1 << 1)));
+	HAL_GPIO_WritePin(LCD_DO_GPIO_Port, LCD_DO_Pin, (data & 1));
 #endif
 }
 
@@ -77,7 +77,7 @@ inline void BatteryTester_WC1602A_enableSend(){
 	BatteryTester_WC1602A_Delay(1);
 }
 
-void BatteryTester_WC1602A_sendCommand(eBitState_t rs, unsigned short data){
+void BatteryTester_WC1602A_sendCommand(GPIO_PinState rs, unsigned short data){
 	HAL_GPIO_WritePin(LCD_RS_GPIO_Port, LCD_RS_Pin, rs);
 	BatteryTester_WC1602A_setDataOnBus(data);
 	BatteryTester_WC1602A_enableSend();

@@ -32,7 +32,6 @@
 #define CURSOR_ON	0b00001111
 #define CURSOR_OFF 0b00001100
 
-typedef GPIO_PinState eBitState_t;
 
 void BatteryTester_WC1602A_Delay(unsigned int);
 void BatteryTester_WC1602A_init();
