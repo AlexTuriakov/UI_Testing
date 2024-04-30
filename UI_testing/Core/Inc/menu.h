@@ -83,10 +83,10 @@
 
 	/*Handlers block extend*/
 	void BatteryTester_Menu_enterRefOffset(void);
-	void BatteryTester_Menu_startMode1(void);
-	void BatteryTester_Menu_startMode2(void);
-	void BatteryTester_Menu_startMode3(void);
-	void BatteryTester_Menu_setDissipatorMin(void);
-	void BatteryTester_Menu_setDissipatorMax(void);
+	void BatteryTester_Menu_selectDessipatorMinThreshold(void);
+	void BatteryTester_Menu_enterDessipatorMinThreshold(void);
+	void BatteryTester_Menu_selectDessipatorMaxThreshold(void);
+	void BatteryTester_Menu_enterDessipatorMaxThreshold(void);
+
 
 #endif /* INC_MENU_H_ */
