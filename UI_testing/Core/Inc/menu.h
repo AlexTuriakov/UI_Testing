@@ -83,10 +83,26 @@
 
 	/*Handlers block extend*/
 	void BatteryTester_Menu_enterRefOffset(void);
+	void BatteryTester_Menu_resetAlarm(void);
 	void BatteryTester_Menu_selectDessipatorMinThreshold(void);
 	void BatteryTester_Menu_enterDessipatorMinThreshold(void);
 	void BatteryTester_Menu_selectDessipatorMaxThreshold(void);
 	void BatteryTester_Menu_enterDessipatorMaxThreshold(void);
-
+	void BatteryTester_Menu_selectSetThermostatKp(void);
+	void BatteryTester_Menu_enterSetThermostatKp(void);
+	void BatteryTester_Menu_selectSetNewValue(const char* header, float oldValue, unsigned short accuracy);
+	void BatteryTester_Menu_returnInMenu(Menu_Item_t* retItemMenu);
+	void BatteryTester_Menu_selectSetThermostatKi(void);
+	void BatteryTester_Menu_enterSetThermostatKi(void);
+	void BatteryTester_Menu_selectSetThermostatKd(void);
+	void BatteryTester_Menu_enterSetThermostatKd(void);
+	void BatteryTester_Menu_selectSetThermostatDt(void);
+	void BatteryTester_Menu_enterSetThermostatDt(void);
+	void BatteryTester_Menu_selectSetThermostatSp(void);
+	void BatteryTester_Menu_enterSetThermostatSp(void);
+	void BatteryTester_Menu_selectSetThermostatMinLim(void);
+	void BatteryTester_Menu_enterSetThermostatMinLim(void);
+	void BatteryTester_Menu_selectSetThermostatMaxLim(void);
+	void BatteryTester_Menu_enterSetThermostatMaxLim(void);
 
 #endif /* INC_MENU_H_ */

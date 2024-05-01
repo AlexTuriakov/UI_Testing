@@ -8,6 +8,10 @@
 #include "menu.h"
 #include "lcd_wc1602a.h"
 #include "dessipator_control.h"
+#include <stdio.h>
+#include <string.h>
+#include "auxiliary_function.h"
+#include "climat_regulator.h"
 
 /** This is used when an invalid menu handle is required in
  *  a \ref MENU_ITEM() definition, i.e. to indicate that a
@@ -74,9 +78,9 @@ MENU_ITEM(menuDissipMax, menuDissipMin, menuDissipMin, menuSetsDessipator, menuS
 		0, 0, "Dessip. max");
 /*SUBMENU Thermostat...  LEVEL 2*/
 MENU_ITEM(menuClimReg, menuClimPwm, menuClimPwm, menuSetsClimat, NULL_MENU,
-		0, 0, "Therm. reg...");
+		0, 0, "Tstat. reg...");
 MENU_ITEM(menuClimPwm, menuClimReg, menuClimReg, menuSetsClimat, NULL_MENU,
-		0, 0, "Therm. pwm...");
+		0, 0, "Tstat. pwm...");
 /*SUBMENU Thermometers...  LEVEL 2*/
 MENU_ITEM(menuT1, menuT2, menuT4, menuSetsThermometr, NULL_MENU,
 		0, 0, "Temperature 1...");
@@ -230,6 +234,43 @@ MENU_ITEM(menuSetDessipMin, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
 MENU_ITEM(menuSetDessipMax, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
 		BatteryTester_Menu_selectDessipatorMaxThreshold,
 		BatteryTester_Menu_enterDessipatorMaxThreshold, "");
+/*SUBMENU  Tstat. reg...  LEVEL 3*/
+MENU_ITEM(menuThermostatKp, menuThermostatKi, menuThermostatMaxLim, menuClimReg, menuSetThermostatKp,
+		0, 0, "Tstat Kp");
+MENU_ITEM(menuThermostatKi, menuThermostatKd, menuThermostatKp, menuClimReg, menuSetThermostatKi,
+		0, 0, "Tstat Ki");
+MENU_ITEM(menuThermostatKd, menuThermostatDt, menuThermostatKi, menuClimReg, menuSetThermostatKd,
+		0, 0, "Tstat Kd");
+MENU_ITEM(menuThermostatDt, menuThermostatSp, menuThermostatKd, menuClimReg, menuSetThermostatDt,
+		0, 0, "Tstat dt");
+MENU_ITEM(menuThermostatSp, menuThermostatMinLim, menuThermostatDt, menuClimReg, menuSetThermostatSp,
+		0, 0, "Tstat Sp");
+MENU_ITEM(menuThermostatMinLim, menuThermostatMaxLim, menuThermostatSp, menuClimReg, menuSetThermostatMinLim,
+		0, 0, "Tstat minLim");
+MENU_ITEM(menuThermostatMaxLim, menuThermostatKp, menuThermostatMinLim, menuClimReg, menuSetThermostatMaxLim,
+		0, 0, "Tstat maxLim");
+/*SUBMENU  Tstat Kp  LEVEL 4*/
+MENU_ITEM(menuSetThermostatKp, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
+		BatteryTester_Menu_selectSetThermostatKp, BatteryTester_Menu_enterSetThermostatKp, "");
+/*SUBMENU  Tstat Ki  LEVEL 4*/
+MENU_ITEM(menuSetThermostatKi, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
+		BatteryTester_Menu_selectSetThermostatKi, BatteryTester_Menu_enterSetThermostatKi, "");
+/*SUBMENU  Tstat Kd  LEVEL 4*/
+MENU_ITEM(menuSetThermostatKd, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
+		BatteryTester_Menu_selectSetThermostatKd, BatteryTester_Menu_enterSetThermostatKd, "");
+/*SUBMENU  Tstat dt  LEVEL 4*/
+MENU_ITEM(menuSetThermostatDt, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
+		BatteryTester_Menu_selectSetThermostatDt, BatteryTester_Menu_enterSetThermostatDt, "");
+/*SUBMENU  Tstat Sp  LEVEL 4*/
+MENU_ITEM(menuSetThermostatSp, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
+		BatteryTester_Menu_selectSetThermostatSp, BatteryTester_Menu_enterSetThermostatSp, "");
+/*SUBMENU  Tstat minLim  LEVEL 4*/
+MENU_ITEM(menuSetThermostatMinLim, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
+		BatteryTester_Menu_selectSetThermostatMinLim, BatteryTester_Menu_enterSetThermostatMinLim, "");
+/*SUBMENU  Tstat maxLim  LEVEL 4*/
+MENU_ITEM(menuSetThermostatMaxLim, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
+		BatteryTester_Menu_selectSetThermostatMaxLim, BatteryTester_Menu_enterSetThermostatMaxLim, "");
+
 /** \internal
  *  Pointer to the generic menu text display function
  *  callback, to display the configured text of a menu item
@@ -307,43 +348,142 @@ void BatteryTester_Menu_resetAlarm(void){
 }
 
 void BatteryTester_Menu_selectDessipatorMinThreshold(void){
-	const char Text[] = "Dessip. Min Off.";
-	BatteryTester_WC1602A_writeLine(0, Text, stlen(Text));
-	char val[16];
-	sprintf(val, "  %f.1 V",
-			BatteryTester_DessipatorControl_getHeaterControlRange().minVoltageInVolts);
-	BatteryTester_WC1602A_writeLine(1, val, stlen(val));
-	BatteryTester_WC1602A_Setpos(1, strlen(val) - 3);
-	BatteryTester_WC1602A_onCursor();
-	BatteryTester_State_setCurrentState(SET_PARAMETERS);
-	BatteryTester_State_setCurrentEvent(EVENT_NONE);
+	BatteryTester_Menu_selectSetNewValue("Dessip. Min, V",
+			BatteryTester_DessipatorControl_getHeaterControlRange().minVoltageInVolts,
+			1);
 }
 
 void BatteryTester_Menu_enterDessipatorMinThreshold(void){
-	//Звідкісь отримати значення яке задав користувач
-	BatteryTester_DessipatorControl_setHeaterControlMin(/*getUserSet()*/0);
-	BatteryTester_WC1602A_offCursor();
-	BatteryTester_Menu_Navigate(&menuDissipMin);
-	BatteryTester_State_setCurrentState(MENU_NAVIGATE);
-	BatteryTester_State_setCurrentEvent(EVENT_NONE);
+	BatteryTester_DessipatorControl_setHeaterControlMin(
+			BatteryTester_State_sendNewParamFromState());
+	BatteryTester_Menu_returnInMenu(&menuDissipMin);
 }
+
 void BatteryTester_Menu_selectDessipatorMaxThreshold(void){
-	const char Text[] = "Dessip. Max On";
-	BatteryTester_WC1602A_writeLine(0, Text, stlen(Text));
-	char val[16];
-	sprintf(val, "  %f.1 V",
-			BatteryTester_DessipatorControl_getHeaterControlRange().maxVoltageInVolts);
-	BatteryTester_WC1602A_writeLine(1, val, stlen(val));
-	BatteryTester_WC1602A_Setpos(1, strlen(val) - 3);
+	BatteryTester_Menu_selectSetNewValue("Dessip. Max, V",
+			BatteryTester_DessipatorControl_getHeaterControlRange().maxVoltageInVolts,
+			1);
+}
+
+void BatteryTester_Menu_enterDessipatorMaxThreshold(void){
+	BatteryTester_DessipatorControl_setHeaterControlMax(
+			BatteryTester_State_sendNewParamFromState());
+	BatteryTester_Menu_returnInMenu(&menuDissipMax);
+}
+
+void BatteryTester_Menu_selectSetThermostatKp(void){
+	BatteryTester_Menu_selectSetNewValue("Thermostat Kp, u",
+			BatteryTester_ClimatRegulator_getRegulatorSettings().Kp,
+			4);
+}
+
+void BatteryTester_Menu_enterSetThermostatKp(void){
+	BatteryTester_ClimatRegulator_setRegulatorSettings(
+			&(BatteryTester_ClimatRegulator_getRegulatorSettings().Kp =
+					BatteryTester_State_sendNewParamFromState()));
+	BatteryTester_Menu_returnInMenu(&menuThermostatKp);
+}
+
+void BatteryTester_Menu_selectSetThermostatKi(void){
+	BatteryTester_Menu_selectSetNewValue("Thermostat Ki, u",
+			BatteryTester_ClimatRegulator_getRegulatorSettings().Ki,
+			4);
+}
+
+void BatteryTester_Menu_enterSetThermostatKi(void){
+	BatteryTester_ClimatRegulator_setRegulatorSettings(
+			&(BatteryTester_ClimatRegulator_getRegulatorSettings().Ki =
+					BatteryTester_State_sendNewParamFromState()));
+	BatteryTester_Menu_returnInMenu(&menuThermostatKi);
+}
+
+void BatteryTester_Menu_selectSetThermostatKd(void){
+	BatteryTester_Menu_selectSetNewValue("Thermostat Kd, u",
+			BatteryTester_ClimatRegulator_getRegulatorSettings().Kd,
+			4);
+}
+
+void BatteryTester_Menu_enterSetThermostatKd(void){
+	BatteryTester_ClimatRegulator_setRegulatorSettings(
+			&(BatteryTester_ClimatRegulator_getRegulatorSettings().Kd =
+					BatteryTester_State_sendNewParamFromState()));
+	BatteryTester_Menu_returnInMenu(&menuThermostatKd);
+}
+
+void BatteryTester_Menu_selectSetThermostatDt(void){
+	BatteryTester_Menu_selectSetNewValue("Thermost. dt, mc",
+			BatteryTester_ClimatRegulator_getRegulatorSettings().dt * 1000,
+			3);
+}
+
+void BatteryTester_Menu_enterSetThermostatDt(void){
+	BatteryTester_ClimatRegulator_setRegulatorSettings(
+			&(BatteryTester_ClimatRegulator_getRegulatorSettings().dt =
+					BatteryTester_State_sendNewParamFromState() / 1000));
+	BatteryTester_Menu_returnInMenu(&menuThermostatDt);
+}
+
+void BatteryTester_Menu_selectSetThermostatSp(void){
+	BatteryTester_Menu_selectSetNewValue("Thermost. Sp, dC",
+			BatteryTester_ClimatRegulator_getRegulatorSettings().setpoint,
+			1);
+}
+
+void BatteryTester_Menu_enterSetThermostatSp(void){
+	BatteryTester_ClimatRegulator_setRegulatorSettings(
+			&(BatteryTester_ClimatRegulator_getRegulatorSettings().setpoint =
+					BatteryTester_State_sendNewParamFromState()));
+	BatteryTester_Menu_returnInMenu(&menuThermostatSp);
+}
+
+void BatteryTester_Menu_selectSetThermostatMinLim(void){
+	BatteryTester_Menu_selectSetNewValue("Tstat. min, dC",
+			BatteryTester_ClimatRegulator_getRegulatorSettings().minLimit,
+			1);
+}
+
+void BatteryTester_Menu_enterSetThermostatMinLim(void){
+	BatteryTester_ClimatRegulator_setRegulatorSettings(
+			&(BatteryTester_ClimatRegulator_getRegulatorSettings().minLimit =
+					BatteryTester_State_sendNewParamFromState()));
+	BatteryTester_Menu_returnInMenu(&menuThermostatMinLim);
+}
+
+void BatteryTester_Menu_selectSetThermostatMaxLim(void){
+	BatteryTester_Menu_selectSetNewValue("Tstat. max, dC",
+			BatteryTester_ClimatRegulator_getRegulatorSettings().maxLimit,
+			1);
+}
+
+void BatteryTester_Menu_enterSetThermostatMaxLim(void){
+	BatteryTester_ClimatRegulator_setRegulatorSettings(
+			&(BatteryTester_ClimatRegulator_getRegulatorSettings().maxLimit =
+					BatteryTester_State_sendNewParamFromState()));
+	BatteryTester_Menu_returnInMenu(&menuThermostatMaxLim);
+}
+
+inline void BatteryTester_Menu_selectSetNewValue(const char* header, float oldValue, unsigned short accuracy){
+	if(accuracy > 6){
+		accuracy = 6;
+	}
+	unsigned int size = strlen(header);
+	if(size > SIZE_LINE_BUFFER_LCD - 1){
+		size = 16;
+	}
+	BatteryTester_WC1602A_writeLine(0, header, size);
+	char strVal[17];
+	snprintf(strVal, sizeof(strVal), "%.*f", accuracy, oldValue);
+	BatteryTester_WC1602A_writeLine(1, strVal, strlen(strVal));
+	BatteryTester_WC1602A_Setpos(1, strlen(strVal) - 1);
 	BatteryTester_WC1602A_onCursor();
 	BatteryTester_State_setCurrentState(SET_PARAMETERS);
 	BatteryTester_State_setCurrentEvent(EVENT_NONE);
+	BatteryTester_State_postStrParamForState(strVal);
 }
-void BatteryTester_Menu_enterDessipatorMaxThreshold(void){
-	//Звідкісь отримати значення яке задав користувач
-	BatteryTester_DessipatorControl_setHeaterControlMin(/*getUserSet()*/0);
+
+inline void BatteryTester_Menu_returnInMenu(Menu_Item_t* retItemMenu){
 	BatteryTester_WC1602A_offCursor();
-	BatteryTester_Menu_Navigate(&menuDissipMax);
+	BatteryTester_Menu_Navigate(retItemMenu);
 	BatteryTester_State_setCurrentState(MENU_NAVIGATE);
 	BatteryTester_State_setCurrentEvent(EVENT_NONE);
 }

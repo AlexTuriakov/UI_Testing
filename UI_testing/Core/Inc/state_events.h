@@ -40,5 +40,7 @@ eEvents_t BatteryTester_State_getCurrentEvent();
 void BatteryTester_State_setCurrentEvent(eEvents_t);
 void* BatteryTester_State_getCurrentParams();
 void BatteryTester_State_setCurrentParams(void*);
+void BatteryTester_State_postStrParamForState(const char*);
+float BatteryTester_State_sendNewParamFromState();
 
 #endif /* INC_STATE_EVENTS_H_ */

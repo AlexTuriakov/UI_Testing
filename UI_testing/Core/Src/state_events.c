@@ -5,10 +5,15 @@
  *      Author: Tyuryakov_OA
  */
 #include "state_events.h"
+#include <string.h>
+#include "auxiliary_function.h"
+
 
 	static eStates_t currentState;
 	static eEvents_t currentEvent;
 	static void* currentParams;
+	char strPostParam[SIZE_LINE_BUFFER_LCD] = "";
+	float newSendParam = 0.0;
 	static _handlerState_t handlerStates[NUM_STATES] = {
 		BatteryTester_State_handlerMenuNavigate,
 		BatteryTester_State_handlerSetParams,
@@ -79,4 +84,12 @@ void* BatteryTester_State_getCurrentParams(){
 
 void BatteryTester_State_setCurrentParams(void* newParams){
 	currentParams = newParams;
+}
+
+void BatteryTester_State_postStrParamForState(const char* sParam){
+	strncpy(strPostParam, sParam, SIZE_LINE_BUFFER_LCD);
+}
+
+float BatteryTester_State_sendNewParamFromState(){
+	return newSendParam;
 }

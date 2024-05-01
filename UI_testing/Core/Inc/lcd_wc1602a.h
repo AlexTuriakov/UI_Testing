@@ -36,7 +36,7 @@
 void BatteryTester_WC1602A_Delay(unsigned int);
 void BatteryTester_WC1602A_init();
 void BatteryTester_WC1602A_sendCommand(GPIO_PinState, unsigned short);
-void BatteryTester_WC1602A_writeLine(unsigned short, char*, unsigned short);
+void BatteryTester_WC1602A_writeLine(unsigned short, const char*, unsigned short);
 void BatteryTester_WC1602A_writeInPos(unsigned short, unsigned short, char*, unsigned short);
 void BatteryTester_WC1602A_enableSend();
 void BatteryTester_WC1602A_setDataOnBus(unsigned short);

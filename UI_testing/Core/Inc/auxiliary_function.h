@@ -8,6 +8,8 @@
 #ifndef INC_AUXILIARY_FUNCTION_H_
 #define INC_AUXILIARY_FUNCTION_H_
 
+#define SIZE_LINE_BUFFER_LCD 17
+
 typedef struct _sVoltRange_t{
 	float minVoltageInVolts;
 	float maxVoltageInVolts;

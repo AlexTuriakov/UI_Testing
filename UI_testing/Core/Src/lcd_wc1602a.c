@@ -88,7 +88,7 @@ void BatteryTester_WC1602A_sendCommand(GPIO_PinState rs, unsigned short data){
 #endif
 }
 
-void BatteryTester_WC1602A_writeLine(unsigned short row, char* buf, unsigned short size){
+void BatteryTester_WC1602A_writeLine(unsigned short row, const char* buf, unsigned short size){
 	if(row > 1){
 		return;
 	}
