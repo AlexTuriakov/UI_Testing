@@ -16,6 +16,8 @@
 	sPIDController_t regulatorClimatSettings = {0};
 	sPWMSettings_t pwmClimatSettings = {0};
 	float hysteresis = 1.0;
+	static BatteryTester_ClimatRegulator_callbackChangeSettingsPwm_t callbackSetPeriod = 0;
+	static BatteryTester_ClimatRegulator_callbackChangeSettingsPwm_t callbackSetDeadTime = 0;
 /*
  * @brief Extern variables
 */
@@ -25,6 +27,18 @@
 
 
 
+/*@brief:
+ * Climate control module initialization function.
+ * Call in main().
+ * In addition to it, you need to call 2 more functions:
+ * 			BatteryTester_ClimatRegulator_setCallbackChangePeriodPwm
+ * 			BatteryTester_ClimatRegulator_setCallbackChangeDeadTimePwm
+ * To set callbacks for hardware change of period
+ * and dead time of PWM complementary pair.
+ * These callbacks must first be implemented
+ * in the main program. They must implement
+ * the hardware logic for setting the appropriate values.
+ */
 void BatteryTester_ClimatRegulator_init(){
 	//// CLIMAT CONVERTER ///////////////
 		regulatorClimatSettings.Kd = 0.0;
@@ -39,8 +53,12 @@ void BatteryTester_ClimatRegulator_init(){
 		pwmClimatSettings.periodPwm = 500;
 		pwmClimatSettings.minPidOutput = regulatorClimatSettings.minLimit;
 		pwmClimatSettings.maxPidOutput = regulatorClimatSettings.maxLimit;
-		pwmClimatSettings.scale = (float)(pwmClimatSettings.maxDutyCycle - pwmClimatSettings.minDutyCycle) /
-				(regulatorClimatSettings.maxLimit - regulatorClimatSettings.minLimit);
+		BatteryTester_ClimatRegulator_calcScalePwmClimatSettings();
+}
+
+inline void BatteryTester_ClimatRegulator_calcScalePwmClimatSettings(){
+	pwmClimatSettings.scale = (float)(pwmClimatSettings.maxDutyCycle - pwmClimatSettings.minDutyCycle) /
+					(regulatorClimatSettings.maxLimit - regulatorClimatSettings.minLimit);
 }
 
 inline void BatteryTester_ClimatRegulator_onPWMModeHeat(){
@@ -110,6 +128,7 @@ void BatteryTester_ClimatRegulator_setRegulatorSettings(sPIDController_t* pSetti
 	if(!pSettings){
 		return;
 	}
+	BatteryTester_ClimatRegulator_calcScalePwmClimatSettings();
 	__BatteryTester_AuxiliaryFunction_copy(
 			(void*)pSettings, (void*)&regulatorClimatSettings,
 			sizeof(sPIDController_t) / sizeof(float));
@@ -123,6 +142,19 @@ void BatteryTester_ClimatRegulator_setPWMSettings(sPWMSettings_t* pSettings){
 	if(!pSettings){
 		return;
 	}
+	if(callbackSetPeriod && pwmClimatSettings.periodPwm != pSettings->periodPwm){
+		callbackSetPeriod((unsigned int)pSettings->periodPwm);
+	}
+	else{
+		pSettings->periodPwm = pwmClimatSettings.periodPwm;
+	}
+	if(callbackSetDeadTime && pwmClimatSettings.deadTime != pSettings->deadTime){
+		callbackSetDeadTime((unsigned int)pSettings->deadTime);
+	}
+	else{
+		pSettings->deadTime = pwmClimatSettings.deadTime;
+	}
+	BatteryTester_ClimatRegulator_calcScalePwmClimatSettings();
 	__BatteryTester_AuxiliaryFunction_copy(
 			(void*)pSettings, (void*)&pwmClimatSettings,
 			sizeof(sPIDController_t) / sizeof(float));
@@ -145,4 +177,14 @@ inline void BatteryTester_ClimatRegulator_selectPWMMode(float setpoint, float fe
 		BatteryTester_ClimatRegulator_stopPhAHigh();
 //		BatteryTester_ClimatRegulator_startTimerCounter();
 	}
+}
+
+void BatteryTester_ClimatRegulator_setCallbackChangePeriodPwm(
+		void (*callback)(unsigned int newValue)){
+	callbackSetPeriod = callback;
+}
+
+void BatteryTester_ClimatRegulator_setCallbackChangeDeadTimePwm(
+		void (*callback)(unsigned int newValue)){
+	callbackSetDeadTime = callback;
 }

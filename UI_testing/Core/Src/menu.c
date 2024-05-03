@@ -12,6 +12,7 @@
 #include <string.h>
 #include "auxiliary_function.h"
 #include "climat_regulator.h"
+#include "conversion_data.h"
 
 /** This is used when an invalid menu handle is required in
  *  a \ref MENU_ITEM() definition, i.e. to indicate that a
@@ -27,7 +28,7 @@ MENU_ITEM(menuStart, menuSettings, menuLogs, NULL_MENU, menuStartMod1,
 		0, 0, "Start...");
 /*SUBMENU Settings... LEVEL 1*/
 MENU_ITEM(menuSetsRefOffset, menuSetsChannel1, menuSetsThermometr, menuSettings, NULL_MENU,
-		0, BatteryTester_Menu_enterRefOffset, "Ref. Offset");
+		0, 0, "Ref. Offset");
 MENU_ITEM(menuSetsChannel1, menuSetsChannel2, menuSetsRefOffset, menuSettings, menuCh1Buck,
 		0, 0, "Ch1 settings... ");
 MENU_ITEM(menuSetsChannel2, menuSetsDessipator, menuSetsChannel1, menuSettings, menuCh1BuckKp,
@@ -77,18 +78,18 @@ MENU_ITEM(menuDissipMin, menuDissipMax, menuDissipMax, menuSetsDessipator, menuS
 MENU_ITEM(menuDissipMax, menuDissipMin, menuDissipMin, menuSetsDessipator, menuSetDessipMax,
 		0, 0, "Dessip. max");
 /*SUBMENU Thermostat...  LEVEL 2*/
-MENU_ITEM(menuClimReg, menuClimPwm, menuClimPwm, menuSetsClimat, NULL_MENU,
+MENU_ITEM(menuClimReg, menuClimPwm, menuClimPwm, menuSetsClimat, menuThermostatKp,
 		0, 0, "Tstat. reg...");
-MENU_ITEM(menuClimPwm, menuClimReg, menuClimReg, menuSetsClimat, NULL_MENU,
+MENU_ITEM(menuClimPwm, menuClimReg, menuClimReg, menuSetsClimat, menuThermostatMinDutyCycle,
 		0, 0, "Tstat. pwm...");
 /*SUBMENU Thermometers...  LEVEL 2*/
-MENU_ITEM(menuT1, menuT2, menuT4, menuSetsThermometr, NULL_MENU,
+MENU_ITEM(menuT1, menuT2, menuT4, menuSetsThermometr, menuTemp1ResistanceUpperParam,
 		0, 0, "Temperature 1...");
-MENU_ITEM(menuT2, menuT3, menuT1, menuSetsThermometr, NULL_MENU,
+MENU_ITEM(menuT2, menuT3, menuT1, menuSetsThermometr, menuTemp2ResistanceUpperParam,
 		0, 0, "Temperature 2...");
-MENU_ITEM(menuT3, menuT4, menuT2, menuSetsThermometr, NULL_MENU,
+MENU_ITEM(menuT3, menuT4, menuT2, menuSetsThermometr, menuTemp2ResistanceUpperParam,
 		0, 0, "Temperature 3...");
-MENU_ITEM(menuT4, menuT1, menuT3, menuSetsThermometr, NULL_MENU,
+MENU_ITEM(menuT4, menuT1, menuT3, menuSetsThermometr, menuTemp2ResistanceUpperParam,
 		0, 0, "Temperature 4...");
 /*SUBMENU Ch1 buck sets...  LEVEL 3*/
 MENU_ITEM(menuCh1BuckKp, menuCh1BuckKi, menuCh1BuckMaxLim, menuCh1Buck, NULL_MENU,
@@ -270,6 +271,111 @@ MENU_ITEM(menuSetThermostatMinLim, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
 /*SUBMENU  Tstat maxLim  LEVEL 4*/
 MENU_ITEM(menuSetThermostatMaxLim, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
 		BatteryTester_Menu_selectSetThermostatMaxLim, BatteryTester_Menu_enterSetThermostatMaxLim, "");
+/*SUBMENU  Tstat. pwm...  LEVEL 3*/
+MENU_ITEM(menuThermostatMinDutyCycle, menuThermostatMaxDutyCycle, menuThermostatDeadTime, menuClimPwm, menuSetThermostatKp,
+		0, 0, "Tstat min Duty");
+MENU_ITEM(menuThermostatMaxDutyCycle, menuThermostatPeriod, menuThermostatMinDutyCycle, menuClimPwm, menuSetThermostatKi,
+		0, 0, "Tstat max Duty");
+MENU_ITEM(menuThermostatPeriod, menuThermostatDeadTime, menuThermostatMaxDutyCycle, menuClimPwm, menuSetThermostatKd,
+		0, 0, "Tstat Period");
+MENU_ITEM(menuThermostatDeadTime, menuThermostatMinDutyCycle, menuThermostatPeriod, menuClimPwm, menuSetThermostatDt,
+		0, 0, "Tstat Dead T.");
+/*SUBMENU  Tstat min Duty  LEVEL 4*/
+MENU_ITEM(menuSetThermostatMinDutyCycle, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
+		BatteryTester_Menu_selectSetThermostatMinDutyCycle, BatteryTester_Menu_enterSetThermostatMinDutyCycle, "");
+/*SUBMENU  Tstat max Duty  LEVEL 4*/
+MENU_ITEM(menuSetThermostatMaxDutyCycle, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
+		BatteryTester_Menu_selectSetThermostatMaxDutyCycle, BatteryTester_Menu_enterSetThermostatMaxDutyCycle, "");
+/*SUBMENU  Tstat Period LEVEL 4*/
+MENU_ITEM(menuSetThermostatPeriod, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
+		BatteryTester_Menu_selectSetThermostatPeriod, BatteryTester_Menu_enterSetThermostatPeriod, "");
+/*SUBMENU  Tstat Dead T. LEVEL 4*/
+MENU_ITEM(menuSetThermostatDeadTime, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
+		BatteryTester_Menu_selectSetThermostatDeadTime, BatteryTester_Menu_enterSetThermostatDeadTime, "");
+/*SUBMENU  Temperature 1... LEVEL 2*/
+MENU_ITEM(menuTemp1ResistanceUpperParam, menuTemp1ResistanceOrigParam, menuTemp1FactorBParam, menuT1, menuSetTemp1ResistanceUpper,
+		0, 0, "T1. set Rup");
+MENU_ITEM(menuTemp1ResistanceOrigParam, menuTemp1TemperatureOrigParam, menuTemp1ResistanceUpperParam, menuT1, menuSetTemp1ResistanceOrig,
+		0, 0, "T1. set Ro");
+MENU_ITEM(menuTemp1TemperatureOrigParam, menuTemp1FactorBParam, menuTemp1ResistanceOrigParam, menuT1, menuSetTemp1TemperatureOrig,
+		0, 0, "T1. set To");
+MENU_ITEM(menuTemp1FactorBParam, menuTemp1ResistanceUpperParam, menuTemp1TemperatureOrigParam, menuT1, menuSetTemp1FactorB,
+		0, 0, "T1. set B");
+/*SUBMENU  T1. set Rup  LEVEL 3*/
+MENU_ITEM(menuSetTemp1ResistanceUpper, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
+		BatteryTester_Menu_selectSetTemp1ResistanceUpper, BatteryTester_Menu_enterSetTemp1ResistanceUpper, "");
+/*SUBMENU  T1. set Ro  LEVEL 3*/
+MENU_ITEM(menuSetTemp1ResistanceOrig, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
+		BatteryTester_Menu_selectSetTemp1ResistanceOrig, BatteryTester_Menu_enterSetTemp1ResistanceOrig, "");
+/*SUBMENU  T1. set To  LEVEL 3*/
+MENU_ITEM(menuSetTemp1TemperatureOrig, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
+		BatteryTester_Menu_selectSetTemp1TemperatureOrig, BatteryTester_Menu_enterSetTemp1TemperatureOrig, "");
+/*SUBMENU  T1. set B  LEVEL 3*/
+MENU_ITEM(menuSetTemp1FactorB, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
+		BatteryTester_Menu_selectSetTemp1FactorB, BatteryTester_Menu_enterSetTemp1FactorB, "");
+/*SUBMENU  Temperature 2... LEVEL 2*/
+MENU_ITEM(menuTemp2ResistanceUpperParam, menuTemp2ResistanceOrigParam, menuTemp2FactorBParam, menuT2, menuSetTemp2ResistanceUpper,
+		0, 0, "T2. set Rup");
+MENU_ITEM(menuTemp2ResistanceOrigParam, menuTemp2TemperatureOrigParam, menuTemp2ResistanceUpperParam, menuT2, menuSetTemp2ResistanceOrig,
+		0, 0, "T2. set Ro");
+MENU_ITEM(menuTemp2TemperatureOrigParam, menuTemp2FactorBParam, menuTemp2ResistanceOrigParam, menuT2, menuSetTemp2TemperatureOrig,
+		0, 0, "T2. set To");
+MENU_ITEM(menuTemp2FactorBParam, menuTemp2ResistanceUpperParam, menuTemp2TemperatureOrigParam, menuT2, menuSetTemp2FactorB,
+		0, 0, "T2. set B");
+/*SUBMENU  T2. set Rup  LEVEL 3*/
+MENU_ITEM(menuSetTemp2ResistanceUpper, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
+		BatteryTester_Menu_selectSetTemp2ResistanceUpper, BatteryTester_Menu_enterSetTemp2ResistanceUpper, "");
+/*SUBMENU  T2. set Ro  LEVEL 3*/
+MENU_ITEM(menuSetTemp2ResistanceOrig, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
+		BatteryTester_Menu_selectSetTemp2ResistanceOrig, BatteryTester_Menu_enterSetTemp2ResistanceOrig, "");
+/*SUBMENU  T2. set To  LEVEL 3*/
+MENU_ITEM(menuSetTemp2TemperatureOrig, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
+		BatteryTester_Menu_selectSetTemp2TemperatureOrig, BatteryTester_Menu_enterSetTemp2TemperatureOrig, "");
+/*SUBMENU  T2. set B  LEVEL 3*/
+MENU_ITEM(menuSetTemp2FactorB, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
+		BatteryTester_Menu_selectSetTemp2FactorB, BatteryTester_Menu_enterSetTemp2FactorB, "");
+/*SUBMENU  Temperature 3... LEVEL 2*/
+MENU_ITEM(menuTemp3ResistanceUpperParam, menuTemp3ResistanceOrigParam, menuTemp3FactorBParam, menuT3, menuSetTemp3ResistanceUpper,
+		0, 0, "T3. set Rup");
+MENU_ITEM(menuTemp3ResistanceOrigParam, menuTemp3TemperatureOrigParam, menuTemp3ResistanceUpperParam, menuT3, menuSetTemp3ResistanceOrig,
+		0, 0, "T3. set Ro");
+MENU_ITEM(menuTemp3TemperatureOrigParam, menuTemp3FactorBParam, menuTemp3ResistanceOrigParam, menuT3, menuSetTemp3TemperatureOrig,
+		0, 0, "T3. set To");
+MENU_ITEM(menuTemp3FactorBParam, menuTemp3ResistanceUpperParam, menuTemp3TemperatureOrigParam, menuT3, menuSetTemp3FactorB,
+		0, 0, "T3. set B");
+/*SUBMENU  T3. set Rup  LEVEL 3*/
+MENU_ITEM(menuSetTemp3ResistanceUpper, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
+		BatteryTester_Menu_selectSetTemp3ResistanceUpper, BatteryTester_Menu_enterSetTemp3ResistanceUpper, "");
+/*SUBMENU  T3. set Ro  LEVEL 3*/
+MENU_ITEM(menuSetTemp3ResistanceOrig, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
+		BatteryTester_Menu_selectSetTemp3ResistanceOrig, BatteryTester_Menu_enterSetTemp3ResistanceOrig, "");
+/*SUBMENU  T3. set To  LEVEL 3*/
+MENU_ITEM(menuSetTemp3TemperatureOrig, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
+		BatteryTester_Menu_selectSetTemp3TemperatureOrig, BatteryTester_Menu_enterSetTemp3TemperatureOrig, "");
+/*SUBMENU  T3. set B  LEVEL 3*/
+MENU_ITEM(menuSetTemp3FactorB, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
+		BatteryTester_Menu_selectSetTemp3FactorB, BatteryTester_Menu_enterSetTemp3FactorB, "");
+/*SUBMENU  Temperature 4... LEVEL 2*/
+MENU_ITEM(menuTemp4ResistanceUpperParam, menuTemp4ResistanceOrigParam, menuTemp4FactorBParam, menuT4, menuSetTemp4ResistanceUpper,
+		0, 0, "T4. set Rup");
+MENU_ITEM(menuTemp4ResistanceOrigParam, menuTemp4TemperatureOrigParam, menuTemp4ResistanceUpperParam, menuT4, menuSetTemp4ResistanceOrig,
+		0, 0, "T4. set Ro");
+MENU_ITEM(menuTemp4TemperatureOrigParam, menuTemp4FactorBParam, menuTemp4ResistanceOrigParam, menuT4, menuSetTemp4TemperatureOrig,
+		0, 0, "T4. set To");
+MENU_ITEM(menuTemp4FactorBParam, menuTemp4ResistanceUpperParam, menuTemp4TemperatureOrigParam, menuT4, menuSetTemp4FactorB,
+		0, 0, "T4. set B");
+/*SUBMENU  T4. set Rup  LEVEL 3*/
+MENU_ITEM(menuSetTemp4ResistanceUpper, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
+		BatteryTester_Menu_selectSetTemp4ResistanceUpper, BatteryTester_Menu_enterSetTemp4ResistanceUpper, "");
+/*SUBMENU  T4. set Ro  LEVEL 3*/
+MENU_ITEM(menuSetTemp4ResistanceOrig, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
+		BatteryTester_Menu_selectSetTemp4ResistanceOrig, BatteryTester_Menu_enterSetTemp4ResistanceOrig, "");
+/*SUBMENU  T4. set To  LEVEL 3*/
+MENU_ITEM(menuSetTemp4TemperatureOrig, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
+		BatteryTester_Menu_selectSetTemp4TemperatureOrig, BatteryTester_Menu_enterSetTemp4TemperatureOrig, "");
+/*SUBMENU  T4. set B  LEVEL 3*/
+MENU_ITEM(menuSetTemp4FactorB, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
+		BatteryTester_Menu_selectSetTemp4FactorB, BatteryTester_Menu_enterSetTemp4FactorB, "");
 
 /** \internal
  *  Pointer to the generic menu text display function
@@ -446,6 +552,9 @@ void BatteryTester_Menu_enterSetThermostatMinLim(void){
 	BatteryTester_ClimatRegulator_setRegulatorSettings(
 			&(BatteryTester_ClimatRegulator_getRegulatorSettings().minLimit =
 					BatteryTester_State_sendNewParamFromState()));
+	BatteryTester_ClimatRegulator_setPWMSettings(
+			&(BattetyTester_ClimatRegulator_getPWMSettings().minPidOutput =
+					BatteryTester_State_sendNewParamFromState()));
 	BatteryTester_Menu_returnInMenu(&menuThermostatMinLim);
 }
 
@@ -459,7 +568,268 @@ void BatteryTester_Menu_enterSetThermostatMaxLim(void){
 	BatteryTester_ClimatRegulator_setRegulatorSettings(
 			&(BatteryTester_ClimatRegulator_getRegulatorSettings().maxLimit =
 					BatteryTester_State_sendNewParamFromState()));
+	BatteryTester_ClimatRegulator_setPWMSettings(
+			&(BattetyTester_ClimatRegulator_getPWMSettings().maxPidOutput =
+					BatteryTester_State_sendNewParamFromState()));
 	BatteryTester_Menu_returnInMenu(&menuThermostatMaxLim);
+}
+
+void BatteryTester_Menu_selectSetTemp1ResistanceUpper(void){
+	BatteryTester_Menu_selectSetNewValue("T1 Rup, k\xf4",
+			BatteryTester_ConversionData_getNtcSchemeParams(0).resistanceUpInOhm / 1000,
+				4);
+}
+
+void BatteryTester_Menu_enterSetTemp1ResistanceUpper(void){
+	BatteryTester_ConversionData_setNtcSchemeParams(0,
+			 &(BatteryTester_ConversionData_getNtcSchemeParams(0).resistanceUpInOhm =
+					 BatteryTester_State_sendNewParamFromState() * 1000));
+	BatteryTester_Menu_returnInMenu(&menuTemp1ResistanceUpperParam);
+}
+
+void BatteryTester_Menu_selectSetTemp1ResistanceOrig(void){
+	BatteryTester_Menu_selectSetNewValue("T1 Ro, k\xf4",
+			BatteryTester_ConversionData_getNtcSchemeParams(0).resistanceOrigInOhm / 1000,
+				4);
+}
+
+void BatteryTester_Menu_enterSetTemp1ResistanceOrig(void){
+	BatteryTester_ConversionData_setNtcSchemeParams(0,
+			 &(BatteryTester_ConversionData_getNtcSchemeParams(0).resistanceOrigInOhm =
+					 BatteryTester_State_sendNewParamFromState() * 1000));
+	BatteryTester_Menu_returnInMenu(&menuTemp1ResistanceOrigParam);
+}
+
+void BatteryTester_Menu_selectSetTemp1TemperatureOrig(void){
+	BatteryTester_Menu_selectSetNewValue("T1 To, \xdfC",
+			BatteryTester_ConversionData_getNtcSchemeParams(0).temperatureOrigIndegC,
+				1);
+}
+
+void BatteryTester_Menu_enterSetTemp1TemperatureOrig(void){
+	BatteryTester_ConversionData_setNtcSchemeParams(0,
+			 &(BatteryTester_ConversionData_getNtcSchemeParams(0).temperatureOrigIndegC =
+					 BatteryTester_State_sendNewParamFromState()));
+	BatteryTester_Menu_returnInMenu(&menuTemp1TemperatureOrigParam);
+}
+
+void BatteryTester_Menu_selectSetTemp1FactorB(void){
+	BatteryTester_Menu_selectSetNewValue("T1 fac.B, \xdfC",
+			BatteryTester_ConversionData_getNtcSchemeParams(0).factorB,
+				3);
+}
+
+void BatteryTester_Menu_enterSetTemp1FactorB(void){
+	BatteryTester_ConversionData_setNtcSchemeParams(0,
+			 &(BatteryTester_ConversionData_getNtcSchemeParams(0).factorB =
+					 BatteryTester_State_sendNewParamFromState()));
+	BatteryTester_Menu_returnInMenu(&menuTemp1FactorBParam);
+}
+
+void BatteryTester_Menu_selectSetTemp2ResistanceUpper(void){
+	BatteryTester_Menu_selectSetNewValue("T2 Rup, k\xf4",
+			BatteryTester_ConversionData_getNtcSchemeParams(1).resistanceUpInOhm / 1000,
+				4);
+}
+
+void BatteryTester_Menu_enterSetTemp2ResistanceUpper(void){
+	BatteryTester_ConversionData_setNtcSchemeParams(0,
+			 &(BatteryTester_ConversionData_getNtcSchemeParams(1).resistanceUpInOhm =
+					 BatteryTester_State_sendNewParamFromState() * 1000));
+	BatteryTester_Menu_returnInMenu(&menuTemp2ResistanceUpperParam);
+}
+
+void BatteryTester_Menu_selectSetTemp2ResistanceOrig(void){
+	BatteryTester_Menu_selectSetNewValue("T2 Ro, k\xf4",
+			BatteryTester_ConversionData_getNtcSchemeParams(1).resistanceOrigInOhm / 1000,
+				4);
+}
+
+void BatteryTester_Menu_enterSetTemp2ResistanceOrig(void){
+	BatteryTester_ConversionData_setNtcSchemeParams(0,
+			 &(BatteryTester_ConversionData_getNtcSchemeParams(1).resistanceOrigInOhm =
+					 BatteryTester_State_sendNewParamFromState() * 1000));
+	BatteryTester_Menu_returnInMenu(&menuTemp2ResistanceOrigParam);
+}
+
+void BatteryTester_Menu_selectSetTemp2TemperatureOrig(void){
+	BatteryTester_Menu_selectSetNewValue("T2 To, \xdfC",
+			BatteryTester_ConversionData_getNtcSchemeParams(1).temperatureOrigIndegC,
+				1);
+}
+
+void BatteryTester_Menu_enterSetTemp2TemperatureOrig(void){
+	BatteryTester_ConversionData_setNtcSchemeParams(0,
+			 &(BatteryTester_ConversionData_getNtcSchemeParams(1).temperatureOrigIndegC =
+					 BatteryTester_State_sendNewParamFromState()));
+	BatteryTester_Menu_returnInMenu(&menuTemp2TemperatureOrigParam);
+}
+
+void BatteryTester_Menu_selectSetTemp2FactorB(void){
+	BatteryTester_Menu_selectSetNewValue("T2 fac.B, \xdfC",
+			BatteryTester_ConversionData_getNtcSchemeParams(1).factorB,
+				3);
+}
+
+void BatteryTester_Menu_enterSetTemp2FactorB(void){
+	BatteryTester_ConversionData_setNtcSchemeParams(0,
+			 &(BatteryTester_ConversionData_getNtcSchemeParams(1).factorB =
+					 BatteryTester_State_sendNewParamFromState()));
+	BatteryTester_Menu_returnInMenu(&menuTemp2FactorBParam);
+}
+
+void BatteryTester_Menu_selectSetTemp3ResistanceUpper(void){
+	BatteryTester_Menu_selectSetNewValue("T3 Rup, k\xf4",
+			BatteryTester_ConversionData_getNtcSchemeParams(2).resistanceUpInOhm / 1000,
+				4);
+}
+
+void BatteryTester_Menu_enterSetTemp3ResistanceUpper(void){
+	BatteryTester_ConversionData_setNtcSchemeParams(0,
+			 &(BatteryTester_ConversionData_getNtcSchemeParams(2).resistanceUpInOhm =
+					 BatteryTester_State_sendNewParamFromState() * 1000));
+	BatteryTester_Menu_returnInMenu(&menuTemp3ResistanceUpperParam);
+}
+
+void BatteryTester_Menu_selectSetTemp3ResistanceOrig(void){
+	BatteryTester_Menu_selectSetNewValue("T3 Ro, k\xf4",
+			BatteryTester_ConversionData_getNtcSchemeParams(2).resistanceOrigInOhm / 1000,
+				4);
+}
+
+void BatteryTester_Menu_enterSetTemp3ResistanceOrig(void){
+	BatteryTester_ConversionData_setNtcSchemeParams(0,
+			 &(BatteryTester_ConversionData_getNtcSchemeParams(2).resistanceOrigInOhm =
+					 BatteryTester_State_sendNewParamFromState() * 1000));
+	BatteryTester_Menu_returnInMenu(&menuTemp3ResistanceOrigParam);
+}
+
+void BatteryTester_Menu_selectSetTemp3TemperatureOrig(void){
+	BatteryTester_Menu_selectSetNewValue("T3 To, \xdfC",
+			BatteryTester_ConversionData_getNtcSchemeParams(2).temperatureOrigIndegC,
+				1);
+}
+
+void BatteryTester_Menu_enterSetTemp3TemperatureOrig(void){
+	BatteryTester_ConversionData_setNtcSchemeParams(0,
+			 &(BatteryTester_ConversionData_getNtcSchemeParams(2).temperatureOrigIndegC =
+					 BatteryTester_State_sendNewParamFromState()));
+	BatteryTester_Menu_returnInMenu(&menuTemp3TemperatureOrigParam);
+}
+
+void BatteryTester_Menu_selectSetTemp3FactorB(void){
+	BatteryTester_Menu_selectSetNewValue("T3 fac.B, \xdfC",
+			BatteryTester_ConversionData_getNtcSchemeParams(2).factorB,
+				3);
+}
+
+void BatteryTester_Menu_enterSetTemp3FactorB(void){
+	BatteryTester_ConversionData_setNtcSchemeParams(0,
+			 &(BatteryTester_ConversionData_getNtcSchemeParams(2).factorB =
+					 BatteryTester_State_sendNewParamFromState()));
+	BatteryTester_Menu_returnInMenu(&menuTemp3FactorBParam);
+}
+
+void BatteryTester_Menu_selectSetTemp4ResistanceUpper(void){
+	BatteryTester_Menu_selectSetNewValue("T4 Rup, k\xf4",
+			BatteryTester_ConversionData_getNtcSchemeParams(3).resistanceUpInOhm / 1000,
+				4);
+}
+
+void BatteryTester_Menu_enterSetTemp4ResistanceUpper(void){
+	BatteryTester_ConversionData_setNtcSchemeParams(0,
+			 &(BatteryTester_ConversionData_getNtcSchemeParams(3).resistanceUpInOhm =
+					 BatteryTester_State_sendNewParamFromState() * 1000));
+	BatteryTester_Menu_returnInMenu(&menuTemp4ResistanceUpperParam);
+}
+
+void BatteryTester_Menu_selectSetTemp4ResistanceOrig(void){
+	BatteryTester_Menu_selectSetNewValue("T4 Ro, k\xf4",
+			BatteryTester_ConversionData_getNtcSchemeParams(3).resistanceOrigInOhm / 1000,
+				4);
+}
+
+void BatteryTester_Menu_enterSetTemp4ResistanceOrig(void){
+	BatteryTester_ConversionData_setNtcSchemeParams(0,
+			 &(BatteryTester_ConversionData_getNtcSchemeParams(3).resistanceOrigInOhm =
+					 BatteryTester_State_sendNewParamFromState() * 1000));
+	BatteryTester_Menu_returnInMenu(&menuTemp4ResistanceOrigParam);
+}
+
+void BatteryTester_Menu_selectSetTemp4TemperatureOrig(void){
+	BatteryTester_Menu_selectSetNewValue("T4 To, \xdfC",
+			BatteryTester_ConversionData_getNtcSchemeParams(3).temperatureOrigIndegC,
+				1);
+}
+
+void BatteryTester_Menu_enterSetTemp4TemperatureOrig(void){
+	BatteryTester_ConversionData_setNtcSchemeParams(0,
+			 &(BatteryTester_ConversionData_getNtcSchemeParams(3).temperatureOrigIndegC =
+					 BatteryTester_State_sendNewParamFromState()));
+	BatteryTester_Menu_returnInMenu(&menuTemp4TemperatureOrigParam);
+}
+
+void BatteryTester_Menu_selectSetTemp4FactorB(void){
+	BatteryTester_Menu_selectSetNewValue("T4 fac.B, \xdfC",
+			BatteryTester_ConversionData_getNtcSchemeParams(3).factorB,
+				3);
+}
+
+void BatteryTester_Menu_enterSetTemp4FactorB(void){
+	BatteryTester_ConversionData_setNtcSchemeParams(0,
+			 &(BatteryTester_ConversionData_getNtcSchemeParams(3).factorB =
+					 BatteryTester_State_sendNewParamFromState()));
+	BatteryTester_Menu_returnInMenu(&menuTemp4FactorBParam);
+}
+
+void BatteryTester_Menu_selectSetThermostatMinDutyCycle(void){
+	BatteryTester_Menu_selectSetNewValue("Tstat min Duty",
+			BattetyTester_ClimatRegulator_getPWMSettings().minDutyCycle,
+					0);
+}
+
+void BatteryTester_Menu_enterSetThermostatMinDutyCycle(void){
+	BatteryTester_ClimatRegulator_setPWMSettings(
+			&(BattetyTester_ClimatRegulator_getPWMSettings().minDutyCycle =
+					BatteryTester_State_sendNewParamFromState()));
+	BatteryTester_Menu_returnInMenu(&menuThermostatMinDutyCycle);
+}
+
+void BatteryTester_Menu_selectSetThermostatMaxDutyCycle(void){
+	BatteryTester_Menu_selectSetNewValue("Tstat max Duty",
+			BattetyTester_ClimatRegulator_getPWMSettings().maxDutyCycle,
+					0);
+}
+void BatteryTester_Menu_enterSetThermostatMaxDutyCycle(void){
+	BatteryTester_ClimatRegulator_setPWMSettings(
+			&(BattetyTester_ClimatRegulator_getPWMSettings().maxDutyCycle =
+					BatteryTester_State_sendNewParamFromState()));
+	BatteryTester_Menu_returnInMenu(&menuThermostatMaxDutyCycle);
+}
+
+void BatteryTester_Menu_selectSetThermostatPeriod(void){
+	BatteryTester_Menu_selectSetNewValue("Tstat Period",
+			BattetyTester_ClimatRegulator_getPWMSettings().periodPwm,
+					0);
+}
+
+void BatteryTester_Menu_enterSetThermostatPeriod(void){
+	BatteryTester_ClimatRegulator_setPWMSettings(
+			&(BattetyTester_ClimatRegulator_getPWMSettings().periodPwm =
+					BatteryTester_State_sendNewParamFromState()));
+	BatteryTester_Menu_returnInMenu(&menuThermostatPeriod);
+}
+
+void BatteryTester_Menu_selectSetThermostatDeadTime(void){
+	BatteryTester_Menu_selectSetNewValue("Tstat Dead T.",
+				BattetyTester_ClimatRegulator_getPWMSettings().deadTime,
+						0);
+}
+void BatteryTester_Menu_enterSetThermostatDeadTime(void){
+	BatteryTester_ClimatRegulator_setPWMSettings(
+			&(BattetyTester_ClimatRegulator_getPWMSettings().deadTime =
+					BatteryTester_State_sendNewParamFromState()));
+	BatteryTester_Menu_returnInMenu(&menuThermostatDeadTime);
 }
 
 inline void BatteryTester_Menu_selectSetNewValue(const char* header, float oldValue, unsigned short accuracy){

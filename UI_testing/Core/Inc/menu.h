@@ -104,5 +104,37 @@
 	void BatteryTester_Menu_enterSetThermostatMinLim(void);
 	void BatteryTester_Menu_selectSetThermostatMaxLim(void);
 	void BatteryTester_Menu_enterSetThermostatMaxLim(void);
+	void BatteryTester_Menu_selectSetTemp1ResistanceUpper(void);
+	void BatteryTester_Menu_enterSetTemp1ResistanceUpper(void);
+	void BatteryTester_Menu_selectSetTemp1ResistanceOrig(void);
+	void BatteryTester_Menu_enterSetTemp1ResistanceOrig(void);
+	void BatteryTester_Menu_selectSetTemp1TemperatureOrig(void);
+	void BatteryTester_Menu_enterSetTemp1TemperatureOrig(void);
+	void BatteryTester_Menu_selectSetTemp1FactorB(void);
+	void BatteryTester_Menu_enterSetTemp1FactorB(void);
+	void BatteryTester_Menu_selectSetTemp2ResistanceUpper(void);
+	void BatteryTester_Menu_enterSetTemp2ResistanceUpper(void);
+	void BatteryTester_Menu_selectSetTemp2ResistanceOrig(void);
+	void BatteryTester_Menu_enterSetTemp2ResistanceOrig(void);
+	void BatteryTester_Menu_selectSetTemp2TemperatureOrig(void);
+	void BatteryTester_Menu_enterSetTemp2TemperatureOrig(void);
+	void BatteryTester_Menu_selectSetTemp2FactorB(void);
+	void BatteryTester_Menu_enterSetTemp2FactorB(void);
+	void BatteryTester_Menu_selectSetTemp3ResistanceUpper(void);
+	void BatteryTester_Menu_enterSetTemp3ResistanceUpper(void);
+	void BatteryTester_Menu_selectSetTemp3ResistanceOrig(void);
+	void BatteryTester_Menu_enterSetTemp3ResistanceOrig(void);
+	void BatteryTester_Menu_selectSetTemp3TemperatureOrig(void);
+	void BatteryTester_Menu_enterSetTemp3TemperatureOrig(void);
+	void BatteryTester_Menu_selectSetTemp3FactorB(void);
+	void BatteryTester_Menu_enterSetTemp3FactorB(void);
+	void BatteryTester_Menu_selectSetThermostatMinDutyCycle(void);
+	void BatteryTester_Menu_enterSetThermostatMinDutyCycle(void);
+	void BatteryTester_Menu_selectSetThermostatMaxDutyCycle(void);
+	void BatteryTester_Menu_enterSetThermostatMaxDutyCycle(void);
+	void BatteryTester_Menu_selectSetThermostatPeriod(void);
+	void BatteryTester_Menu_enterSetThermostatPeriod(void);
+	void BatteryTester_Menu_selectSetThermostatDeadTime(void);
+	void BatteryTester_Menu_enterSetThermostatDeadTime(void);
 
 #endif /* INC_MENU_H_ */
