@@ -12,7 +12,7 @@
 //#include <stdint.h>
 //#include <stdlib.h>
 //#include <math.h>
-#include "stm32f1xx_hal.h"
+#include "stm32f0xx_hal.h"
 
 /** @brief Структура для хранения параметров PID
  * float Kp Коэффициент пропорциональности

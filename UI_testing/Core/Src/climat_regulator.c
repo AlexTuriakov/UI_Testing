@@ -128,6 +128,12 @@ void BatteryTester_ClimatRegulator_setRegulatorSettings(sPIDController_t* pSetti
 	if(!pSettings){
 		return;
 	}
+	if(regulatorClimatSettings.minLimit != pSettings->minLimit){
+		pwmClimatSettings.minPidOutput = pSettings->minLimit;
+	}
+	if(regulatorClimatSettings.maxLimit != pSettings->maxLimit){
+		pwmClimatSettings.maxPidOutput = pSettings->maxLimit;
+	}
 	BatteryTester_ClimatRegulator_calcScalePwmClimatSettings();
 	__BatteryTester_AuxiliaryFunction_copy(
 			(void*)pSettings, (void*)&regulatorClimatSettings,

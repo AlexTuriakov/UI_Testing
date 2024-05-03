@@ -66,5 +66,10 @@ void BatteryTester_ConversionData_calcPhisicTemperatureEx(
 		uint32_t,
 		volatile sphisicValueEx_t*);
 
+ntcSchemeParameters_t BatteryTester_ConversionData_getNtcSchemeParams(
+		unsigned short);
 
+void BatteryTester_ConversionData_setNtcSchemeParams(
+		unsigned short,
+		ntcSchemeParameters_t*);
 #endif /* INC_CONVERSION_DATA_H_ */

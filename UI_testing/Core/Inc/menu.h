@@ -128,6 +128,14 @@
 	void BatteryTester_Menu_enterSetTemp3TemperatureOrig(void);
 	void BatteryTester_Menu_selectSetTemp3FactorB(void);
 	void BatteryTester_Menu_enterSetTemp3FactorB(void);
+	void BatteryTester_Menu_selectSetTemp4ResistanceUpper(void);
+	void BatteryTester_Menu_enterSetTemp4ResistanceUpper(void);
+	void BatteryTester_Menu_selectSetTemp4ResistanceOrig(void);
+	void BatteryTester_Menu_enterSetTemp4ResistanceOrig(void);
+	void BatteryTester_Menu_selectSetTemp4TemperatureOrig(void);
+	void BatteryTester_Menu_enterSetTemp4TemperatureOrig(void);
+	void BatteryTester_Menu_selectSetTemp4FactorB(void);
+	void BatteryTester_Menu_enterSetTemp4FactorB(void);
 	void BatteryTester_Menu_selectSetThermostatMinDutyCycle(void);
 	void BatteryTester_Menu_enterSetThermostatMinDutyCycle(void);
 	void BatteryTester_Menu_selectSetThermostatMaxDutyCycle(void);

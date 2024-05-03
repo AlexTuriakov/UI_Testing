@@ -484,9 +484,9 @@ void BatteryTester_Menu_selectSetThermostatKp(void){
 }
 
 void BatteryTester_Menu_enterSetThermostatKp(void){
-	BatteryTester_ClimatRegulator_setRegulatorSettings(
-			&(BatteryTester_ClimatRegulator_getRegulatorSettings().Kp =
-					BatteryTester_State_sendNewParamFromState()));
+	sPIDController_t settings = BatteryTester_ClimatRegulator_getRegulatorSettings();
+	settings.Kp = BatteryTester_State_sendNewParamFromState();
+	BatteryTester_ClimatRegulator_setRegulatorSettings(&settings);
 	BatteryTester_Menu_returnInMenu(&menuThermostatKp);
 }
 
@@ -497,9 +497,9 @@ void BatteryTester_Menu_selectSetThermostatKi(void){
 }
 
 void BatteryTester_Menu_enterSetThermostatKi(void){
-	BatteryTester_ClimatRegulator_setRegulatorSettings(
-			&(BatteryTester_ClimatRegulator_getRegulatorSettings().Ki =
-					BatteryTester_State_sendNewParamFromState()));
+	sPIDController_t settings = BatteryTester_ClimatRegulator_getRegulatorSettings();
+	settings.Ki = BatteryTester_State_sendNewParamFromState();
+	BatteryTester_ClimatRegulator_setRegulatorSettings(&settings);
 	BatteryTester_Menu_returnInMenu(&menuThermostatKi);
 }
 
@@ -510,9 +510,9 @@ void BatteryTester_Menu_selectSetThermostatKd(void){
 }
 
 void BatteryTester_Menu_enterSetThermostatKd(void){
-	BatteryTester_ClimatRegulator_setRegulatorSettings(
-			&(BatteryTester_ClimatRegulator_getRegulatorSettings().Kd =
-					BatteryTester_State_sendNewParamFromState()));
+	sPIDController_t settings = BatteryTester_ClimatRegulator_getRegulatorSettings();
+	settings.Kd = BatteryTester_State_sendNewParamFromState();
+	BatteryTester_ClimatRegulator_setRegulatorSettings(&settings);
 	BatteryTester_Menu_returnInMenu(&menuThermostatKd);
 }
 
@@ -523,262 +523,256 @@ void BatteryTester_Menu_selectSetThermostatDt(void){
 }
 
 void BatteryTester_Menu_enterSetThermostatDt(void){
-	BatteryTester_ClimatRegulator_setRegulatorSettings(
-			&(BatteryTester_ClimatRegulator_getRegulatorSettings().dt =
-					BatteryTester_State_sendNewParamFromState() / 1000));
+	sPIDController_t settings = BatteryTester_ClimatRegulator_getRegulatorSettings();
+	settings.dt = BatteryTester_State_sendNewParamFromState() / 1000;
+	BatteryTester_ClimatRegulator_setRegulatorSettings(&settings);
 	BatteryTester_Menu_returnInMenu(&menuThermostatDt);
 }
 
 void BatteryTester_Menu_selectSetThermostatSp(void){
-	BatteryTester_Menu_selectSetNewValue("Thermost. Sp, dC",
+	BatteryTester_Menu_selectSetNewValue("Thermost. Sp, 11011111C",
 			BatteryTester_ClimatRegulator_getRegulatorSettings().setpoint,
 			1);
 }
 
 void BatteryTester_Menu_enterSetThermostatSp(void){
-	BatteryTester_ClimatRegulator_setRegulatorSettings(
-			&(BatteryTester_ClimatRegulator_getRegulatorSettings().setpoint =
-					BatteryTester_State_sendNewParamFromState()));
+	sPIDController_t settings = BatteryTester_ClimatRegulator_getRegulatorSettings();
+	settings.setpoint = BatteryTester_State_sendNewParamFromState();
+	BatteryTester_ClimatRegulator_setRegulatorSettings(&settings);
 	BatteryTester_Menu_returnInMenu(&menuThermostatSp);
 }
 
 void BatteryTester_Menu_selectSetThermostatMinLim(void){
-	BatteryTester_Menu_selectSetNewValue("Tstat. min, dC",
+	BatteryTester_Menu_selectSetNewValue("Tstat. min, 11011111C",
 			BatteryTester_ClimatRegulator_getRegulatorSettings().minLimit,
 			1);
 }
 
 void BatteryTester_Menu_enterSetThermostatMinLim(void){
-	BatteryTester_ClimatRegulator_setRegulatorSettings(
-			&(BatteryTester_ClimatRegulator_getRegulatorSettings().minLimit =
-					BatteryTester_State_sendNewParamFromState()));
-	BatteryTester_ClimatRegulator_setPWMSettings(
-			&(BattetyTester_ClimatRegulator_getPWMSettings().minPidOutput =
-					BatteryTester_State_sendNewParamFromState()));
+	sPIDController_t settings = BatteryTester_ClimatRegulator_getRegulatorSettings();
+	settings.minLimit = BatteryTester_State_sendNewParamFromState();
+	BatteryTester_ClimatRegulator_setRegulatorSettings(&settings);
 	BatteryTester_Menu_returnInMenu(&menuThermostatMinLim);
 }
 
 void BatteryTester_Menu_selectSetThermostatMaxLim(void){
-	BatteryTester_Menu_selectSetNewValue("Tstat. max, dC",
+	BatteryTester_Menu_selectSetNewValue("Tstat. max, 11011111C",
 			BatteryTester_ClimatRegulator_getRegulatorSettings().maxLimit,
 			1);
 }
 
 void BatteryTester_Menu_enterSetThermostatMaxLim(void){
-	BatteryTester_ClimatRegulator_setRegulatorSettings(
-			&(BatteryTester_ClimatRegulator_getRegulatorSettings().maxLimit =
-					BatteryTester_State_sendNewParamFromState()));
-	BatteryTester_ClimatRegulator_setPWMSettings(
-			&(BattetyTester_ClimatRegulator_getPWMSettings().maxPidOutput =
-					BatteryTester_State_sendNewParamFromState()));
+	sPIDController_t settings = BatteryTester_ClimatRegulator_getRegulatorSettings();
+	settings.maxLimit = BatteryTester_State_sendNewParamFromState();
+	BatteryTester_ClimatRegulator_setRegulatorSettings(&settings);
 	BatteryTester_Menu_returnInMenu(&menuThermostatMaxLim);
 }
 
 void BatteryTester_Menu_selectSetTemp1ResistanceUpper(void){
-	BatteryTester_Menu_selectSetNewValue("T1 Rup, k\xf4",
+	BatteryTester_Menu_selectSetNewValue("T1 Rup, k11110100",
 			BatteryTester_ConversionData_getNtcSchemeParams(0).resistanceUpInOhm / 1000,
 				4);
 }
 
 void BatteryTester_Menu_enterSetTemp1ResistanceUpper(void){
-	BatteryTester_ConversionData_setNtcSchemeParams(0,
-			 &(BatteryTester_ConversionData_getNtcSchemeParams(0).resistanceUpInOhm =
-					 BatteryTester_State_sendNewParamFromState() * 1000));
+	ntcSchemeParameters_t settings = BatteryTester_ConversionData_getNtcSchemeParams(0);
+	settings.resistanceUpInOhm = BatteryTester_State_sendNewParamFromState() * 1000;
+	BatteryTester_ConversionData_setNtcSchemeParams(0, &settings);
 	BatteryTester_Menu_returnInMenu(&menuTemp1ResistanceUpperParam);
 }
 
 void BatteryTester_Menu_selectSetTemp1ResistanceOrig(void){
-	BatteryTester_Menu_selectSetNewValue("T1 Ro, k\xf4",
+	BatteryTester_Menu_selectSetNewValue("T1 Ro, k11110100",
 			BatteryTester_ConversionData_getNtcSchemeParams(0).resistanceOrigInOhm / 1000,
 				4);
 }
 
 void BatteryTester_Menu_enterSetTemp1ResistanceOrig(void){
-	BatteryTester_ConversionData_setNtcSchemeParams(0,
-			 &(BatteryTester_ConversionData_getNtcSchemeParams(0).resistanceOrigInOhm =
-					 BatteryTester_State_sendNewParamFromState() * 1000));
+	ntcSchemeParameters_t settings = BatteryTester_ConversionData_getNtcSchemeParams(0);
+	settings.resistanceOrigInOhm = BatteryTester_State_sendNewParamFromState() * 1000;
+	BatteryTester_ConversionData_setNtcSchemeParams(0, &settings);
 	BatteryTester_Menu_returnInMenu(&menuTemp1ResistanceOrigParam);
 }
 
 void BatteryTester_Menu_selectSetTemp1TemperatureOrig(void){
-	BatteryTester_Menu_selectSetNewValue("T1 To, \xdfC",
+	BatteryTester_Menu_selectSetNewValue("T1 To, 11011111C",
 			BatteryTester_ConversionData_getNtcSchemeParams(0).temperatureOrigIndegC,
 				1);
 }
 
 void BatteryTester_Menu_enterSetTemp1TemperatureOrig(void){
-	BatteryTester_ConversionData_setNtcSchemeParams(0,
-			 &(BatteryTester_ConversionData_getNtcSchemeParams(0).temperatureOrigIndegC =
-					 BatteryTester_State_sendNewParamFromState()));
+	ntcSchemeParameters_t settings = BatteryTester_ConversionData_getNtcSchemeParams(0);
+	settings.temperatureOrigIndegC = BatteryTester_State_sendNewParamFromState();
+	BatteryTester_ConversionData_setNtcSchemeParams(0, &settings);
 	BatteryTester_Menu_returnInMenu(&menuTemp1TemperatureOrigParam);
 }
 
 void BatteryTester_Menu_selectSetTemp1FactorB(void){
-	BatteryTester_Menu_selectSetNewValue("T1 fac.B, \xdfC",
+	BatteryTester_Menu_selectSetNewValue("T1 fac.B, 11011111C",
 			BatteryTester_ConversionData_getNtcSchemeParams(0).factorB,
 				3);
 }
 
 void BatteryTester_Menu_enterSetTemp1FactorB(void){
-	BatteryTester_ConversionData_setNtcSchemeParams(0,
-			 &(BatteryTester_ConversionData_getNtcSchemeParams(0).factorB =
-					 BatteryTester_State_sendNewParamFromState()));
+	ntcSchemeParameters_t settings = BatteryTester_ConversionData_getNtcSchemeParams(0);
+	settings.factorB = BatteryTester_State_sendNewParamFromState();
+	BatteryTester_ConversionData_setNtcSchemeParams(0, &settings);
 	BatteryTester_Menu_returnInMenu(&menuTemp1FactorBParam);
 }
 
 void BatteryTester_Menu_selectSetTemp2ResistanceUpper(void){
-	BatteryTester_Menu_selectSetNewValue("T2 Rup, k\xf4",
+	BatteryTester_Menu_selectSetNewValue("T2 Rup, k11110100",
 			BatteryTester_ConversionData_getNtcSchemeParams(1).resistanceUpInOhm / 1000,
 				4);
 }
 
 void BatteryTester_Menu_enterSetTemp2ResistanceUpper(void){
-	BatteryTester_ConversionData_setNtcSchemeParams(0,
-			 &(BatteryTester_ConversionData_getNtcSchemeParams(1).resistanceUpInOhm =
-					 BatteryTester_State_sendNewParamFromState() * 1000));
+	ntcSchemeParameters_t settings = BatteryTester_ConversionData_getNtcSchemeParams(1);
+	settings.resistanceUpInOhm = BatteryTester_State_sendNewParamFromState() * 1000;
+	BatteryTester_ConversionData_setNtcSchemeParams(1, &settings);
 	BatteryTester_Menu_returnInMenu(&menuTemp2ResistanceUpperParam);
 }
 
 void BatteryTester_Menu_selectSetTemp2ResistanceOrig(void){
-	BatteryTester_Menu_selectSetNewValue("T2 Ro, k\xf4",
+	BatteryTester_Menu_selectSetNewValue("T2 Ro, k11110100",
 			BatteryTester_ConversionData_getNtcSchemeParams(1).resistanceOrigInOhm / 1000,
 				4);
 }
 
 void BatteryTester_Menu_enterSetTemp2ResistanceOrig(void){
-	BatteryTester_ConversionData_setNtcSchemeParams(0,
-			 &(BatteryTester_ConversionData_getNtcSchemeParams(1).resistanceOrigInOhm =
-					 BatteryTester_State_sendNewParamFromState() * 1000));
+	ntcSchemeParameters_t settings = BatteryTester_ConversionData_getNtcSchemeParams(1);
+	settings.resistanceOrigInOhm = BatteryTester_State_sendNewParamFromState() * 1000;
+	BatteryTester_ConversionData_setNtcSchemeParams(1, &settings);
 	BatteryTester_Menu_returnInMenu(&menuTemp2ResistanceOrigParam);
 }
 
 void BatteryTester_Menu_selectSetTemp2TemperatureOrig(void){
-	BatteryTester_Menu_selectSetNewValue("T2 To, \xdfC",
+	BatteryTester_Menu_selectSetNewValue("T2 To, 11011111C",
 			BatteryTester_ConversionData_getNtcSchemeParams(1).temperatureOrigIndegC,
 				1);
 }
 
 void BatteryTester_Menu_enterSetTemp2TemperatureOrig(void){
-	BatteryTester_ConversionData_setNtcSchemeParams(0,
-			 &(BatteryTester_ConversionData_getNtcSchemeParams(1).temperatureOrigIndegC =
-					 BatteryTester_State_sendNewParamFromState()));
+	ntcSchemeParameters_t settings = BatteryTester_ConversionData_getNtcSchemeParams(1);
+	settings.temperatureOrigIndegC = BatteryTester_State_sendNewParamFromState();
+	BatteryTester_ConversionData_setNtcSchemeParams(1, &settings);
 	BatteryTester_Menu_returnInMenu(&menuTemp2TemperatureOrigParam);
 }
 
 void BatteryTester_Menu_selectSetTemp2FactorB(void){
-	BatteryTester_Menu_selectSetNewValue("T2 fac.B, \xdfC",
+	BatteryTester_Menu_selectSetNewValue("T2 fac.B, 11011111C",
 			BatteryTester_ConversionData_getNtcSchemeParams(1).factorB,
 				3);
 }
 
 void BatteryTester_Menu_enterSetTemp2FactorB(void){
-	BatteryTester_ConversionData_setNtcSchemeParams(0,
-			 &(BatteryTester_ConversionData_getNtcSchemeParams(1).factorB =
-					 BatteryTester_State_sendNewParamFromState()));
+	ntcSchemeParameters_t settings = BatteryTester_ConversionData_getNtcSchemeParams(1);
+	settings.factorB = BatteryTester_State_sendNewParamFromState();
+	BatteryTester_ConversionData_setNtcSchemeParams(1, &settings);
 	BatteryTester_Menu_returnInMenu(&menuTemp2FactorBParam);
 }
 
 void BatteryTester_Menu_selectSetTemp3ResistanceUpper(void){
-	BatteryTester_Menu_selectSetNewValue("T3 Rup, k\xf4",
-			BatteryTester_ConversionData_getNtcSchemeParams(2).resistanceUpInOhm / 1000,
+	BatteryTester_Menu_selectSetNewValue("T3 Rup, k11110100",
+			((ntcSchemeParameters_t)BatteryTester_ConversionData_getNtcSchemeParams(2)).resistanceUpInOhm / 1000,
 				4);
 }
 
 void BatteryTester_Menu_enterSetTemp3ResistanceUpper(void){
-	BatteryTester_ConversionData_setNtcSchemeParams(0,
-			 &(BatteryTester_ConversionData_getNtcSchemeParams(2).resistanceUpInOhm =
-					 BatteryTester_State_sendNewParamFromState() * 1000));
+	ntcSchemeParameters_t settings = BatteryTester_ConversionData_getNtcSchemeParams(2);
+	settings.resistanceUpInOhm = BatteryTester_State_sendNewParamFromState() * 1000;
+	BatteryTester_ConversionData_setNtcSchemeParams(2, &settings);
 	BatteryTester_Menu_returnInMenu(&menuTemp3ResistanceUpperParam);
 }
 
 void BatteryTester_Menu_selectSetTemp3ResistanceOrig(void){
-	BatteryTester_Menu_selectSetNewValue("T3 Ro, k\xf4",
+	BatteryTester_Menu_selectSetNewValue("T3 Ro, k11110100",
 			BatteryTester_ConversionData_getNtcSchemeParams(2).resistanceOrigInOhm / 1000,
 				4);
 }
 
 void BatteryTester_Menu_enterSetTemp3ResistanceOrig(void){
-	BatteryTester_ConversionData_setNtcSchemeParams(0,
-			 &(BatteryTester_ConversionData_getNtcSchemeParams(2).resistanceOrigInOhm =
-					 BatteryTester_State_sendNewParamFromState() * 1000));
+	ntcSchemeParameters_t settings = BatteryTester_ConversionData_getNtcSchemeParams(2);
+	settings.resistanceOrigInOhm = BatteryTester_State_sendNewParamFromState() * 1000;
+	BatteryTester_ConversionData_setNtcSchemeParams(2, &settings);
 	BatteryTester_Menu_returnInMenu(&menuTemp3ResistanceOrigParam);
 }
 
 void BatteryTester_Menu_selectSetTemp3TemperatureOrig(void){
-	BatteryTester_Menu_selectSetNewValue("T3 To, \xdfC",
+	BatteryTester_Menu_selectSetNewValue("T3 To, 11011111C",
 			BatteryTester_ConversionData_getNtcSchemeParams(2).temperatureOrigIndegC,
 				1);
 }
 
 void BatteryTester_Menu_enterSetTemp3TemperatureOrig(void){
-	BatteryTester_ConversionData_setNtcSchemeParams(0,
-			 &(BatteryTester_ConversionData_getNtcSchemeParams(2).temperatureOrigIndegC =
-					 BatteryTester_State_sendNewParamFromState()));
+	ntcSchemeParameters_t settings = BatteryTester_ConversionData_getNtcSchemeParams(2);
+	settings.temperatureOrigIndegC = BatteryTester_State_sendNewParamFromState();
+	BatteryTester_ConversionData_setNtcSchemeParams(3, &settings);
 	BatteryTester_Menu_returnInMenu(&menuTemp3TemperatureOrigParam);
 }
 
 void BatteryTester_Menu_selectSetTemp3FactorB(void){
-	BatteryTester_Menu_selectSetNewValue("T3 fac.B, \xdfC",
+	BatteryTester_Menu_selectSetNewValue("T3 fac.B, 11011111C",
 			BatteryTester_ConversionData_getNtcSchemeParams(2).factorB,
 				3);
 }
 
 void BatteryTester_Menu_enterSetTemp3FactorB(void){
-	BatteryTester_ConversionData_setNtcSchemeParams(0,
-			 &(BatteryTester_ConversionData_getNtcSchemeParams(2).factorB =
-					 BatteryTester_State_sendNewParamFromState()));
+	ntcSchemeParameters_t settings = BatteryTester_ConversionData_getNtcSchemeParams(2);
+	settings.factorB = BatteryTester_State_sendNewParamFromState();
+	BatteryTester_ConversionData_setNtcSchemeParams(2, &settings);
 	BatteryTester_Menu_returnInMenu(&menuTemp3FactorBParam);
 }
 
 void BatteryTester_Menu_selectSetTemp4ResistanceUpper(void){
-	BatteryTester_Menu_selectSetNewValue("T4 Rup, k\xf4",
+	BatteryTester_Menu_selectSetNewValue("T4 Rup, k11110100",
 			BatteryTester_ConversionData_getNtcSchemeParams(3).resistanceUpInOhm / 1000,
 				4);
 }
 
 void BatteryTester_Menu_enterSetTemp4ResistanceUpper(void){
-	BatteryTester_ConversionData_setNtcSchemeParams(0,
-			 &(BatteryTester_ConversionData_getNtcSchemeParams(3).resistanceUpInOhm =
-					 BatteryTester_State_sendNewParamFromState() * 1000));
+	ntcSchemeParameters_t settings = BatteryTester_ConversionData_getNtcSchemeParams(3);
+	settings.resistanceUpInOhm = BatteryTester_State_sendNewParamFromState() * 1000;
+	BatteryTester_ConversionData_setNtcSchemeParams(3, &settings);
 	BatteryTester_Menu_returnInMenu(&menuTemp4ResistanceUpperParam);
 }
 
 void BatteryTester_Menu_selectSetTemp4ResistanceOrig(void){
-	BatteryTester_Menu_selectSetNewValue("T4 Ro, k\xf4",
+	BatteryTester_Menu_selectSetNewValue("T4 Ro, k11110100",
 			BatteryTester_ConversionData_getNtcSchemeParams(3).resistanceOrigInOhm / 1000,
 				4);
 }
 
 void BatteryTester_Menu_enterSetTemp4ResistanceOrig(void){
-	BatteryTester_ConversionData_setNtcSchemeParams(0,
-			 &(BatteryTester_ConversionData_getNtcSchemeParams(3).resistanceOrigInOhm =
-					 BatteryTester_State_sendNewParamFromState() * 1000));
+	ntcSchemeParameters_t settings = BatteryTester_ConversionData_getNtcSchemeParams(3);
+	settings.resistanceOrigInOhm = BatteryTester_State_sendNewParamFromState() * 1000;
+	BatteryTester_ConversionData_setNtcSchemeParams(3, &settings);
 	BatteryTester_Menu_returnInMenu(&menuTemp4ResistanceOrigParam);
 }
 
 void BatteryTester_Menu_selectSetTemp4TemperatureOrig(void){
-	BatteryTester_Menu_selectSetNewValue("T4 To, \xdfC",
+	BatteryTester_Menu_selectSetNewValue("T4 To, 11011111C",
 			BatteryTester_ConversionData_getNtcSchemeParams(3).temperatureOrigIndegC,
 				1);
 }
 
 void BatteryTester_Menu_enterSetTemp4TemperatureOrig(void){
-	BatteryTester_ConversionData_setNtcSchemeParams(0,
-			 &(BatteryTester_ConversionData_getNtcSchemeParams(3).temperatureOrigIndegC =
-					 BatteryTester_State_sendNewParamFromState()));
+	ntcSchemeParameters_t settings = BatteryTester_ConversionData_getNtcSchemeParams(3);
+	settings.temperatureOrigIndegC = BatteryTester_State_sendNewParamFromState();
+	BatteryTester_ConversionData_setNtcSchemeParams(3, &settings);
 	BatteryTester_Menu_returnInMenu(&menuTemp4TemperatureOrigParam);
 }
 
 void BatteryTester_Menu_selectSetTemp4FactorB(void){
-	BatteryTester_Menu_selectSetNewValue("T4 fac.B, \xdfC",
+	BatteryTester_Menu_selectSetNewValue("T4 fac.B, 11011111C",
 			BatteryTester_ConversionData_getNtcSchemeParams(3).factorB,
 				3);
 }
 
 void BatteryTester_Menu_enterSetTemp4FactorB(void){
-	BatteryTester_ConversionData_setNtcSchemeParams(0,
-			 &(BatteryTester_ConversionData_getNtcSchemeParams(3).factorB =
-					 BatteryTester_State_sendNewParamFromState()));
+	ntcSchemeParameters_t settings = BatteryTester_ConversionData_getNtcSchemeParams(3);
+	settings.factorB = BatteryTester_State_sendNewParamFromState();
+	BatteryTester_ConversionData_setNtcSchemeParams(3, &settings);
 	BatteryTester_Menu_returnInMenu(&menuTemp4FactorBParam);
 }
 
@@ -789,9 +783,9 @@ void BatteryTester_Menu_selectSetThermostatMinDutyCycle(void){
 }
 
 void BatteryTester_Menu_enterSetThermostatMinDutyCycle(void){
-	BatteryTester_ClimatRegulator_setPWMSettings(
-			&(BattetyTester_ClimatRegulator_getPWMSettings().minDutyCycle =
-					BatteryTester_State_sendNewParamFromState()));
+	sPWMSettings_t settings = BattetyTester_ClimatRegulator_getPWMSettings();
+	settings.minDutyCycle = BatteryTester_State_sendNewParamFromState();
+	BatteryTester_ClimatRegulator_setPWMSettings(&settings);
 	BatteryTester_Menu_returnInMenu(&menuThermostatMinDutyCycle);
 }
 
@@ -801,9 +795,9 @@ void BatteryTester_Menu_selectSetThermostatMaxDutyCycle(void){
 					0);
 }
 void BatteryTester_Menu_enterSetThermostatMaxDutyCycle(void){
-	BatteryTester_ClimatRegulator_setPWMSettings(
-			&(BattetyTester_ClimatRegulator_getPWMSettings().maxDutyCycle =
-					BatteryTester_State_sendNewParamFromState()));
+	sPWMSettings_t settings = BattetyTester_ClimatRegulator_getPWMSettings();
+	settings.maxDutyCycle = BatteryTester_State_sendNewParamFromState();
+	BatteryTester_ClimatRegulator_setPWMSettings(&settings);
 	BatteryTester_Menu_returnInMenu(&menuThermostatMaxDutyCycle);
 }
 
@@ -814,9 +808,9 @@ void BatteryTester_Menu_selectSetThermostatPeriod(void){
 }
 
 void BatteryTester_Menu_enterSetThermostatPeriod(void){
-	BatteryTester_ClimatRegulator_setPWMSettings(
-			&(BattetyTester_ClimatRegulator_getPWMSettings().periodPwm =
-					BatteryTester_State_sendNewParamFromState()));
+	sPWMSettings_t settings = BattetyTester_ClimatRegulator_getPWMSettings();
+	settings.periodPwm = BatteryTester_State_sendNewParamFromState();
+	BatteryTester_ClimatRegulator_setPWMSettings(&settings);
 	BatteryTester_Menu_returnInMenu(&menuThermostatPeriod);
 }
 
@@ -826,9 +820,9 @@ void BatteryTester_Menu_selectSetThermostatDeadTime(void){
 						0);
 }
 void BatteryTester_Menu_enterSetThermostatDeadTime(void){
-	BatteryTester_ClimatRegulator_setPWMSettings(
-			&(BattetyTester_ClimatRegulator_getPWMSettings().deadTime =
-					BatteryTester_State_sendNewParamFromState()));
+	sPWMSettings_t settings = BattetyTester_ClimatRegulator_getPWMSettings();
+	settings.deadTime = BatteryTester_State_sendNewParamFromState();
+	BatteryTester_ClimatRegulator_setPWMSettings(&settings);
 	BatteryTester_Menu_returnInMenu(&menuThermostatDeadTime);
 }
 
