@@ -14,10 +14,12 @@
 #define VREF 3.0
 #define RESOLUTION 65536
 #define NUM_TEMPERATURE 4
+#define DAC_RESOLUTION  4095
 
 static sscaleFactors_t factors;
 //volatile uint32_t dataAdc[10];
 static ntcSchemeParameters_t ntcParams[NUM_TEMPERATURE];
+static float valueRefOffsetInVolts;
 
 void BatteryTester_ConversionData_calcPhisicValueFromAdcCode(
 		volatile uint32_t* rawData, uint32_t sizeData, volatile sphisicValue_t* pValue){
@@ -93,4 +95,16 @@ void BatteryTester_ConversionData_setNtcSchemeParams(unsigned short index, ntcSc
 		return;
 	}
 	ntcParams[index] = *newParams;
+}
+
+float BatteryTester_ConversionData_getRefOffsetInVolts(){
+	return valueRefOffsetInVolts;
+}
+
+void BatteryTester_ConversionData_setRefOffsetInVolts(float newValue){
+	valueRefOffsetInVolts = newValue;
+}
+
+unsigned short BatteryTester_ConversionData_calcRefOffsetDacCode(float valueInVolts){
+	return valueInVolts * DAC_RESOLUTION / VREF;
 }

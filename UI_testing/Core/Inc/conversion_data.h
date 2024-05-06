@@ -72,4 +72,7 @@ ntcSchemeParameters_t BatteryTester_ConversionData_getNtcSchemeParams(
 void BatteryTester_ConversionData_setNtcSchemeParams(
 		unsigned short,
 		ntcSchemeParameters_t*);
+float BatteryTester_ConversionData_getRefOffsetInVolts();
+void BatteryTester_ConversionData_setRefOffsetInVolts(float);
+unsigned short BatteryTester_ConversionData_calcRefOffsetDacCode(float);
 #endif /* INC_CONVERSION_DATA_H_ */
