@@ -23,6 +23,7 @@
 /* USER CODE BEGIN Includes */
 #include "lcd_wc1602a.h"
 #include "keypad.h"
+#include "state_events.h"
 
 /* USER CODE END Includes */
 
@@ -100,60 +101,20 @@ int main(void)
   BatteryTester_WC1602A_init();
   HAL_Delay(3000);
   BatteryTester_WC1602A_offCursor();
-  /*WRITE_REG(htim14.Instance->CCR1, 79);
-  BatteryTester_WC1602A_offCursor();
-  HAL_Delay(10000);
-  WRITE_REG(htim14.Instance->CCR1, 39);
-  BatteryTester_WC1602A_clearDisplay();
-  BatteryTester_WC1602A_writeLine(0, ">Settings\x7e", 10);
-  BatteryTester_WC1602A_writeLine(1, " Controlling\x7e", 13);
-  HAL_Delay(10000);
-  WRITE_REG(htim14.Instance->CCR1, 19);
-  BatteryTester_WC1602A_writeInPos(0, 0, " ", 1);
-  BatteryTester_WC1602A_writeInPos(1, 0, ">", 1);
-  BatteryTester_WC1602A_Setpos(1, 12);
-  BatteryTester_WC1602A_onCursor();*/
-  //WRITE_REG(htim14.Instance->CCR1, 9);
+
   WRITE_REG(htim14.Instance->CCR1, 79);
 
   if(HAL_TIM_Base_Start_IT(&htim6) != HAL_OK){
 	  Error_Handler();
   }
-
-  BUTTON_Init();
+  BatteryTester_State_initState();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-      BUTTON_Process();
-	  if (BUTTON_GetAction(BUTTON_UP) == BUTTON_SHORT_PRESS)
-	  {
-		  BatteryTester_WC1602A_clearDisplay();
-		  BatteryTester_WC1602A_writeLine(0, "Btn Up", 6);
-
-	  }
-
-	  if (BUTTON_GetAction(BUTTON_DOWN) == BUTTON_SHORT_PRESS)
-	  {
-		  BatteryTester_WC1602A_clearDisplay();
-		  BatteryTester_WC1602A_writeLine(1, "Btn Down", 8);
-	  }
-
-	  if (BUTTON_GetAction(BUTTON_RIGHT) == BUTTON_SHORT_PRESS)
-	  {
-		  BatteryTester_WC1602A_clearDisplay();
-		  BatteryTester_WC1602A_writeLine(1, "Btn Right", 9);
-
-	  }
-	  if (BUTTON_GetAction(BUTTON_LEFT) == BUTTON_SHORT_PRESS)
-	  {
-		  BatteryTester_WC1602A_clearDisplay();
-		  BatteryTester_WC1602A_writeLine(0, "Btn Left", 8);
-
-	  }
-	  BUTTON_ResetActions();
+	  BatteryTester_State_processState();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

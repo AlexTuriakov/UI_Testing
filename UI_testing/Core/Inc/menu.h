@@ -90,7 +90,7 @@
 	void BatteryTester_Menu_enterDessipatorMaxThreshold(void);
 	void BatteryTester_Menu_selectSetThermostatKp(void);
 	void BatteryTester_Menu_enterSetThermostatKp(void);
-	void BatteryTester_Menu_selectSetNewValue(const char* header, float oldValue, unsigned short accuracy);
+	void BatteryTester_Menu_selectSetNewValue(const char* header, float oldValue/*, unsigned short accuracy*/);
 	void BatteryTester_Menu_returnInMenu(Menu_Item_t* retItemMenu);
 	void BatteryTester_Menu_selectSetThermostatKi(void);
 	void BatteryTester_Menu_enterSetThermostatKi(void);
@@ -225,4 +225,6 @@
 	void BatteryTester_Menu_enterSetCh2VoltCtrlMin(void);
 	void BatteryTester_Menu_selectSetRefOffset(void);
 	void BatteryTester_Menu_enterSetRefOffset(void);
+
+	void BatteryTester_Menu_init();
 #endif /* INC_MENU_H_ */

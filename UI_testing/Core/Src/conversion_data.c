@@ -19,7 +19,7 @@
 static sscaleFactors_t factors;
 //volatile uint32_t dataAdc[10];
 static ntcSchemeParameters_t ntcParams[NUM_TEMPERATURE];
-static float valueRefOffsetInVolts;
+static float valueRefOffsetInVolts = 2.7;
 
 void BatteryTester_ConversionData_calcPhisicValueFromAdcCode(
 		volatile uint32_t* rawData, uint32_t sizeData, volatile sphisicValue_t* pValue){

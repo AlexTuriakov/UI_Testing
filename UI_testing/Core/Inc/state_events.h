@@ -40,7 +40,13 @@ eEvents_t BatteryTester_State_getCurrentEvent();
 void BatteryTester_State_setCurrentEvent(eEvents_t);
 void* BatteryTester_State_getCurrentParams();
 void BatteryTester_State_setCurrentParams(void*);
-void BatteryTester_State_postStrParamForState(const char*);
+//void BatteryTester_State_postStrParamForState(const char*);
+void BatteryTester_State_postParamForSet(float);
 float BatteryTester_State_sendNewParamFromState();
+void BatteryTester_State_writeMenuItem(const char*);
+void BatteryTester_State_moveFromToState(eStates_t, eStates_t);
+void BatteryTester_State_returnFromState();
+void BatteryTester_State_processInputs();
+void BatteryTester_State_processState();
 
 #endif /* INC_STATE_EVENTS_H_ */
