@@ -48,5 +48,6 @@ void BatteryTester_State_moveFromToState(eStates_t, eStates_t);
 void BatteryTester_State_returnFromState();
 void BatteryTester_State_processInputs();
 void BatteryTester_State_processState();
+void BatteryTester_State_pushEventThroughIteration(eEvents_t);
 
 #endif /* INC_STATE_EVENTS_H_ */

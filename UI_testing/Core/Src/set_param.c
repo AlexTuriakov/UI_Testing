@@ -3,6 +3,9 @@
  *
  *  Created on: May 7, 2024
  *      Author: Tyuryakov_OA
+ *
+ *   This implementation involves arithmetic operations with the value,
+ *   rather than simply changing the value of the digit.
  */
 #include <stdio.h>
 #include <string.h>
@@ -13,7 +16,10 @@
 #define SET_PARAM_ACCURACY 6
 #define SET_PARAM_SIZE 11
 
-static float settingParam;
+/*@brief^
+ * using float gives an error in the low-order bits.
+ * */
+static double settingParam;
 static short currentOrder;
 
 void BatteryTester_SetParam_init(float initParam){
@@ -48,11 +54,21 @@ inline void BatteryTester_SetParam_display(){
 }
 
 inline void BatteryTester_moveCursor(){
-	if(currentOrder < 0){
-		BatteryTester_WC1602A_Setpos(1, 4 - currentOrder - 1);
+	if(currentOrder <= 0){
+		if(currentOrder == 0){
+			BatteryTester_WC1602A_Setpos(1, 3);
+		}
+		else{
+			BatteryTester_WC1602A_Setpos(1, 4 - currentOrder);
+		}
 	}
 	else{
-		BatteryTester_WC1602A_Setpos(1, 4 - currentOrder);
+		if(currentOrder == 4){
+				BatteryTester_WC1602A_Setpos(1, 0);
+		}
+		else{
+			BatteryTester_WC1602A_Setpos(1, 3 - currentOrder);
+		}
 	}
 }
 
@@ -60,9 +76,6 @@ void BatteryTester_SetParam_left(){
 	if(currentOrder < 3){
 		currentOrder++;
 		BatteryTester_moveCursor();
-	}
-	else{
-		currentOrder = 4;
 	}
 }
 
@@ -74,25 +87,29 @@ void BatteryTester_SetParam_right(){
 }
 
 void BatteryTester_SetParam_up(){
-	float temp = settingParam;
-	if(currentOrder == 4){
+	double temp = settingParam;
+	if(currentOrder == 3){
 		settingParam *= -1;
 	}
 	else{
 		temp += pow(10, currentOrder);
-		settingParam = (temp <= 9999.999999)? temp: settingParam;
+		if(temp <= 999.999999){
+			settingParam = temp;
+		}
 	}
 	BatteryTester_SetParam_display();
 }
 
 void BatteryTester_SetParam_down(){
-	float temp = settingParam;
-	if(currentOrder == 4){
-		settingParam *= 1;
+	double temp = settingParam;
+	if(currentOrder == 3){
+		settingParam = -settingParam;
 	}
 	else{
 		temp -= pow(10, currentOrder);
-		settingParam = (temp >= -9999.999999)? temp: settingParam;
+		if(temp >= -999.999999){
+			settingParam = temp;
+		}
 	}
 	BatteryTester_SetParam_display();
 }

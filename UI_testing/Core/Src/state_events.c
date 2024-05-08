@@ -22,6 +22,7 @@
 	static eStates_t currentState;
 	static eStates_t stateFrom;
 	static eEvents_t currentEvent;
+	static char flagPushEventThroughIteration = 0;
 
 	//char strPostParam[SIZE_LINE_BUFFER_LCD] = "";
 
@@ -46,7 +47,7 @@ void BatteryTester_State_proccessEvents(){
 	switch(currentState){
 	case MENU_NAVIGATE:
 		BatteryTester_State_handlerMenuNavigate(currentEvent , (void*)0);
-		currentEvent = EVENT_NONE;
+		//currentEvent = EVENT_NONE;
 		break;
 	case SET_PARAMETERS:
 		BatteryTester_State_handlerSetParams(currentEvent , (void*)0);
@@ -91,7 +92,7 @@ void BatteryTester_State_handlerSetParams(eEvents_t event, void* param){
 			return;
 		case EVENT_KEY_OK:
 			BatteryTester_SetParam_ok();
-			BatteryTester_State_setCurrentEvent(EVENT_KEY_OK);
+			BatteryTester_State_pushEventThroughIteration(EVENT_KEY_OK);
 			return;
 		case EVENT_KEY_UP:
 			BatteryTester_SetParam_up();
@@ -134,6 +135,10 @@ void BatteryTester_State_setCurrentEvent(eEvents_t newEvent){
 	currentEvent = newEvent;
 }
 
+void BatteryTester_State_pushEventThroughIteration(eEvents_t newEvent){
+	BatteryTester_State_setCurrentEvent(newEvent);
+	flagPushEventThroughIteration = 1;
+}
 
 /*void BatteryTester_State_postStrParamForState(const char* sParam){
 	strncpy(strPostParam, sParam, SIZE_LINE_BUFFER_LCD);
@@ -177,6 +182,7 @@ void BatteryTester_State_returnFromState(){
 }
 
 void BatteryTester_State_processInputs(){
+	BUTTON_ResetActions();
 	BUTTON_Process();
 	if (BUTTON_GetAction(BUTTON_UP) == BUTTON_VERY_LONG_PRESS)
 	{
@@ -196,13 +202,19 @@ void BatteryTester_State_processInputs(){
 	if (BUTTON_GetAction(BUTTON_LEFT) == BUTTON_VERY_LONG_PRESS)
 	{
 		currentEvent = EVENT_KEY_LEFT;
+		//currentEvent = EVENT_KEY_OK;
 		return;
 	}
-	currentEvent = EVENT_NONE;
+	if(!flagPushEventThroughIteration){
+		currentEvent = EVENT_NONE;
+	}
+	else{
+		flagPushEventThroughIteration = 0;
+	}
+
 }
 
 void BatteryTester_State_processState(){
 	BatteryTester_State_processInputs();
 	BatteryTester_State_proccessEvents();
-	BUTTON_ResetActions();
 }
