@@ -31,10 +31,10 @@ MENU_ITEM(menuStart, menuSettings, menuLogs, NULL_MENU, NULL_MENU,
 		0, 0, "Start...");
 /*SUBMENU Settings... LEVEL 1*/
 MENU_ITEM(menuSetsRefOffset, menuSetsChannel1, menuSetsThermometr, menuSettings, menuSetRefOffset,
-		0, 0, "Ref. Offset");
+		0, 0, "Ref. offset...");
 MENU_ITEM(menuSetsChannel1, menuSetsChannel2, menuSetsRefOffset, menuSettings, menuCh1Buck,
 		0, 0, "Ch1 settings... ");
-MENU_ITEM(menuSetsChannel2, menuSetsDessipator, menuSetsChannel1, menuSettings, menuCh1BuckKp,
+MENU_ITEM(menuSetsChannel2, menuSetsDessipator, menuSetsChannel1, menuSettings, menuCh2BuckKp,
 		0, 0, "Ch2 settings...");
 MENU_ITEM(menuSetsDessipator, menuSetsClimat, menuSetsChannel2, menuSettings, menuDissipMin,
 		0, 0, "Dessipator...");
@@ -48,189 +48,190 @@ MENU_ITEM(menuStartCh1, menuStartCh2, menuResetAlarm, menuStart, menuStartCh1Sp,
 MENU_ITEM(menuStartCh2, menuStartThermostat, menuStartCh1, menuStart, menuStartCh2Sp,
 		0, 0, "Ch2 start...");
 MENU_ITEM(menuStartThermostat, menuStartDessipator, menuStartCh2, menuStart, menuStartTstatSp,
-		0, 0, "Tstat. start...");
+		0, 0, "Thermostat      start...");
 MENU_ITEM(menuStartDessipator, menuResetAlarm, menuStartThermostat, menuStart, menuStartDessipatorOn,
-		0, 0, "Dessip. start...");
+		0, 0, "Dessipator      start...");
 MENU_ITEM(menuResetAlarm, menuStartCh1, menuStartDessipator, menuStart, menuAlarmState,
 		0, 0, "Reset Alarm...");
 /*SUBMENU Ch1 settings...  LEVEL 2*/
 MENU_ITEM(menuCh1Buck, menuCh1Boost, menuCh1VRange, menuSetsChannel1, menuCh1BuckKp,
-		0, 0, "Ch1 buck sets...");
+		0, 0, "Ch1 buck regul. settings...");
 MENU_ITEM(menuCh1Boost, menuCh1BuckPwm, menuCh1Buck, menuSetsChannel1, menuCh1BoostKp,
-		0, 0, "Ch1 boost sets...");
+		0, 0, "Ch1 boost regul.settings...");
 MENU_ITEM(menuCh1BuckPwm, menuCh1BoostPwm, menuCh1Boost, menuSetsChannel1, menuCh1BuckPwmMinDuty,
-		0, 0, "Ch1 buck pwm...");
+		0, 0, "Ch1 buck pwm    settings...");
 MENU_ITEM(menuCh1BoostPwm, menuCh1VRange, menuCh1BuckPwm, menuSetsChannel1, menuCh1BoostPwmMinDuty,
-		0, 0, "Ch1 boost pwm...");
+		0, 0, "Ch1 boost pwm   settings...");
 MENU_ITEM(menuCh1VRange, menuCh1Buck, menuCh1BoostPwm, menuSetsChannel1, menuCh1CellVoltCtrlMin,
-		0, 0, "Ch1 volt rng...");
+		0, 0, "Ch1 voltcontrol range set...");
 /*SUBMENU Ch2 settings...  LEVEL 2*/
 MENU_ITEM(menuCh2Buck, menuCh2Boost, menuCh2BoostPwm, menuSetsChannel2, menuCh2BuckKp,
-		0, 0, "Ch2 buck sets...");
+		0, 0, "Ch2 buck regul. settings...");
 MENU_ITEM(menuCh2Boost, menuCh2BuckPwm, menuCh2Buck, menuSetsChannel2, menuCh2BoostKp,
-		0, 0, "Ch2 boost sets...");
+		0, 0, "Ch2 boost regul.settings...");
 MENU_ITEM(menuCh2BuckPwm, menuCh2BoostPwm, menuCh2Boost, menuSetsChannel2, menuCh2BuckPwmMinDuty,
-		0, 0, "Ch2 buck pwm...");
+		0, 0, "Ch2 buck pwm    settings...");
 MENU_ITEM(menuCh2BoostPwm, menuCh2Buck, menuCh2BuckPwm, menuSetsChannel2, menuCh2BoostPwmMinDuty,
-		0, 0, "Ch2 boost pwm...");
+		0, 0, "Ch2 boost pwm   settings...");
 MENU_ITEM(menuCh2VRange, menuCh2Buck, menuCh2BoostPwm, menuSetsChannel2, menuCh2CellVoltCtrlMin,
-		0, 0, "Ch2 volt rng...");
+		0, 0, "Ch2 voltcontrol range set...");
 /*SUBMENU Dessipator...  LEVEL 2*/
 MENU_ITEM(menuDissipMin, menuDissipMax, menuDissipMax, menuSetsDessipator, menuSetDessipMin,
-		0, 0, "Dessip. min");
+		0, 0, "Dessipator off  min...");
 MENU_ITEM(menuDissipMax, menuDissipMin, menuDissipMin, menuSetsDessipator, menuSetDessipMax,
-		0, 0, "Dessip. max");
+		0, 0, "Dessipator on   max...");
 /*SUBMENU Thermostat...  LEVEL 2*/
 MENU_ITEM(menuClimReg, menuClimPwm, menuClimPwm, menuSetsClimat, menuThermostatKp,
-		0, 0, "Tstat. reg...");
+		0, 0, "Thermostat regulsettings...");
 MENU_ITEM(menuClimPwm, menuClimReg, menuClimReg, menuSetsClimat, menuThermostatMinDutyCycle,
-		0, 0, "Tstat. pwm...");
+		0, 0, "Thermostat pwm  settings...");
 /*SUBMENU Thermometers...  LEVEL 2*/
 MENU_ITEM(menuT1, menuT2, menuT4, menuSetsThermometr, menuTemp1ResistanceUpperParam,
-		0, 0, "Temperature 1...");
+		0, 0, "Sens temperat. 1settings...");
 MENU_ITEM(menuT2, menuT3, menuT1, menuSetsThermometr, menuTemp2ResistanceUpperParam,
-		0, 0, "Temperature 2...");
-MENU_ITEM(menuT3, menuT4, menuT2, menuSetsThermometr, menuTemp2ResistanceUpperParam,
-		0, 0, "Temperature 3...");
-MENU_ITEM(menuT4, menuT1, menuT3, menuSetsThermometr, menuTemp2ResistanceUpperParam,
-		0, 0, "Temperature 4...");
+		0, 0, "Sens temperat. 2settings...");
+MENU_ITEM(menuT3, menuT4, menuT2, menuSetsThermometr, menuTemp3ResistanceUpperParam,
+		0, 0, "Sens temperat. 3settings...");
+MENU_ITEM(menuT4, menuT1, menuT3, menuSetsThermometr, menuTemp4ResistanceUpperParam,
+		0, 0, "Sens temperat. 4settings...");
 /*SUBMENU Ch1 buck sets...  LEVEL 3*/
 MENU_ITEM(menuCh1BuckKp, menuCh1BuckKi, menuCh1BuckMaxLim, menuCh1Buck, menuSetCh1BuckKp,
-		0, 0, "Ch1 Buck Kp");
+		0, 0, "Ch1 buck regul. factor Kp...");
 MENU_ITEM(menuCh1BuckKi, menuCh1BuckKd, menuCh1BuckKp, menuCh1Buck, menuSetCh1BuckKi,
-		0, 0, "Ch1 Buck Ki");
+		0, 0, "Ch1 buck regul. factor Ki...");
 MENU_ITEM(menuCh1BuckKd, /*menuCh1BuckDt*/menuCh1BuckSp, menuCh1BuckKi, menuCh1Buck, menuSetCh1BuckKd,
-		0, 0, "Ch1 Buck Kd");
+		0, 0, "Ch1 buck regul. factor Kd...");
 /*MENU_ITEM(menuCh1BuckDt, menuCh1BuckSp, menuCh1BuckKd, menuCh1Buck, NULL_MENU,
 		0, 0, "Ch1 Buck dt");*/
 MENU_ITEM(menuCh1BuckSp, menuCh1BuckMinLim, /*menuCh1BuckDt*/menuCh1BuckKd, menuCh1Buck, menuSetCh1BuckSp,
-		0, 0, "Ch1 Buck Sp");
+		0, 0, "Ch1 buck regul. setpoint...");
 MENU_ITEM(menuCh1BuckMinLim, menuCh1BuckMaxLim, menuCh1BuckSp, menuCh1Buck, menuSetCh1BuckMinLim,
-		0, 0, "Ch1 Bu minLim");
+		0, 0, "Ch1 buck regul. constrain min...");
 MENU_ITEM(menuCh1BuckMaxLim, menuCh1BuckKp, menuCh1BuckMinLim, menuCh1Buck, menuSetCh1BuckMaxLim,
-		0, 0, "Ch1 Bu maxLim");
+		0, 0, "Ch1 buck regul. constrain max...");
 /*SUBMENU Ch1 boost sets...  LEVEL 3*/
 MENU_ITEM(menuCh1BoostKp, menuCh1BoostKi, menuCh1BoostMaxLim, menuCh1Boost, menuSetCh1BoostKp,
-		0, 0, "Ch1 Boost Kp");
+		0, 0, "Ch1 boost regul.factor Kp...");
 MENU_ITEM(menuCh1BoostKi, menuCh1BoostKd, menuCh1BoostKp, menuCh1Boost, menuSetCh1BoostKi,
-		0, 0, "Ch1 Boost Ki");
+		0, 0, "Ch1 boost regul.factor Ki...");
 MENU_ITEM(menuCh1BoostKd, /*menuCh1BoostDt*/menuCh1BoostSp, menuCh1BoostKi, menuCh1Boost, menuSetCh1BoostKd,
-		0, 0, "Ch1 Boost Kd");
+		0, 0, "Ch1 boost regul.factor Kd...");
 /*MENU_ITEM(menuCh1BoostDt, menuCh1BoostSp, menuCh1BoostKd, menuCh1Boost, NULL_MENU,
 		0, 0, "Ch1 Boost dt");*/
 MENU_ITEM(menuCh1BoostSp, menuCh1BoostMinLim, /*menuCh1BoostDt*/menuCh1BoostKd, menuCh1Boost, menuSetCh1BoostSp,
-		0, 0, "Ch1 Boost Sp");
+		0, 0, "Ch1 boost regul.setpoint...");
 MENU_ITEM(menuCh1BoostMinLim, menuCh1BoostMaxLim, menuCh1BoostSp, menuCh1Boost, menuSetCh1BoostMinLim,
-		0, 0, "Ch1 Boost minLim");
+		0, 0, "Ch1 boost regul.constrain min...");
 MENU_ITEM(menuCh1BoostMaxLim, menuCh1BoostKp, menuCh1BoostMinLim, menuCh1Boost, menuSetCh1BoostMaxLim,
-		0, 0, "Ch1 Boost maxLim");
+		0, 0, "Ch1 boost regul.constrain max...");
 /*SUBMENU Ch1 buck pwm...  LEVEL 3*/
 MENU_ITEM(menuCh1BuckPwmMinDuty, menuCh1BuckPwmMaxDuty, /*menuCh1BuckPwmDeadTime*/menuCh1BuckPwmMaxDuty, menuCh1BuckPwm, menuSetCh1BuckMinDutyCycle,
-		0, 0, "Ch1 Buck minDuty");
+		0, 0, "Ch1 buck pwm    min dutycycle...");
 MENU_ITEM(menuCh1BuckPwmMaxDuty, /*menuCh1BuckPwmPeriod*/menuCh1BuckPwmMinDuty, menuCh1BuckPwmMinDuty, menuCh1BuckPwm, menuSetCh1BuckMaxDutyCycle,
-		0, 0, "Ch1 Buck maxDuty");
+		0, 0, "Ch1 buck pwm    max dutycycle...");
 /*MENU_ITEM(menuCh1BuckPwmPeriod, menuCh1BuckPwmDeadTime, menuCh1BuckPwmMaxDuty, menuCh1BuckPwm, NULL_MENU,
 		0, 0, "Ch1 Bck Pwm per");
 MENU_ITEM(menuCh1BuckPwmDeadTime, menuCh1BuckPwmMinDuty, menuCh1BuckPwmPeriod, menuCh1BuckPwm, NULL_MENU,
 		0, 0, "Ch1 Bck Pwm dead");*/
 /*SUBMENU Ch1 boost pwm...  LEVEL 3*/
 MENU_ITEM(menuCh1BoostPwmMinDuty, menuCh1BoostPwmMaxDuty, /*menuCh1BoostPwmDeadTime*/menuCh1BoostPwmMaxDuty, menuCh1BoostPwm, menuSetCh1BoostMinDutyCycle,
-		0, 0, "Ch1 Boost minDut");
+		0, 0, "Ch1 boost pwm   min dutycycle...");
 MENU_ITEM(menuCh1BoostPwmMaxDuty, /*menuCh1BoostPwmPeriod*/menuCh1BoostPwmMinDuty, menuCh1BoostPwmMinDuty, menuCh1BoostPwm, menuSetCh1BoostMaxDutyCycle,
-		0, 0, "Ch1 Boost maxDut");
+		0, 0, "Ch1 boost pwm   max dutycycle...");
 /*MENU_ITEM(menuCh1BoostPwmPeriod, menuCh1BoostPwmDeadTime, menuCh1BoostPwmMaxDuty, menuCh1BoostPwm, NULL_MENU,
 		0, 0, "Ch1 Bst Pwm per");
 MENU_ITEM(menuCh1BoostPwmDeadTime, menuCh1BuckPwmMinDuty, menuCh1BoostPwmPeriod, menuCh1BoostPwm, NULL_MENU,
 		0, 0, "Ch1 Bst Pwm dead");*/
 /*SUBMENU Ch1 volt rng...  LEVEL 3*/
 MENU_ITEM(menuCh1CellVoltCtrlMin, menuCh1CellVoltCtrlMax, menuCh1CellVoltCtrlMax, menuCh1VRange, menuSetCh1CellVoltCtrlMin,
-		0, 0, "Ch1 Voltctrl min");
+		0, 0, "Ch1 voltcontrol min value off...");
 MENU_ITEM(menuCh1CellVoltCtrlMax, menuCh1CellVoltCtrlMin, menuCh1CellVoltCtrlMin, menuCh1VRange, menuSetCh1CellVoltCtrlMax,
-		0, 0, "Ch1 Voltctrl max");
+		0, 0, "Ch1 voltcontrol max value off...");
 /*SUBMENU Ch2 buck sets...  LEVEL 3*/
 MENU_ITEM(menuCh2BuckKp, menuCh2BuckKi, menuCh2BuckMaxLim, menuCh2Buck, menuSetCh2BuckKp,
-		0, 0, "Ch2 Buck Kp");
+		0, 0, "Ch2 buck regul. factor Kp...");
 MENU_ITEM(menuCh2BuckKi, menuCh2BuckKd, menuCh2BuckKp, menuCh2Buck, menuSetCh2BuckKi,
-		0, 0, "Ch2 Buck Ki");
+		0, 0, "Ch2 buck regul. factor Ki...");
 MENU_ITEM(menuCh2BuckKd, /*menuCh2BuckDt*/menuCh2BuckSp, menuCh2BuckKi, menuCh2Buck, menuSetCh2BuckKd,
-		0, 0, "Ch2 Buck Kd");
+		0, 0, "Ch2 buck regul. factor Kd...");
 /*MENU_ITEM(menuCh2BuckDt, menuCh2BuckSp, menuCh2BuckKd, menuCh2Buck, NULL_MENU,
 		0, 0, "Ch2 Buck dt");*/
 MENU_ITEM(menuCh2BuckSp, menuCh2BuckMinLim, /*menuCh2BuckDt*/menuCh2BuckKd, menuCh2Buck, menuSetCh2BuckSp,
-		0, 0, "Ch2 Buck Sp");
+		0, 0, "Ch2 buck regul. setpoint...");
 MENU_ITEM(menuCh2BuckMinLim, menuCh2BuckMaxLim, menuCh2BuckSp, menuCh2Buck, menuSetCh2BuckMinLim,
-		0, 0, "Ch2 Bu minLim");
+		0, 0, "Ch2 buck regul. constrain min...");
 MENU_ITEM(menuCh2BuckMaxLim, menuCh2BuckKp, menuCh2BuckMinLim, menuCh2Buck, menuSetCh2BuckMaxLim,
-		0, 0, "Ch2 Bu maxLim");
+		0, 0, "Ch2 buck regul. constrain max...");
 /*SUBMENU Ch2 boost sets...  LEVEL 3*/
 MENU_ITEM(menuCh2BoostKp, menuCh2BoostKi, menuCh2BoostMaxLim, menuCh2Boost, menuSetCh2BoostKp,
-		0, 0, "Ch2 Boost Kp");
+		0, 0, "Ch2 boost regul.factor Kp...");
 MENU_ITEM(menuCh2BoostKi, menuCh2BoostKd, menuCh2BoostKp, menuCh2Boost, menuSetCh2BoostKi,
-		0, 0, "Ch2 Boost Ki");
+		0, 0, "Ch2 boost regul.factor Ki...");
 MENU_ITEM(menuCh2BoostKd, /*menuCh2BoostDt*/menuCh2BoostSp, menuCh2BoostKi, menuCh2Boost, menuSetCh2BoostKd,
-		0, 0, "Ch2 Boost Kd");
+		0, 0, "Ch2 boost regul.factor Kd...");
 /*MENU_ITEM(menuCh2BoostDt, menuCh2BoostSp, menuCh2BoostKd, menuCh2Boost, NULL_MENU,
 		0, 0, "Ch2 Boost dt");*/
 MENU_ITEM(menuCh2BoostSp, menuCh2BoostMinLim, /*menuCh2BoostDt*/menuCh2BoostKd, menuCh2Boost, menuSetCh2BoostSp,
-		0, 0, "Ch2 Boost Sp");
+		0, 0, "Ch2 boost regul.setpoint...");
 MENU_ITEM(menuCh2BoostMinLim, menuCh2BoostMaxLim, menuCh2BoostSp, menuCh2Boost, menuSetCh2BoostMinLim,
-		0, 0, "Ch2 Boost minLim");
+		0, 0, "Ch2 boost regul.constrain min...");
 MENU_ITEM(menuCh2BoostMaxLim, menuCh2BoostKp, menuCh2BoostMinLim, menuCh2Boost, menuSetCh2BoostMaxLim,
-		0, 0, "Ch2 Boost maxLim");
+		0, 0, "Ch2 boost regul.constrain max...");
 /*SUBMENU Ch2 buck pwm...  LEVEL 3*/
 MENU_ITEM(menuCh2BuckPwmMinDuty, menuCh2BuckPwmMaxDuty, /*menuCh2BuckPwmDeadTime*/menuCh2BuckPwmMaxDuty, menuCh2BuckPwm, menuSetCh2BuckMinDutyCycle,
-		0, 0, "Ch2 Buck minDuty");
+		0, 0, "Ch2 buck pwm    min dutycycle...");
 MENU_ITEM(menuCh2BuckPwmMaxDuty, /*menuCh2BuckPwmPeriod*/menuCh2BuckPwmMinDuty, menuCh2BuckPwmMinDuty, menuCh2BuckPwm, menuSetCh2BuckMaxDutyCycle,
-		0, 0, "Ch2 Buck maxDuty");
+		0, 0, "Ch2 buck pwm    max dutycycle...");
 /*MENU_ITEM(menuCh2BuckPwmPeriod, menuCh2BuckPwmDeadTime, menuCh2BuckPwmMaxDuty, menuCh2BuckPwm, NULL_MENU,
 		0, 0, "Ch2 Bck Pwm per");
 MENU_ITEM(menuCh2BuckPwmDeadTime, menuCh2BuckPwmMinDuty, menuCh2BuckPwmPeriod, menuCh2BuckPwm, NULL_MENU,
 		0, 0, "Ch2 Bck Pwm dead");*/
 /*SUBMENU Ch2 boost pwm...  LEVEL 3*/
 MENU_ITEM(menuCh2BoostPwmMinDuty, menuCh2BoostPwmMaxDuty, /*menuCh2BoostPwmDeadTime*/menuCh2BoostPwmMaxDuty, menuCh2BoostPwm, menuSetCh2BoostMinDutyCycle,
-		0, 0, "Ch2 Boost minDut");
+		0, 0, "Ch2 boost pwm   min dutycycle...");
 MENU_ITEM(menuCh2BoostPwmMaxDuty, /*menuCh2BoostPwmPeriod*/menuCh2BoostPwmMinDuty, menuCh2BoostPwmMinDuty, menuCh2BoostPwm, menuSetCh2BoostMaxDutyCycle,
-		0, 0, "Ch2 Boost maxDut");
+		0, 0, "Ch2 Boost pwm   max dutycycle...");
 /*MENU_ITEM(menuCh2BoostPwmPeriod, menuCh2BoostPwmDeadTime, menuCh2BoostPwmMaxDuty, menuCh2BoostPwm, NULL_MENU,
 		0, 0, "Ch2 Bst Pwm per");
 MENU_ITEM(menuCh2BoostPwmDeadTime, menuCh2BuckPwmMinDuty, menuCh2BoostPwmPeriod, menuCh2BoostPwm, NULL_MENU,
 		0, 0, "Ch2 Bst Pwm dead");*/
 /*SUBMENU Ch2 volt rng...  LEVEL 3*/
 MENU_ITEM(menuCh2CellVoltCtrlMin, menuCh2CellVoltCtrlMax, menuCh2CellVoltCtrlMax, menuCh2VRange, menuSetCh2CellVoltCtrlMin,
-		0, 0, "Ch2 Voltctrl min");
+		0, 0, "Ch2 Voltcontrol min value off...");
 MENU_ITEM(menuCh2CellVoltCtrlMax, menuCh2CellVoltCtrlMin, menuCh2CellVoltCtrlMin, menuCh2VRange, menuSetCh2CellVoltCtrlMax,
-		0, 0, "Ch2 Voltctrl max");
+		0, 0, "Ch2 Voltcontrol max value off...");
 /*SUBMENU Start Ch1... LEVEL 3*/
 MENU_ITEM(menuStartCh1Sp, menuStartCh1On, menuStartCh1State, menuStartCh1, NULL_MENU,
-		0, 0, "Ch1 setpoint");
+		0, 0, "Start channel 1 setpoint...");
 MENU_ITEM(menuStartCh1On, menuStartCh1State, menuStartCh1Sp, menuStartCh1, NULL_MENU,
-		0, 0, "Ch1 on/off");
+		0, 0, "Start channel 1 on/off...");
 MENU_ITEM(menuStartCh1State, menuStartCh1Sp, menuStartCh1On, menuStartCh1, NULL_MENU,
-		0, 0, "Ch1 state");
+		0, 0, "Start channel 1 status...");
 /*SUBMENU Start Ch2... LEVEL 3*/
 MENU_ITEM(menuStartCh2Sp, menuStartCh2On, menuStartCh2State, menuStartCh2, NULL_MENU,
-		0, 0, "Ch2 setpoint");
+		0, 0, "Start channel 2 setpoint...");
 MENU_ITEM(menuStartCh2On, menuStartCh2State, menuStartCh2Sp, menuStartCh2, NULL_MENU,
-		0, 0, "Ch2 on/off");
+		0, 0, "Start channel 2 on/off...");
 MENU_ITEM(menuStartCh2State, menuStartCh2Sp, menuStartCh2On, menuStartCh2, NULL_MENU,
-		0, 0, "Ch2 state");
+		0, 0, "Start channel 2 status...");
 /*SUBMENU Start Tstat... LEVEL 3*/
 MENU_ITEM(menuStartTstatSp, menuStartTstatOn, menuStartTstatState, menuStartThermostat, NULL_MENU,
-		0, 0, "Tstat setpoint");
+		0, 0, "Start thermostatsetpoint...");
 MENU_ITEM(menuStartTstatOn, menuStartTstatState, menuStartTstatSp, menuStartThermostat, NULL_MENU,
-		0, 0, "Tstat on/off");
+		0, 0, "Start thermostaron/off...");
 MENU_ITEM(menuStartTstatState, menuStartTstatSp, menuStartTstatOn, menuStartThermostat, NULL_MENU,
-		0, 0, "Tstat state");
+		0, 0, "Start thermostatstatus...");
 /*SUBMENU Start Dessipator... LEVEL 3*/
 MENU_ITEM(menuStartDessipatorOn, menuStartDessipatorState, menuStartDessipatorState, menuStartDessipator, NULL_MENU,
-		0, 0, "Dessip. on/off");
+		0, 0, "Start dessipatoron/off...");
 MENU_ITEM(menuStartDessipatorState, menuStartDessipatorOn, menuStartDessipatorOn, menuStartDessipator, NULL_MENU,
-		0, 0, "Dessip. state");
+		0, 0, "Start dessipatorstatus...");
 /*SUBMENU Reset Alarm... LEVEL 3*/
 MENU_ITEM(menuAlarmState, menuAlarmReset, menuAlarmReset, menuResetAlarm, NULL_MENU,
-		0, 0, "Alarm state");
+		0, 0, "Hardware alarm  status...");
 MENU_ITEM(menuAlarmReset, menuAlarmState, menuAlarmState, menuResetAlarm, NULL_MENU,
-		0, BatteryTester_Menu_resetAlarm, "Alarm reset");
+		0, BatteryTester_Menu_resetAlarm,
+			  "!Hardware alarm reset!");
 /*SUBMENU Reset Alarm... LEVEL 3*/
 MENU_ITEM(menuSetDessipMin, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
 		BatteryTester_Menu_selectDessipatorMinThreshold,
@@ -240,19 +241,19 @@ MENU_ITEM(menuSetDessipMax, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
 		BatteryTester_Menu_enterDessipatorMaxThreshold, "");
 /*SUBMENU  Tstat. reg...  LEVEL 3*/
 MENU_ITEM(menuThermostatKp, menuThermostatKi, menuThermostatMaxLim, menuClimReg, menuSetThermostatKp,
-		0, 0, "Tstat Kp");
+		0, 0, "Thermostat regulfactor Kp...");
 MENU_ITEM(menuThermostatKi, menuThermostatKd, menuThermostatKp, menuClimReg, menuSetThermostatKi,
-		0, 0, "Tstat Ki");
+		0, 0, "Thermostat regulfactor Ki...");
 MENU_ITEM(menuThermostatKd, /*menuThermostatDt*/menuThermostatSp, menuThermostatKi, menuClimReg, menuSetThermostatKd,
-		0, 0, "Tstat Kd");
+		0, 0, "Thermostat regulfactor Kd...");
 /*MENU_ITEM(menuThermostatDt, menuThermostatSp, menuThermostatKd, menuClimReg, menuSetThermostatDt,
 		0, 0, "Tstat dt");*/
 MENU_ITEM(menuThermostatSp, menuThermostatMinLim, /*menuThermostatDt*/menuThermostatKd, menuClimReg, menuSetThermostatSp,
-		0, 0, "Tstat Sp");
+		0, 0, "Thermostat regulsetpoint...");
 MENU_ITEM(menuThermostatMinLim, menuThermostatMaxLim, menuThermostatSp, menuClimReg, menuSetThermostatMinLim,
-		0, 0, "Tstat minLim");
+		0, 0, "Thermostat regulconstrain min...");
 MENU_ITEM(menuThermostatMaxLim, menuThermostatKp, menuThermostatMinLim, menuClimReg, menuSetThermostatMaxLim,
-		0, 0, "Tstat maxLim");
+		0, 0, "Thermostat regulconstrain max...");
 /*SUBMENU  Tstat Kp  LEVEL 4*/
 MENU_ITEM(menuSetThermostatKp, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
 		BatteryTester_Menu_selectSetThermostatKp, BatteryTester_Menu_enterSetThermostatKp, "");
@@ -275,10 +276,10 @@ MENU_ITEM(menuSetThermostatMinLim, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
 MENU_ITEM(menuSetThermostatMaxLim, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
 		BatteryTester_Menu_selectSetThermostatMaxLim, BatteryTester_Menu_enterSetThermostatMaxLim, "");
 /*SUBMENU  Tstat. pwm...  LEVEL 3*/
-MENU_ITEM(menuThermostatMinDutyCycle, menuThermostatMaxDutyCycle, /*menuThermostatDeadTime*/menuThermostatMaxDutyCycle, menuClimPwm, NULL_MENU,
-		0, 0, "Tstat min Duty");
-MENU_ITEM(menuThermostatMaxDutyCycle, /*menuThermostatPeriod*/menuThermostatMinDutyCycle, menuThermostatMinDutyCycle, menuClimPwm, NULL_MENU,
-		0, 0, "Tstat max Duty");
+MENU_ITEM(menuThermostatMinDutyCycle, menuThermostatMaxDutyCycle, /*menuThermostatDeadTime*/menuThermostatMaxDutyCycle, menuClimPwm, menuSetThermostatMinDutyCycle,
+		0, 0, "Thermostat pwm  min dutycycle...");
+MENU_ITEM(menuThermostatMaxDutyCycle, /*menuThermostatPeriod*/menuThermostatMinDutyCycle, menuThermostatMinDutyCycle, menuClimPwm, menuSetThermostatMaxDutyCycle,
+		0, 0, "Thermostat pwm  max dutycycle...");
 /*MENU_ITEM(menuThermostatPeriod, menuThermostatDeadTime, menuThermostatMaxDutyCycle, menuClimPwm, NULL_MENU,
 		0, 0, "Tstat Period");
 MENU_ITEM(menuThermostatDeadTime, menuThermostatMinDutyCycle, menuThermostatPeriod, menuClimPwm, NULL_MENU,
@@ -298,13 +299,13 @@ MENU_ITEM(menuSetThermostatDeadTime, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*SUBMENU  Temperature 1... LEVEL 2*/
 MENU_ITEM(menuTemp1ResistanceUpperParam, menuTemp1ResistanceOrigParam, menuTemp1FactorBParam, menuT1, menuSetTemp1ResistanceUpper,
-		0, 0, "T1. set Rup");
+		0, 0, "Thermometer 1   resistor Rup...");
 MENU_ITEM(menuTemp1ResistanceOrigParam, menuTemp1TemperatureOrigParam, menuTemp1ResistanceUpperParam, menuT1, menuSetTemp1ResistanceOrig,
-		0, 0, "T1. set Ro");
+		0, 0, "Thermometer 1   resistor Ro...");
 MENU_ITEM(menuTemp1TemperatureOrigParam, menuTemp1FactorBParam, menuTemp1ResistanceOrigParam, menuT1, menuSetTemp1TemperatureOrig,
-		0, 0, "T1. set To");
+		0, 0, "Thermometer 1   temperature To..");
 MENU_ITEM(menuTemp1FactorBParam, menuTemp1ResistanceUpperParam, menuTemp1TemperatureOrigParam, menuT1, menuSetTemp1FactorB,
-		0, 0, "T1. set B");
+		0, 0, "Thermometer 1   factor B...");
 /*SUBMENU  T1. set Rup  LEVEL 3*/
 MENU_ITEM(menuSetTemp1ResistanceUpper, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
 		BatteryTester_Menu_selectSetTemp1ResistanceUpper, BatteryTester_Menu_enterSetTemp1ResistanceUpper, "");
@@ -319,13 +320,13 @@ MENU_ITEM(menuSetTemp1FactorB, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
 		BatteryTester_Menu_selectSetTemp1FactorB, BatteryTester_Menu_enterSetTemp1FactorB, "");
 /*SUBMENU  Temperature 2... LEVEL 2*/
 MENU_ITEM(menuTemp2ResistanceUpperParam, menuTemp2ResistanceOrigParam, menuTemp2FactorBParam, menuT2, menuSetTemp2ResistanceUpper,
-		0, 0, "T2. set Rup");
+		0, 0, "Thermometer 2 setresistor Rup...");
 MENU_ITEM(menuTemp2ResistanceOrigParam, menuTemp2TemperatureOrigParam, menuTemp2ResistanceUpperParam, menuT2, menuSetTemp2ResistanceOrig,
-		0, 0, "T2. set Ro");
+		0, 0, "Thermometer 2 setresistor Ro...");
 MENU_ITEM(menuTemp2TemperatureOrigParam, menuTemp2FactorBParam, menuTemp2ResistanceOrigParam, menuT2, menuSetTemp2TemperatureOrig,
-		0, 0, "T2. set To");
+		0, 0, "Thermometer 2 settemperature  To...");
 MENU_ITEM(menuTemp2FactorBParam, menuTemp2ResistanceUpperParam, menuTemp2TemperatureOrigParam, menuT2, menuSetTemp2FactorB,
-		0, 0, "T2. set B");
+		0, 0, "Thermometer 2 setfactor B...");
 /*SUBMENU  T2. set Rup  LEVEL 3*/
 MENU_ITEM(menuSetTemp2ResistanceUpper, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
 		BatteryTester_Menu_selectSetTemp2ResistanceUpper, BatteryTester_Menu_enterSetTemp2ResistanceUpper, "");
@@ -340,13 +341,13 @@ MENU_ITEM(menuSetTemp2FactorB, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
 		BatteryTester_Menu_selectSetTemp2FactorB, BatteryTester_Menu_enterSetTemp2FactorB, "");
 /*SUBMENU  Temperature 3... LEVEL 2*/
 MENU_ITEM(menuTemp3ResistanceUpperParam, menuTemp3ResistanceOrigParam, menuTemp3FactorBParam, menuT3, menuSetTemp3ResistanceUpper,
-		0, 0, "T3. set Rup");
+		0, 0, "Thermometer 3 setresistor Rup...");
 MENU_ITEM(menuTemp3ResistanceOrigParam, menuTemp3TemperatureOrigParam, menuTemp3ResistanceUpperParam, menuT3, menuSetTemp3ResistanceOrig,
-		0, 0, "T3. set Ro");
+		0, 0, "Thermometer 3 setresistor Ro...");
 MENU_ITEM(menuTemp3TemperatureOrigParam, menuTemp3FactorBParam, menuTemp3ResistanceOrigParam, menuT3, menuSetTemp3TemperatureOrig,
-		0, 0, "T3. set To");
+		0, 0, "Thermometer 3 settemperature  To...");
 MENU_ITEM(menuTemp3FactorBParam, menuTemp3ResistanceUpperParam, menuTemp3TemperatureOrigParam, menuT3, menuSetTemp3FactorB,
-		0, 0, "T3. set B");
+		0, 0, "Thermometer 3 setfactor B...");
 /*SUBMENU  T3. set Rup  LEVEL 3*/
 MENU_ITEM(menuSetTemp3ResistanceUpper, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
 		BatteryTester_Menu_selectSetTemp3ResistanceUpper, BatteryTester_Menu_enterSetTemp3ResistanceUpper, "");
@@ -361,13 +362,13 @@ MENU_ITEM(menuSetTemp3FactorB, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
 		BatteryTester_Menu_selectSetTemp3FactorB, BatteryTester_Menu_enterSetTemp3FactorB, "");
 /*SUBMENU  Temperature 4... LEVEL 2*/
 MENU_ITEM(menuTemp4ResistanceUpperParam, menuTemp4ResistanceOrigParam, menuTemp4FactorBParam, menuT4, menuSetTemp4ResistanceUpper,
-		0, 0, "T4. set Rup");
+		0, 0, "Thermometer 4 setresistor Rup...");
 MENU_ITEM(menuTemp4ResistanceOrigParam, menuTemp4TemperatureOrigParam, menuTemp4ResistanceUpperParam, menuT4, menuSetTemp4ResistanceOrig,
-		0, 0, "T4. set Ro");
+		0, 0, "Thermometer 4 setresistor Ro...");
 MENU_ITEM(menuTemp4TemperatureOrigParam, menuTemp4FactorBParam, menuTemp4ResistanceOrigParam, menuT4, menuSetTemp4TemperatureOrig,
-		0, 0, "T4. set To");
+		0, 0, "Thermometer 4 settemperature  To...");
 MENU_ITEM(menuTemp4FactorBParam, menuTemp4ResistanceUpperParam, menuTemp4TemperatureOrigParam, menuT4, menuSetTemp4FactorB,
-		0, 0, "T4. set B");
+		0, 0, "Thermometer 4 setfactor B...");
 /*SUBMENU  T4. set Rup  LEVEL 3*/
 MENU_ITEM(menuSetTemp4ResistanceUpper, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
 		BatteryTester_Menu_selectSetTemp4ResistanceUpper, BatteryTester_Menu_enterSetTemp4ResistanceUpper, "");
@@ -549,23 +550,6 @@ void BatteryTester_Menu_EnterCurrentItem(void)
 		BatteryTester_Menu_Navigate(MENU_CHILD); // Modify me
 }
 
-
-void BatteryTester_Menu_initMenu(){
-
-}
-/*void BatteryTester_Menu_onOk(void*);
-void BatteryTester_Menu_onUp(void*);
-void BatteryTester_Menu_onDown(void*);
-void BatteryTester_Menu_onRight(void*);
-void BatteryTester_Menu_onLeft(void*);*/
-void BatteryTester_Menu_proccessEvents(eEvents_t){
-
-}
-
-void BatteryTester_Menu_enterRefOffset(void){
-
-}
-
 void BatteryTester_Menu_resetAlarm(void){
 
 }
@@ -593,7 +577,7 @@ void BatteryTester_Menu_enterDessipatorMaxThreshold(void){
 }
 
 void BatteryTester_Menu_selectSetThermostatKp(void){
-	BatteryTester_Menu_selectSetNewValue("Thermostat Kp, u",
+	BatteryTester_Menu_selectSetNewValue("Thermostat Kp, r",
 			BatteryTester_ClimatRegulator_getRegulatorSettings().Kp);//, 4);
 }
 
@@ -605,7 +589,7 @@ void BatteryTester_Menu_enterSetThermostatKp(void){
 }
 
 void BatteryTester_Menu_selectSetThermostatKi(void){
-	BatteryTester_Menu_selectSetNewValue("Thermostat Ki, u",
+	BatteryTester_Menu_selectSetNewValue("Thermostat Ki, r",
 			BatteryTester_ClimatRegulator_getRegulatorSettings().Ki);//, 4);
 }
 
@@ -617,7 +601,7 @@ void BatteryTester_Menu_enterSetThermostatKi(void){
 }
 
 void BatteryTester_Menu_selectSetThermostatKd(void){
-	BatteryTester_Menu_selectSetNewValue("Thermostat Kd, u",
+	BatteryTester_Menu_selectSetNewValue("Thermostat Kd, r",
 			BatteryTester_ClimatRegulator_getRegulatorSettings().Kd);//, 4);
 }
 
@@ -642,7 +626,7 @@ void BatteryTester_Menu_enterSetThermostatDt(void){
 }*/
 
 void BatteryTester_Menu_selectSetThermostatSp(void){
-	BatteryTester_Menu_selectSetNewValue("Thermost. Sp, 11011111C",
+	BatteryTester_Menu_selectSetNewValue("Tstat. Sp, \xdf\x43",
 			BatteryTester_ClimatRegulator_getRegulatorSettings().setpoint);//,1);
 }
 
@@ -654,7 +638,7 @@ void BatteryTester_Menu_enterSetThermostatSp(void){
 }
 
 void BatteryTester_Menu_selectSetThermostatMinLim(void){
-	BatteryTester_Menu_selectSetNewValue("Tstat. min, 11011111C",
+	BatteryTester_Menu_selectSetNewValue("Tstat. min, \xdf\x43",
 			BatteryTester_ClimatRegulator_getRegulatorSettings().minLimit);//,1);
 }
 
@@ -666,7 +650,7 @@ void BatteryTester_Menu_enterSetThermostatMinLim(void){
 }
 
 void BatteryTester_Menu_selectSetThermostatMaxLim(void){
-	BatteryTester_Menu_selectSetNewValue("Tstat. max, 11011111C",
+	BatteryTester_Menu_selectSetNewValue("Tstat. max, \xdf\x43",
 			BatteryTester_ClimatRegulator_getRegulatorSettings().maxLimit);//,1);
 }
 
@@ -678,7 +662,7 @@ void BatteryTester_Menu_enterSetThermostatMaxLim(void){
 }
 
 void BatteryTester_Menu_selectSetTemp1ResistanceUpper(void){
-	BatteryTester_Menu_selectSetNewValue("T1 Rup, k11110100",
+	BatteryTester_Menu_selectSetNewValue("T1 Rup, k\xf4",
 			BatteryTester_ConversionData_getNtcSchemeParams(0).resistanceUpInOhm / 1000);//,4);
 }
 
@@ -690,7 +674,7 @@ void BatteryTester_Menu_enterSetTemp1ResistanceUpper(void){
 }
 
 void BatteryTester_Menu_selectSetTemp1ResistanceOrig(void){
-	BatteryTester_Menu_selectSetNewValue("T1 Ro, k11110100",
+	BatteryTester_Menu_selectSetNewValue("T1 Ro, k\xf4",
 			BatteryTester_ConversionData_getNtcSchemeParams(0).resistanceOrigInOhm / 1000);//,4);
 }
 
@@ -702,7 +686,7 @@ void BatteryTester_Menu_enterSetTemp1ResistanceOrig(void){
 }
 
 void BatteryTester_Menu_selectSetTemp1TemperatureOrig(void){
-	BatteryTester_Menu_selectSetNewValue("T1 To, 11011111C",
+	BatteryTester_Menu_selectSetNewValue("T1 To, \xdf\x43",
 			BatteryTester_ConversionData_getNtcSchemeParams(0).temperatureOrigIndegC);//,1);
 }
 
@@ -714,7 +698,7 @@ void BatteryTester_Menu_enterSetTemp1TemperatureOrig(void){
 }
 
 void BatteryTester_Menu_selectSetTemp1FactorB(void){
-	BatteryTester_Menu_selectSetNewValue("T1 fac.B, 11011111C",
+	BatteryTester_Menu_selectSetNewValue("T1 fac.B, ppm/\xdf\x43",
 			BatteryTester_ConversionData_getNtcSchemeParams(0).factorB);//,3);
 }
 
@@ -726,7 +710,7 @@ void BatteryTester_Menu_enterSetTemp1FactorB(void){
 }
 
 void BatteryTester_Menu_selectSetTemp2ResistanceUpper(void){
-	BatteryTester_Menu_selectSetNewValue("T2 Rup, k11110100",
+	BatteryTester_Menu_selectSetNewValue("T2 Rup, k\xf4",
 			BatteryTester_ConversionData_getNtcSchemeParams(1).resistanceUpInOhm / 1000);//,4);
 }
 
@@ -738,7 +722,7 @@ void BatteryTester_Menu_enterSetTemp2ResistanceUpper(void){
 }
 
 void BatteryTester_Menu_selectSetTemp2ResistanceOrig(void){
-	BatteryTester_Menu_selectSetNewValue("T2 Ro, k11110100",
+	BatteryTester_Menu_selectSetNewValue("T2 Ro, k\xf4",
 			BatteryTester_ConversionData_getNtcSchemeParams(1).resistanceOrigInOhm / 1000);//,4);
 }
 
@@ -750,7 +734,7 @@ void BatteryTester_Menu_enterSetTemp2ResistanceOrig(void){
 }
 
 void BatteryTester_Menu_selectSetTemp2TemperatureOrig(void){
-	BatteryTester_Menu_selectSetNewValue("T2 To, 11011111C",
+	BatteryTester_Menu_selectSetNewValue("T2 To, \xdf\x43",
 			BatteryTester_ConversionData_getNtcSchemeParams(1).temperatureOrigIndegC);//,1);
 }
 
@@ -762,7 +746,7 @@ void BatteryTester_Menu_enterSetTemp2TemperatureOrig(void){
 }
 
 void BatteryTester_Menu_selectSetTemp2FactorB(void){
-	BatteryTester_Menu_selectSetNewValue("T2 fac.B, 11011111C",
+	BatteryTester_Menu_selectSetNewValue("T2 fac.B, ppm/\xdf\x43",
 			BatteryTester_ConversionData_getNtcSchemeParams(1).factorB);//,3);
 }
 
@@ -774,7 +758,7 @@ void BatteryTester_Menu_enterSetTemp2FactorB(void){
 }
 
 void BatteryTester_Menu_selectSetTemp3ResistanceUpper(void){
-	BatteryTester_Menu_selectSetNewValue("T3 Rup, k11110100",
+	BatteryTester_Menu_selectSetNewValue("T3 Rup, k\xf4",
 			((ntcSchemeParameters_t)BatteryTester_ConversionData_getNtcSchemeParams(2)).resistanceUpInOhm / 1000);//,4);
 }
 
@@ -786,7 +770,7 @@ void BatteryTester_Menu_enterSetTemp3ResistanceUpper(void){
 }
 
 void BatteryTester_Menu_selectSetTemp3ResistanceOrig(void){
-	BatteryTester_Menu_selectSetNewValue("T3 Ro, k11110100",
+	BatteryTester_Menu_selectSetNewValue("T3 Ro, k\xf4",
 			BatteryTester_ConversionData_getNtcSchemeParams(2).resistanceOrigInOhm / 1000);//,4);
 }
 
@@ -798,7 +782,7 @@ void BatteryTester_Menu_enterSetTemp3ResistanceOrig(void){
 }
 
 void BatteryTester_Menu_selectSetTemp3TemperatureOrig(void){
-	BatteryTester_Menu_selectSetNewValue("T3 To, 11011111C",
+	BatteryTester_Menu_selectSetNewValue("T3 To, \xdf\x43",
 			BatteryTester_ConversionData_getNtcSchemeParams(2).temperatureOrigIndegC);//,1);
 }
 
@@ -810,7 +794,7 @@ void BatteryTester_Menu_enterSetTemp3TemperatureOrig(void){
 }
 
 void BatteryTester_Menu_selectSetTemp3FactorB(void){
-	BatteryTester_Menu_selectSetNewValue("T3 fac.B, 11011111C",
+	BatteryTester_Menu_selectSetNewValue("T3 fac.B, ppm/\xdf\x43",
 			BatteryTester_ConversionData_getNtcSchemeParams(2).factorB);//,	3);
 }
 
@@ -822,7 +806,7 @@ void BatteryTester_Menu_enterSetTemp3FactorB(void){
 }
 
 void BatteryTester_Menu_selectSetTemp4ResistanceUpper(void){
-	BatteryTester_Menu_selectSetNewValue("T4 Rup, k11110100",
+	BatteryTester_Menu_selectSetNewValue("T4 Rup, k\xf4",
 			BatteryTester_ConversionData_getNtcSchemeParams(3).resistanceUpInOhm / 1000);//,4);
 }
 
@@ -834,7 +818,7 @@ void BatteryTester_Menu_enterSetTemp4ResistanceUpper(void){
 }
 
 void BatteryTester_Menu_selectSetTemp4ResistanceOrig(void){
-	BatteryTester_Menu_selectSetNewValue("T4 Ro, k11110100",
+	BatteryTester_Menu_selectSetNewValue("T4 Ro, k\xf4",
 			BatteryTester_ConversionData_getNtcSchemeParams(3).resistanceOrigInOhm / 1000);//,4);
 }
 
@@ -846,7 +830,7 @@ void BatteryTester_Menu_enterSetTemp4ResistanceOrig(void){
 }
 
 void BatteryTester_Menu_selectSetTemp4TemperatureOrig(void){
-	BatteryTester_Menu_selectSetNewValue("T4 To, 11011111C",
+	BatteryTester_Menu_selectSetNewValue("T4 To, \xdf\x43",
 			BatteryTester_ConversionData_getNtcSchemeParams(3).temperatureOrigIndegC);//,1);
 }
 
@@ -858,7 +842,7 @@ void BatteryTester_Menu_enterSetTemp4TemperatureOrig(void){
 }
 
 void BatteryTester_Menu_selectSetTemp4FactorB(void){
-	BatteryTester_Menu_selectSetNewValue("T4 fac.B, 11011111C",
+	BatteryTester_Menu_selectSetNewValue("T4 fac.B, ppm/\xdf\x43",
 			BatteryTester_ConversionData_getNtcSchemeParams(3).factorB);//,3);
 }
 
@@ -870,7 +854,7 @@ void BatteryTester_Menu_enterSetTemp4FactorB(void){
 }
 
 void BatteryTester_Menu_selectSetThermostatMinDutyCycle(void){
-	BatteryTester_Menu_selectSetNewValue("Tstat min Duty",
+	BatteryTester_Menu_selectSetNewValue("Tstat min D, rel",
 			BattetyTester_ClimatRegulator_getPWMSettings().minDutyCycle);//,0);
 }
 
@@ -882,12 +866,17 @@ void BatteryTester_Menu_enterSetThermostatMinDutyCycle(void){
 }
 
 void BatteryTester_Menu_selectSetThermostatMaxDutyCycle(void){
-	BatteryTester_Menu_selectSetNewValue("Tstat max Duty",
+	BatteryTester_Menu_selectSetNewValue("Tstat Dmax, %",
 			BattetyTester_ClimatRegulator_getPWMSettings().maxDutyCycle);//,0);
 }
 void BatteryTester_Menu_enterSetThermostatMaxDutyCycle(void){
 	sPWMSettings_t settings = BattetyTester_ClimatRegulator_getPWMSettings();
-	settings.maxDutyCycle = BatteryTester_State_sendNewParamFromState();
+	float newMaxDutyCycle = BatteryTester_State_sendNewParamFromState();
+	if(newMaxDutyCycle < 0.0 || newMaxDutyCycle > 100.0){
+		BatteryTester_Menu_selectSetThermostatMaxDutyCycle();
+		return;
+	}
+	settings.maxDutyCycle = newMaxDutyCycle;
 	BatteryTester_ClimatRegulator_setPWMSettings(&settings);
 	BatteryTester_Menu_returnInMenu(&menuThermostatMaxDutyCycle);
 }
@@ -920,19 +909,19 @@ void BatteryTester_Menu_enterSetThermostatDeadTime(void){
 */
 
 void BatteryTester_Menu_selectSetCh1BoostKp(void){
-	BatteryTester_Menu_selectSetNewValue("Ch1 Boost Kp",
+	BatteryTester_Menu_selectSetNewValue("Ch1 boost Kp, r",
 			BatteryTester_RegulatorCellOne_getBoostRegulatorSettings().Kp);//,4);
 }
 
 void BatteryTester_Menu_enterSetCh1BoostKp(void){
 	sPIDController_t settings = BatteryTester_RegulatorCellOne_getBoostRegulatorSettings();
 	settings.Kp = BatteryTester_State_sendNewParamFromState();
-	BatteryTester_RegulatorCellTwo_setBoostRegulatorSettings(&settings);
+	BatteryTester_RegulatorCellOne_setBoostRegulatorSettings(&settings);
 	BatteryTester_Menu_returnInMenu(&menuCh1BoostKp);
 }
 
 void BatteryTester_Menu_selectSetCh1BoostKi(void){
-	BatteryTester_Menu_selectSetNewValue("Ch1 Boost Ki",
+	BatteryTester_Menu_selectSetNewValue("Ch1 boost Ki, r",
 			BatteryTester_RegulatorCellOne_getBoostRegulatorSettings().Ki);//,4);
 }
 
@@ -944,7 +933,7 @@ void BatteryTester_Menu_enterSetCh1BoostKi(void){
 }
 
 void BatteryTester_Menu_selectSetCh1BoostKd(void){
-	BatteryTester_Menu_selectSetNewValue("Ch1 Boost Kd",
+	BatteryTester_Menu_selectSetNewValue("Ch1 boost Kd, r",
 			BatteryTester_RegulatorCellOne_getBoostRegulatorSettings().Kd);//,4);
 }
 
@@ -968,7 +957,7 @@ void BatteryTester_Menu_enterSetCh1BoostDt(void){
 }*/
 
 void BatteryTester_Menu_selectSetCh1BoostSp(void){
-	BatteryTester_Menu_selectSetNewValue("Ch1 Boost Sp, A",
+	BatteryTester_Menu_selectSetNewValue("Ch1 boost Sp, A",
 			BatteryTester_RegulatorCellOne_getBoostRegulatorSettings().setpoint);//,3);
 }
 
@@ -980,7 +969,7 @@ void BatteryTester_Menu_enterSetCh1BoostSp(void){
 }
 
 void BatteryTester_Menu_selectSetCh1BoostMinLim(void){
-	BatteryTester_Menu_selectSetNewValue("Ch1 Boost Min, A",
+	BatteryTester_Menu_selectSetNewValue("Ch1 bst Lmin, A",
 			BatteryTester_RegulatorCellOne_getBoostRegulatorSettings().minLimit);//,3);
 }
 
@@ -992,7 +981,7 @@ void BatteryTester_Menu_enterSetCh1BoostMinLim(void){
 }
 
 void BatteryTester_Menu_selectSetCh1BoostMaxLim(void){
-	BatteryTester_Menu_selectSetNewValue("Ch1 Boost Max, A",
+	BatteryTester_Menu_selectSetNewValue("Ch1 bst Lmax, A",
 			BatteryTester_RegulatorCellOne_getBoostRegulatorSettings().maxLimit);//,3);
 }
 
@@ -1004,25 +993,35 @@ void BatteryTester_Menu_enterSetCh1BoostMaxLim(void){
 }
 
 void BatteryTester_Menu_selectSetCh1BoostMinDutyCycle(void){
-	BatteryTester_Menu_selectSetNewValue("Ch1 Bst MinDuty",
+	BatteryTester_Menu_selectSetNewValue("Ch1 bst Dmin, %",
 			BattetyTester_RegulatorCellOne_getBoostPWMSettings().minDutyCycle);//,3);
 }
 
 void BatteryTester_Menu_enterSetCh1BoostMinDutyCycle(void){
 	sPWMSettings_t settings = BattetyTester_RegulatorCellOne_getBoostPWMSettings();
-	settings.minDutyCycle = BatteryTester_State_sendNewParamFromState();
+	float minDutyCycle = BatteryTester_State_sendNewParamFromState();
+	if(minDutyCycle < 0.0 || minDutyCycle > 100.0){
+		BatteryTester_Menu_selectSetCh1BoostMinDutyCycle();
+		return;
+	}
+	settings.minDutyCycle = minDutyCycle;
 	BatteryTester_RegulatorCellOne_setBoostPWMSettings(&settings);
 	BatteryTester_Menu_returnInMenu(&menuCh1BoostPwmMinDuty);
 }
 
 void BatteryTester_Menu_selectSetCh1BoostMaxDutyCycle(void){
-	BatteryTester_Menu_selectSetNewValue("Ch1 Bst MaxDuty",
+	BatteryTester_Menu_selectSetNewValue("Ch1 bst Dmax, %",
 			BattetyTester_RegulatorCellOne_getBoostPWMSettings().maxDutyCycle);//,3);
 }
 
 void BatteryTester_Menu_enterSetCh1BoostMaxDutyCycle(void){
 	sPWMSettings_t settings = BattetyTester_RegulatorCellOne_getBoostPWMSettings();
-	settings.maxDutyCycle = BatteryTester_State_sendNewParamFromState();
+	float maxDutyCycle = BatteryTester_State_sendNewParamFromState();
+	if(maxDutyCycle < 0.0 || maxDutyCycle > 100.0){
+		BatteryTester_Menu_selectSetCh1BoostMaxDutyCycle();
+		return;
+	}
+	settings.maxDutyCycle = maxDutyCycle;
 	BatteryTester_RegulatorCellOne_setBoostPWMSettings(&settings);
 	BatteryTester_Menu_returnInMenu(&menuCh1BoostPwmMaxDuty);
 }
@@ -1031,7 +1030,7 @@ void BatteryTester_Menu_enterSetCh1BoostPeriod(void);
 void BatteryTester_Menu_selectSetCh1BoostDeadTime(void);
 void BatteryTester_Menu_enterSetCh1BoostDeadTime(void);*/
 void BatteryTester_Menu_selectSetCh1BuckKp(void){
-	BatteryTester_Menu_selectSetNewValue("Ch1 Buck Kp",
+	BatteryTester_Menu_selectSetNewValue("Ch1 buck Kp, r",
 			BatteryTester_RegulatorCellOne_getBuckRegulatorSettings().Kp);//,4);
 }
 
@@ -1043,7 +1042,7 @@ void BatteryTester_Menu_enterSetCh1BuckKp(void){
 }
 
 void BatteryTester_Menu_selectSetCh1BuckKi(void){
-	BatteryTester_Menu_selectSetNewValue("Ch1 Buck Ki",
+	BatteryTester_Menu_selectSetNewValue("Ch1 buck Ki, r",
 			BatteryTester_RegulatorCellOne_getBuckRegulatorSettings().Ki);//,4);
 }
 
@@ -1055,7 +1054,7 @@ void BatteryTester_Menu_enterSetCh1BuckKi(void){
 }
 
 void BatteryTester_Menu_selectSetCh1BuckKd(void){
-	BatteryTester_Menu_selectSetNewValue("Ch1 Buck Kd",
+	BatteryTester_Menu_selectSetNewValue("Ch1 buck Kd, r",
 			BatteryTester_RegulatorCellOne_getBuckRegulatorSettings().Kd);//,4);
 }
 
@@ -1067,7 +1066,7 @@ void BatteryTester_Menu_enterSetCh1BuckKd(void){
 }
 
 void BatteryTester_Menu_selectSetCh1BuckSp(void){
-	BatteryTester_Menu_selectSetNewValue("Ch1 Buck Sp, A",
+	BatteryTester_Menu_selectSetNewValue("Ch1 buck Sp, A",
 			BatteryTester_RegulatorCellOne_getBuckRegulatorSettings().setpoint);//,	3);
 }
 
@@ -1079,7 +1078,7 @@ void BatteryTester_Menu_enterSetCh1BuckSp(void){
 }
 
 void BatteryTester_Menu_selectSetCh1BuckMinLim(void){
-	BatteryTester_Menu_selectSetNewValue("Ch1 Buck Min, A",
+	BatteryTester_Menu_selectSetNewValue("Ch1 buck Lmin, A",
 			BatteryTester_RegulatorCellOne_getBuckRegulatorSettings().minLimit);//,	3);
 }
 
@@ -1091,7 +1090,7 @@ void BatteryTester_Menu_enterSetCh1BuckMinLim(void){
 }
 
 void BatteryTester_Menu_selectSetCh1BuckMaxLim(void){
-	BatteryTester_Menu_selectSetNewValue("Ch1 Buck Max, A",
+	BatteryTester_Menu_selectSetNewValue("Ch1 buck Lmax, A",
 			BatteryTester_RegulatorCellOne_getBuckRegulatorSettings().maxLimit);//,	3);
 }
 
@@ -1103,31 +1102,41 @@ void BatteryTester_Menu_enterSetCh1BuckMaxLim(void){
 }
 
 void BatteryTester_Menu_selectSetCh1BuckMinDutyCycle(void){
-	BatteryTester_Menu_selectSetNewValue("Ch1 Bck MinDuty",
+	BatteryTester_Menu_selectSetNewValue("Ch1 buck Dmin, %",
 			BattetyTester_RegulatorCellOne_getBuckPWMSettings().minDutyCycle);//,3);
 }
 
 void BatteryTester_Menu_enterSetCh1BuckMinDutyCycle(void){
 	sPWMSettings_t settings = BattetyTester_RegulatorCellOne_getBuckPWMSettings();
-	settings.minDutyCycle = BatteryTester_State_sendNewParamFromState();
+	float minDutyCycle = BatteryTester_State_sendNewParamFromState();
+	if(minDutyCycle < 0.0 || minDutyCycle > 100.0){
+		BatteryTester_Menu_selectSetCh1BuckMinDutyCycle();
+		return;
+	}
+	settings.minDutyCycle = minDutyCycle;
 	BatteryTester_RegulatorCellOne_setBuckPWMSettings(&settings);
 	BatteryTester_Menu_returnInMenu(&menuCh1BuckPwmMinDuty);
 }
 
 void BatteryTester_Menu_selectSetCh1BuckMaxDutyCycle(void){
-	BatteryTester_Menu_selectSetNewValue("Ch1 Bck MaxDuty",
+	BatteryTester_Menu_selectSetNewValue("Ch1 buck Dmax, %",
 			BattetyTester_RegulatorCellOne_getBuckPWMSettings().maxDutyCycle);//,3);
 }
 
 void BatteryTester_Menu_enterSetCh1BuckMaxDutyCycle(void){
 	sPWMSettings_t settings = BattetyTester_RegulatorCellOne_getBuckPWMSettings();
-	settings.maxDutyCycle = BatteryTester_State_sendNewParamFromState();
+	float maxDutyCycle = BatteryTester_State_sendNewParamFromState();
+	if(maxDutyCycle < 0.0 || maxDutyCycle > 100.0){
+		BatteryTester_Menu_selectSetCh1BuckMaxDutyCycle();
+		return;
+	}
+	settings.maxDutyCycle = maxDutyCycle;
 	BatteryTester_RegulatorCellOne_setBuckPWMSettings(&settings);
 	BatteryTester_Menu_returnInMenu(&menuCh1BuckPwmMaxDuty);
 }
 
 void BatteryTester_Menu_selectSetCh1VoltCtrlMax(void){
-	BatteryTester_Menu_selectSetNewValue("Ch1 Max Voltage",
+	BatteryTester_Menu_selectSetNewValue("Ch1 Vmax, V",
 			BatteryTester_CellsVoltcontrol_getVoltRangeCellx(CELL_ONE).maxVoltageInVolts);//,2);
 }
 
@@ -1139,7 +1148,7 @@ void BatteryTester_Menu_enterSetCh1VoltCtrlMax(void){
 }
 
 void BatteryTester_Menu_selectSetCh1VoltCtrlMin(void){
-	BatteryTester_Menu_selectSetNewValue("Ch1 Min Voltage",
+	BatteryTester_Menu_selectSetNewValue("Ch1 Vmin, V",
 			BatteryTester_CellsVoltcontrol_getVoltRangeCellx(CELL_ONE).minVoltageInVolts);//,2);
 }
 
@@ -1151,7 +1160,7 @@ void BatteryTester_Menu_enterSetCh1VoltCtrlMin(void){
 }
 //////////////////////////////////////////////////////////////////////////////////////
 void BatteryTester_Menu_selectSetCh2BoostKp(void){
-	BatteryTester_Menu_selectSetNewValue("Ch2 Boost Kp",
+	BatteryTester_Menu_selectSetNewValue("Ch2 boost Kp, r",
 			BatteryTester_RegulatorCellTwo_getBoostRegulatorSettings().Kp);//,4);
 }
 
@@ -1163,7 +1172,7 @@ void BatteryTester_Menu_enterSetCh2BoostKp(void){
 }
 
 void BatteryTester_Menu_selectSetCh2BoostKi(void){
-	BatteryTester_Menu_selectSetNewValue("Ch2 Boost Ki",
+	BatteryTester_Menu_selectSetNewValue("Ch2 boost Ki, r",
 			BatteryTester_RegulatorCellTwo_getBoostRegulatorSettings().Ki);//,4);
 }
 
@@ -1175,7 +1184,7 @@ void BatteryTester_Menu_enterSetCh2BoostKi(void){
 }
 
 void BatteryTester_Menu_selectSetCh2BoostKd(void){
-	BatteryTester_Menu_selectSetNewValue("Ch2 Boost Kd",
+	BatteryTester_Menu_selectSetNewValue("Ch2 boost Kd, r",
 			BatteryTester_RegulatorCellTwo_getBoostRegulatorSettings().Kd);//,4);
 }
 
@@ -1187,7 +1196,7 @@ void BatteryTester_Menu_enterSetCh2BoostKd(void){
 }
 
 void BatteryTester_Menu_selectSetCh2BoostSp(void){
-	BatteryTester_Menu_selectSetNewValue("Ch2 Boost Sp, A",
+	BatteryTester_Menu_selectSetNewValue("Ch2 boost Sp, A",
 			BatteryTester_RegulatorCellTwo_getBoostRegulatorSettings().setpoint);//,3);
 }
 
@@ -1199,7 +1208,7 @@ void BatteryTester_Menu_enterSetCh2BoostSp(void){
 }
 
 void BatteryTester_Menu_selectSetCh2BoostMinLim(void){
-	BatteryTester_Menu_selectSetNewValue("Ch2 Boost Min, A",
+	BatteryTester_Menu_selectSetNewValue("Ch2 bst Lmin, A",
 			BatteryTester_RegulatorCellTwo_getBoostRegulatorSettings().minLimit);//,3);
 }
 
@@ -1211,7 +1220,7 @@ void BatteryTester_Menu_enterSetCh2BoostMinLim(void){
 }
 
 void BatteryTester_Menu_selectSetCh2BoostMaxLim(void){
-	BatteryTester_Menu_selectSetNewValue("Ch2 Boost Max, A",
+	BatteryTester_Menu_selectSetNewValue("Ch2 bst Lmax, A",
 			BatteryTester_RegulatorCellTwo_getBoostRegulatorSettings().maxLimit);//,3);
 }
 
@@ -1223,31 +1232,41 @@ void BatteryTester_Menu_enterSetCh2BoostMaxLim(void){
 }
 
 void BatteryTester_Menu_selectSetCh2BoostMinDutyCycle(void){
-	BatteryTester_Menu_selectSetNewValue("Ch2 Bst MinDuty",
+	BatteryTester_Menu_selectSetNewValue("Ch2 bst Dmin, %",
 			BattetyTester_RegulatorCellTwo_getBoostPWMSettings().minDutyCycle);//,3);
 }
 
 void BatteryTester_Menu_enterSetCh2BoostMinDutyCycle(void){
 	sPWMSettings_t settings = BattetyTester_RegulatorCellTwo_getBoostPWMSettings();
-	settings.minDutyCycle = BatteryTester_State_sendNewParamFromState();
+	float minDutyCycle = BatteryTester_State_sendNewParamFromState();
+	if(minDutyCycle < 0.0 || minDutyCycle > 100.0){
+		BatteryTester_Menu_selectSetCh2BoostMinDutyCycle();
+		return;
+	}
+	settings.minDutyCycle = minDutyCycle;
 	BatteryTester_RegulatorCellTwo_setBoostPWMSettings(&settings);
 	BatteryTester_Menu_returnInMenu(&menuCh2BoostPwmMinDuty);
 }
 
 void BatteryTester_Menu_selectSetCh2BoostMaxDutyCycle(void){
-	BatteryTester_Menu_selectSetNewValue("Ch2 Bst MaxDuty",
+	BatteryTester_Menu_selectSetNewValue("Ch2 bst Dmax, %",
 			BattetyTester_RegulatorCellTwo_getBoostPWMSettings().maxDutyCycle);//,3);
 }
 
 void BatteryTester_Menu_enterSetCh2BoostMaxDutyCycle(void){
 	sPWMSettings_t settings = BattetyTester_RegulatorCellTwo_getBoostPWMSettings();
-	settings.maxDutyCycle = BatteryTester_State_sendNewParamFromState();
+	float maxDutyCycle = BatteryTester_State_sendNewParamFromState();
+	if(maxDutyCycle < 0.0 || maxDutyCycle > 100.0){
+		BatteryTester_Menu_selectSetCh2BoostMaxDutyCycle();
+		return;
+	}
+	settings.maxDutyCycle = maxDutyCycle;
 	BatteryTester_RegulatorCellTwo_setBoostPWMSettings(&settings);
 	BatteryTester_Menu_returnInMenu(&menuCh2BoostPwmMaxDuty);
 }
 
 void BatteryTester_Menu_selectSetCh2BuckKp(void){
-	BatteryTester_Menu_selectSetNewValue("Ch2 Buck Kp",
+	BatteryTester_Menu_selectSetNewValue("Ch2 buck Kp, r",
 			BatteryTester_RegulatorCellTwo_getBuckRegulatorSettings().Kp);//,4);
 }
 
@@ -1259,7 +1278,7 @@ void BatteryTester_Menu_enterSetCh2BuckKp(void){
 }
 
 void BatteryTester_Menu_selectSetCh2BuckKi(void){
-	BatteryTester_Menu_selectSetNewValue("Ch2 Buck Ki",
+	BatteryTester_Menu_selectSetNewValue("Ch2 buck Ki, r",
 			BatteryTester_RegulatorCellTwo_getBuckRegulatorSettings().Ki);//,4);
 }
 
@@ -1271,7 +1290,7 @@ void BatteryTester_Menu_enterSetCh2BuckKi(void){
 }
 
 void BatteryTester_Menu_selectSetCh2BuckKd(void){
-	BatteryTester_Menu_selectSetNewValue("Ch2 Buck Kd",
+	BatteryTester_Menu_selectSetNewValue("Ch2 buck Kd, r",
 			BatteryTester_RegulatorCellTwo_getBuckRegulatorSettings().Kd);//,4);
 }
 
@@ -1283,7 +1302,7 @@ void BatteryTester_Menu_enterSetCh2BuckKd(void){
 }
 
 void BatteryTester_Menu_selectSetCh2BuckSp(void){
-	BatteryTester_Menu_selectSetNewValue("Ch2 Buck Sp, A",
+	BatteryTester_Menu_selectSetNewValue("Ch2 buck Sp, A",
 			BatteryTester_RegulatorCellTwo_getBuckRegulatorSettings().setpoint);//,3);
 }
 
@@ -1295,7 +1314,7 @@ void BatteryTester_Menu_enterSetCh2BuckSp(void){
 }
 
 void BatteryTester_Menu_selectSetCh2BuckMinLim(void){
-	BatteryTester_Menu_selectSetNewValue("Ch2 Buck Min, A",
+	BatteryTester_Menu_selectSetNewValue("Ch2 buck Lmin, A",
 			BatteryTester_RegulatorCellTwo_getBuckRegulatorSettings().minLimit);//,3);
 }
 
@@ -1307,7 +1326,7 @@ void BatteryTester_Menu_enterSetCh2BuckMinLim(void){
 }
 
 void BatteryTester_Menu_selectSetCh2BuckMaxLim(void){
-	BatteryTester_Menu_selectSetNewValue("Ch2 Buck Max, A",
+	BatteryTester_Menu_selectSetNewValue("Ch2 buck Lmax, A",
 			BatteryTester_RegulatorCellTwo_getBuckRegulatorSettings().maxLimit);//,3);
 }
 
@@ -1319,31 +1338,41 @@ void BatteryTester_Menu_enterSetCh2BuckMaxLim(void){
 }
 
 void BatteryTester_Menu_selectSetCh2BuckMinDutyCycle(void){
-	BatteryTester_Menu_selectSetNewValue("Ch2 Bck MinDuty",
+	BatteryTester_Menu_selectSetNewValue("Ch2 buck Dmin, %",
 			BattetyTester_RegulatorCellTwo_getBuckPWMSettings().minDutyCycle);//,3);
 }
 
 void BatteryTester_Menu_enterSetCh2BuckMinDutyCycle(void){
 	sPWMSettings_t settings = BattetyTester_RegulatorCellTwo_getBuckPWMSettings();
-	settings.minDutyCycle = BatteryTester_State_sendNewParamFromState();
+	float minDutyCycle = BatteryTester_State_sendNewParamFromState();
+	if(minDutyCycle < 0.0 || minDutyCycle > 100.0){
+		BatteryTester_Menu_selectSetCh2BuckMinDutyCycle();
+		return;
+	}
+	settings.minDutyCycle = minDutyCycle;
 	BatteryTester_RegulatorCellTwo_setBuckPWMSettings(&settings);
 	BatteryTester_Menu_returnInMenu(&menuCh2BuckPwmMinDuty);
 }
 
 void BatteryTester_Menu_selectSetCh2BuckMaxDutyCycle(void){
-	BatteryTester_Menu_selectSetNewValue("Ch2 Bck MaxDuty",
+	BatteryTester_Menu_selectSetNewValue("Ch2 buck Dmax, %",
 			BattetyTester_RegulatorCellTwo_getBuckPWMSettings().maxDutyCycle);//,3);
 }
 
 void BatteryTester_Menu_enterSetCh2BuckMaxDutyCycle(void){
 	sPWMSettings_t settings = BattetyTester_RegulatorCellTwo_getBuckPWMSettings();
-	settings.maxDutyCycle = BatteryTester_State_sendNewParamFromState();
+	float maxDutyCycle = BatteryTester_State_sendNewParamFromState();
+	if(maxDutyCycle < 0.0 || maxDutyCycle > 100.0){
+		BatteryTester_Menu_selectSetCh2BuckMaxDutyCycle();
+		return;
+	}
+	settings.maxDutyCycle = maxDutyCycle;
 	BatteryTester_RegulatorCellTwo_setBuckPWMSettings(&settings);
 	BatteryTester_Menu_returnInMenu(&menuCh2BuckPwmMaxDuty);
 }
 
 void BatteryTester_Menu_selectSetCh2VoltCtrlMax(void){
-	BatteryTester_Menu_selectSetNewValue("Ch2 Max Voltage",
+	BatteryTester_Menu_selectSetNewValue("Ch2 Vmax, V",
 			BatteryTester_CellsVoltcontrol_getVoltRangeCellx(CELL_TWO).maxVoltageInVolts);//,2);
 }
 
@@ -1355,7 +1384,7 @@ void BatteryTester_Menu_enterSetCh2VoltCtrlMax(void){
 }
 
 void BatteryTester_Menu_selectSetCh2VoltCtrlMin(void){
-	BatteryTester_Menu_selectSetNewValue("Ch2 Min Voltage",
+	BatteryTester_Menu_selectSetNewValue("Ch2 Vmin, V",
 			BatteryTester_CellsVoltcontrol_getVoltRangeCellx(CELL_TWO).minVoltageInVolts);//, 2);
 }
 
@@ -1367,7 +1396,7 @@ void BatteryTester_Menu_enterSetCh2VoltCtrlMin(void){
 }
 
 void BatteryTester_Menu_selectSetRefOffset(void){
-	BatteryTester_Menu_selectSetNewValue("Ref. Offset, V",
+	BatteryTester_Menu_selectSetNewValue("Ref. offset, V",
 			BatteryTester_ConversionData_getRefOffsetInVolts());//,	2);
 }
 
@@ -1411,5 +1440,5 @@ inline void BatteryTester_Menu_returnInMenu(Menu_Item_t* retItemMenu){
 }
 
 void BatteryTester_Menu_init(){
-	BatteryTester_Menu_Navigate(&menuSettings);
+	BatteryTester_Menu_Navigate(&menuStart);
 }

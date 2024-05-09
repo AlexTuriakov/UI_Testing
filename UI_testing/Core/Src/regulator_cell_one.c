@@ -58,6 +58,7 @@ void BatteryTester_RegulatorCellOne_init(){
 	pwmBoostSettingsCellOne.maxPidOutput = regulatorBoostSettingsCellOne.maxLimit;
 	pwmBoostSettingsCellOne.scale = (float)(pwmBoostSettingsCellOne.maxDutyCycle - pwmBoostSettingsCellOne.minDutyCycle) /
 			(regulatorBoostSettingsCellOne.maxLimit - regulatorBoostSettingsCellOne.minLimit);
+	/*Reading parameters from flash memory is under development*/
 
 }
 
@@ -154,7 +155,7 @@ void BatteryTester_RegulatorCellOne_setBoostRegulatorSettings(sPIDController_t* 
 	if(regulatorBoostSettingsCellOne.maxLimit != pSettings->maxLimit){
 		pwmBoostSettingsCellOne.maxPidOutput = pSettings->maxLimit;
 	}
-	unsigned int size = sizeof(sPWMSettings_t) / sizeof(float);
+	unsigned int size = sizeof(sPIDController_t) / sizeof(float);
 	__BatteryTester_AuxiliaryFunction_copy(
 			(void*)pSettings, (void*)&regulatorBoostSettingsCellOne, size);
 }

@@ -16,6 +16,7 @@ DessipatorStatus_t dessipatorStatus = DESSIPATOR_OFF;
 void BatteryTester_DessipatorControl_initHeaterControl(){
 	dessipatorControlRange.minVoltageInVolts = 12.0;
 	dessipatorControlRange.maxVoltageInVolts = 12.3;
+	/*Reading parameters from flash memory is under development*/
 }
 
 void BattetyTester_DessipatorControl_onHeaterControl(float inputBusVoltage){

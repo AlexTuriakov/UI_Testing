@@ -104,12 +104,16 @@ void BatteryTester_CellsVoltcontrol_setVoltRangeCellx(BatteryCellSelector_t cell
 	}
 }
 
+/*@brief:
+ * Reading parameters from flash memory is under development
+ * */
 void BatteryTester_CellsVoltcontrol_initVoltageProtectCells(){
 	voltRangeCellOne.minVoltageInVolts = 2.8;
 	voltRangeCellOne.maxVoltageInVolts = 3.6;
 
 	voltRangeCellTwo.minVoltageInVolts = 2.8;
 	voltRangeCellTwo.maxVoltageInVolts = 3.6;
+	/*implement reading parameters from flash memory*/
 }
 
 void BatteryTester_CellsVoltcontrol_stopPWMCh1(){

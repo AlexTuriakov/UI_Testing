@@ -54,6 +54,7 @@ void BatteryTester_ClimatRegulator_init(){
 		pwmClimatSettings.minPidOutput = regulatorClimatSettings.minLimit;
 		pwmClimatSettings.maxPidOutput = regulatorClimatSettings.maxLimit;
 		BatteryTester_ClimatRegulator_calcScalePwmClimatSettings();
+		/*implement reading parameters from flash memory*/
 }
 
 inline void BatteryTester_ClimatRegulator_calcScalePwmClimatSettings(){

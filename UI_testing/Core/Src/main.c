@@ -24,7 +24,11 @@
 #include "lcd_wc1602a.h"
 #include "keypad.h"
 #include "state_events.h"
-
+#include "cells_voltcontrol.h"
+#include "climat_regulator.h"
+#include "dessipator_control.h"
+#include "regulator_cell_one.h"
+#include "regulator_cell_two.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -108,6 +112,11 @@ int main(void)
 	  Error_Handler();
   }
   BatteryTester_State_initState();
+  BatteryTester_CellsVoltcontrol_initVoltageProtectCells();
+  BatteryTester_ClimatRegulator_init();
+  BatteryTester_DessipatorControl_initHeaterControl();
+  BatteryTester_RegulatorCellOne_init();
+  BatteryTester_RegulatorCellTwo_init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
