@@ -54,7 +54,7 @@ void SysTick_Handler(void);
 void DMA1_Channel1_IRQHandler(void);
 void TIM6_DAC_IRQHandler(void);
 /* USER CODE BEGIN EFP */
-
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc);
 /* USER CODE END EFP */
 
 #ifdef __cplusplus
