@@ -1419,17 +1419,9 @@ inline void BatteryTester_Menu_selectSetNewValue(const char* header, float oldVa
 		size = 16;
 	}
 	BatteryTester_WC1602A_writeLine(0, header, size);
-
-	/*char strVal[17];
-	snprintf(strVal, sizeof(strVal), "%.*f", accuracy, oldValue);
-	BatteryTester_WC1602A_writeLine(1, strVal, strlen(strVal));
-	BatteryTester_WC1602A_Setpos(1, strlen(strVal) - 1);
-	BatteryTester_WC1602A_onCursor();*/
 	BatteryTester_State_postParamForSet(oldValue);
-	//BatteryTester_State_setCurrentState(SET_PARAMETERS);
 	BatteryTester_State_moveFromToState(MENU_NAVIGATE, SET_PARAMETERS);
 	BatteryTester_State_setCurrentEvent(EVENT_NONE);
-	//BatteryTester_State_postStrParamForState(strVal);
 }
 
 inline void BatteryTester_Menu_returnInMenu(Menu_Item_t* retItemMenu){
