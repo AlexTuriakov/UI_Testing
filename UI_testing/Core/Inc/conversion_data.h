@@ -124,8 +124,9 @@ typedef struct _sValueCalibrationOffset{
 	float temp4IndegC;
 } sValueCalibrationOffset_t;
 
-typedef HAL_StatusTypeDef (*BatteryTester_ConversionData_initCallback_t)(void);
+typedef void (*BatteryTester_ConversionData_initCallback_t)(void);
 typedef void (*BatteryTester_ConversionData_setDACCallback_t)(unsigned int);
+typedef void (*BatteryTester_ConversionData_stopCallback_t)(void);
 
 void BatteryTester_ConversionData_setDacDecorator(BatteryTester_ConversionData_setDACCallback_t);
 void BatteryTester_ConversionData_calcPhisicValueFromAdcCode(
@@ -151,5 +152,13 @@ sMaxValueFromRange_t BatteryTester_ConversionData_getMaxValueFromRange();
 void BatteryTester_ConversionData_setMaxValueFromRange(sMaxValueFromRange_t*);
 sValueCalibrationOffset_t BatteryTester_ConversionData_getValueCalibrationOffset();
 void BatteryTester_ConversionData_setValueCalibrationOffset(sValueCalibrationOffset_t*);
+HAL_StatusTypeDef BatteryTester_ConversionData_initDecorator(
+		BatteryTester_ConversionData_initCallback_t,
+		BatteryTester_ConversionData_setDACCallback_t,
+		 BatteryTester_ConversionData_stopCallback_t);
+void BatteryTester_ConversionData_startHardware(void);
+void BatteryTester_ConversionData_stopHardware(void);
+void BatteryTester_ConversionData_setDACRefOffset(float);
+sphisicValueEx_t BatteryTester_ConversionData_getPhisicValues();
 
 #endif /* INC_CONVERSION_DATA_H_ */

@@ -225,6 +225,9 @@
 	void BatteryTester_Menu_enterSetCh2VoltCtrlMin(void);
 	void BatteryTester_Menu_selectSetRefOffset(void);
 	void BatteryTester_Menu_enterSetRefOffset(void);
+	void BatteryTester_Menu_selectSetCh1Setpoint(void);
+	void BatteryTester_Menu_enterSetCh1Setpoint(void);
+	void BatteryTester_Menu_enterToggleRunCh1(void);
 
 	void BatteryTester_Menu_init();
 #endif /* INC_MENU_H_ */

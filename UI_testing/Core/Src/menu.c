@@ -27,10 +27,12 @@ MENU_ITEM(menuSettings, menuLogs, menuStart, NULL_MENU, menuSetsRefOffset ,
 		0, 0, "Settings...");
 MENU_ITEM(menuLogs, menuStart, menuSettings, NULL_MENU, NULL_MENU,
 		0, 0, "Logs...");
-MENU_ITEM(menuStart, menuSettings, menuLogs, NULL_MENU, NULL_MENU,
+MENU_ITEM(menuStart, menuSettings, menuLogs, NULL_MENU, menuStartCh1,
 		0, 0, "Start...");
 /*SUBMENU Settings... LEVEL 1*/
-MENU_ITEM(menuSetsRefOffset, menuSetsChannel1, menuSetsThermometr, menuSettings, menuSetRefOffset,
+MENU_ITEM(menuSetsConversionData, menuSetsRefOffset, menuSetsThermometr, menuSettings, menuSetRefOffset,
+		0, 0, "Measur. sets...");
+MENU_ITEM(menuSetsRefOffset, menuSetsChannel1, menuSetsConversionData, menuSettings, menuSetRefOffset,
 		0, 0, "Ref. offset...");
 MENU_ITEM(menuSetsChannel1, menuSetsChannel2, menuSetsRefOffset, menuSettings, menuCh1Buck,
 		0, 0, "Ch1 settings... ");
@@ -201,10 +203,10 @@ MENU_ITEM(menuCh2CellVoltCtrlMin, menuCh2CellVoltCtrlMax, menuCh2CellVoltCtrlMax
 MENU_ITEM(menuCh2CellVoltCtrlMax, menuCh2CellVoltCtrlMin, menuCh2CellVoltCtrlMin, menuCh2VRange, menuSetCh2CellVoltCtrlMax,
 		0, 0, "Ch2 Voltcontrol max value off...");
 /*SUBMENU Start Ch1... LEVEL 3*/
-MENU_ITEM(menuStartCh1Sp, menuStartCh1On, menuStartCh1State, menuStartCh1, NULL_MENU,
+MENU_ITEM(menuStartCh1Sp, menuStartCh1On, menuStartCh1State, menuStartCh1, menuSetCh1Sp,
 		0, 0, "Start channel 1 setpoint...");
 MENU_ITEM(menuStartCh1On, menuStartCh1State, menuStartCh1Sp, menuStartCh1, NULL_MENU,
-		0, 0, "Start channel 1 on/off...");
+		0, BatteryTester_Menu_enterToggleRunCh1, "Toggle on/off   channel 1");
 MENU_ITEM(menuStartCh1State, menuStartCh1Sp, menuStartCh1On, menuStartCh1, NULL_MENU,
 		0, 0, "Start channel 1 status...");
 /*SUBMENU Start Ch2... LEVEL 3*/
@@ -495,6 +497,9 @@ MENU_ITEM(menuSetCh2CellVoltCtrlMax, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
 /*SUBMENU Set Ch2 volt rng...  LEVEL 4*/
 MENU_ITEM(menuSetRefOffset, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
 		BatteryTester_Menu_selectSetRefOffset, BatteryTester_Menu_enterSetRefOffset, "");
+/*SUBMENU Start channel 1 setpoint... LEVEL 4*/
+MENU_ITEM(menuSetCh1Sp, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
+		BatteryTester_Menu_selectSetCh1Setpoint, BatteryTester_Menu_enterSetCh1Setpoint, "");
 /** \internal
  *  Pointer to the generic menu text display function
  *  callback, to display the configured text of a menu item
@@ -1405,6 +1410,22 @@ void BatteryTester_Menu_enterSetRefOffset(void){
 			BatteryTester_State_sendNewParamFromState());
 	BatteryTester_Menu_returnInMenu(&menuSetsRefOffset);
 }
+
+void BatteryTester_Menu_selectSetCh1Setpoint(void){
+	BatteryTester_Menu_selectSetNewValue("Ch1 Sp, A",
+			BatteryTester_RegulatorCellOne_getSetpoint());
+}
+
+void BatteryTester_Menu_enterSetCh1Setpoint(void){
+	BatteryTester_RegulatorCellOne_setSetpoint(
+				BatteryTester_State_sendNewParamFromState());
+		BatteryTester_Menu_returnInMenu(&menuStartCh1Sp);
+}
+
+void BatteryTester_Menu_enterToggleRunCh1(void){
+	BatteryTester_RegulatorCellOne_toggleRunMode();
+}
+
 /*@brief:
  * Fill in the top line of the display.
  * Change the state and pass the parameter.

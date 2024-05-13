@@ -83,9 +83,17 @@ void Error_Handler(void);
 #define RIGHT_GPIO_Port GPIOA
 #define NC_Pin GPIO_PIN_12
 #define NC_GPIO_Port GPIOA
+#define CH2_LO_Pin GPIO_PIN_6
+#define CH2_LO_GPIO_Port GPIOB
+#define CH1_LO_Pin GPIO_PIN_7
+#define CH1_LO_GPIO_Port GPIOB
+#define CH2_HI_Pin GPIO_PIN_8
+#define CH2_HI_GPIO_Port GPIOB
+#define CH1_HI_Pin GPIO_PIN_9
+#define CH1_HI_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
-
+#define LENGTH_DATA_ADC 9
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

@@ -23,6 +23,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "keypad.h"
+#include "conversion_data.h"
+#include "regulator_cell_one.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -57,9 +59,10 @@
 
 /* External variables --------------------------------------------------------*/
 extern DMA_HandleTypeDef hdma_adc;
+extern DAC_HandleTypeDef hdac;
 extern TIM_HandleTypeDef htim6;
 /* USER CODE BEGIN EV */
-
+extern volatile uint32_t rawAdcData[LENGTH_DATA_ADC];
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -152,7 +155,9 @@ void DMA1_Channel1_IRQHandler(void)
   /* USER CODE END DMA1_Channel1_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_adc);
   /* USER CODE BEGIN DMA1_Channel1_IRQn 1 */
-
+//   SET_BIT(hdma_adc.DmaBaseAddress->IFCR, DMA_IFCR_CHTIF1);
+//   SET_BIT(hdma_adc.DmaBaseAddress->IFCR, DMA_IFCR_CTCIF1);
+   SET_BIT(hdma_adc.DmaBaseAddress->IFCR, DMA_IFCR_CGIF1);
   /* USER CODE END DMA1_Channel1_IRQn 1 */
 }
 
@@ -165,6 +170,7 @@ void TIM6_DAC_IRQHandler(void)
 
   /* USER CODE END TIM6_DAC_IRQn 0 */
   HAL_TIM_IRQHandler(&htim6);
+  HAL_DAC_IRQHandler(&hdac);
   /* USER CODE BEGIN TIM6_DAC_IRQn 1 */
   CLEAR_BIT(TIM6->SR, TIM_SR_UIF);
   /* USER CODE END TIM6_DAC_IRQn 1 */
@@ -178,6 +184,25 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 }
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc){
+	BatteryTester_ConversionData_calcPhisicValueFromAdcCodeEx(
+			rawAdcData, LENGTH_DATA_ADC);
+	if(BatteryTester_RegulatorCellOne_getRunStatus()){
+		float sp = BatteryTester_RegulatorCellOne_getSetpoint();
+		if(sp > 0.0){
+			BatteryTester_RegulatorCellOne_setPulse(
+					BatteryTester_RegulatorCellOne_updateBuck(sp,
+							BatteryTester_ConversionData_getPhisicValues().ch1_CurrentInA));
+		}
+		else
+			if(sp < 0.0){
+				BatteryTester_RegulatorCellOne_setPulse(
+						BatteryTester_RegulatorCellOne_updateBoost(sp,
+								BatteryTester_ConversionData_getPhisicValues().ch1_CurrentInA));
+			}
+			else{
+				BatteryTester_RegulatorCellOne_setPulse(0);
+			}
+	}
 
 }
 /* USER CODE END 1 */

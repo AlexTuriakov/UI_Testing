@@ -16,6 +16,8 @@
 #define NUM_TEMPERATURE 4
 #define DAC_RESOLUTION  4095
 
+#define TESTING
+
 /*@deprecated*/
 static sscaleFactors_t factors;
 
@@ -26,7 +28,9 @@ static sValueScale_t scale = {0};
 static sValueCalibrationOffset_t offset = {0};
 //volatile uint32_t dataAdc[10];
 static ntcSchemeParameters_t ntcParams[NUM_TEMPERATURE];
-BatteryTester_ConversionData_setDACCallback_t setDacCallback = 0;
+static BatteryTester_ConversionData_setDACCallback_t g_setDacCallback = 0;
+static BatteryTester_ConversionData_initCallback_t  g_initCallback = 0;
+static BatteryTester_ConversionData_stopCallback_t g_stopCallback = 0;
 static float valueRefOffsetInVolts = 2.7;
 
 /****************how use***************************
@@ -107,11 +111,15 @@ void BatteryTester_ConversionData_initScaleFactorsStruct(){
 
 	for(unsigned short i = 0; i < NUM_TEMPERATURE; i++){
 		ntcParams[i].factorB = 3950.0; //ppm/degC
-		ntcParams[i].resistanceOrigInOhm = 100000.0;
+		ntcParams[i].resistanceOrigInOhm = 10000.0;
 		ntcParams[i].resistanceUpInOhm = 10000.0;
 		ntcParams[i].temperatureOrigIndegC = 25.0;
 	}
 
+	offset.temp1IndegC =
+			offset.temp2IndegC =
+					offset.temp3IndegC =
+							offset.temp4IndegC = -30.0;
 }
 
 void BatteryTester_ConversionData_calcScale(void){
@@ -162,10 +170,10 @@ float BatteryTester_ConversionData_getRefOffsetInVolts(){
 }
 
 void BatteryTester_ConversionData_setRefOffsetInVolts(float newValue){
-	valueRefOffsetInVolts = newValue;
-	if(setDacCallback){
-		setDacCallback(BatteryTester_ConversionData_calcRefOffsetDacCode(newValue));
+	if(newValue < 0 || newValue > VREF){
+		return;
 	}
+	valueRefOffsetInVolts = newValue;
 }
 
 unsigned short BatteryTester_ConversionData_calcRefOffsetDacCode(float valueInVolts){
@@ -173,20 +181,27 @@ unsigned short BatteryTester_ConversionData_calcRefOffsetDacCode(float valueInVo
 }
 
 HAL_StatusTypeDef BatteryTester_ConversionData_initDecorator(
-		BatteryTester_ConversionData_initCallback_t initCallback){
+		BatteryTester_ConversionData_initCallback_t initCallback,
+		BatteryTester_ConversionData_setDACCallback_t setDacCallback,
+		 BatteryTester_ConversionData_stopCallback_t stopCallback){
 	HAL_StatusTypeDef res = BatteryTester_ConversionData_readDataFromEEPROM();
 	if (res != HAL_OK){
 //		return res;
 		BatteryTester_ConversionData_initScaleFactorsStruct();
 	}
 	BatteryTester_ConversionData_calcScale();
-	if(!initCallback){
+	g_initCallback = initCallback;
+	if(!g_initCallback){
 		return HAL_ERROR;
 	}
-	res = initCallback();
-	if(res != HAL_OK){
-		return res;
+	g_initCallback();
+
+	g_setDacCallback = setDacCallback;
+	if(!g_setDacCallback){
+		return HAL_ERROR;
 	}
+	BatteryTester_ConversionData_setDACRefOffset(valueRefOffsetInVolts);
+	g_stopCallback = stopCallback;
 	return HAL_OK;
 }
 
@@ -194,11 +209,14 @@ HAL_StatusTypeDef BatteryTester_ConversionData_initDecorator(
  * @Todo: Implementation required
  */
 HAL_StatusTypeDef BatteryTester_ConversionData_readDataFromEEPROM(){
+#ifdef TESTING
+	BatteryTester_ConversionData_initScaleFactorsStruct(); //
+#endif
 	return HAL_OK;
 }
 
 void BatteryTester_ConversionData_setDacDecorator(BatteryTester_ConversionData_setDACCallback_t callback){
-	setDacCallback = callback;
+	g_setDacCallback = callback;
 }
 
 sMinValueFromRange_t BatteryTester_ConversionData_getMinValueFromRange(){
@@ -238,4 +256,30 @@ void BatteryTester_ConversionData_setValueCalibrationOffset(sValueCalibrationOff
 	//offset = *newValue;
 	__BatteryTester_AuxiliaryFunction_copy(newValue, &offset,
 			sizeof(sValueCalibrationOffset_t) / sizeof(float));
+}
+
+void BatteryTester_ConversionData_startHardware(void){
+	if(!g_initCallback){
+		return;
+	}
+	g_initCallback();
+}
+
+void BatteryTester_ConversionData_stopHardware(void){
+	if(!g_stopCallback){
+		return;
+	}
+	g_stopCallback();
+}
+
+void BatteryTester_ConversionData_setDACRefOffset(float newValue){
+	if(!g_setDacCallback){
+		return;
+	}
+	BatteryTester_ConversionData_setRefOffsetInVolts(newValue);
+	g_setDacCallback(BatteryTester_ConversionData_calcRefOffsetDacCode(newValue));
+}
+
+sphisicValueEx_t BatteryTester_ConversionData_getPhisicValues(){
+	return value;
 }
