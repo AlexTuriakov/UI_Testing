@@ -81,6 +81,12 @@ void BatteryTester_HAL_stopAdcCallback(void);
 void BatteryTester_HAL_startCh1PwmCallback();
 void BatteryTester_HAL_stopCh1PwmCallback();
 void BatteryTester_HAL_setCh1PwmPulseCallback(unsigned int);
+void BatteryTester_HAL_startCh2PwmCallback();
+void BatteryTester_HAL_stopCh2PwmCallback();
+void BatteryTester_HAL_setCh2PwmPulseCallback(unsigned int);
+void BatteryTester_HAL_startThermostatCallback();
+void BatteryTester_HAL_stopThermostatCallback();
+void BatteryTester_HAL_setThermostatPwmPulseCallback(int pulse);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -148,10 +154,16 @@ int main(void)
   		  BatteryTester_HAL_startCh1PwmCallback,
   		  BatteryTester_HAL_stopCh1PwmCallback,
   		  BatteryTester_HAL_setCh1PwmPulseCallback);
+  BatteryTester_RegulatorCellTwo_initDecorator(
+		  BatteryTester_HAL_startCh2PwmCallback,
+		  BatteryTester_HAL_stopCh2PwmCallback,
+		  BatteryTester_HAL_setCh2PwmPulseCallback);
+  BatteryTester_ClimatRegulator_initDecorator(
+		  BatteryTester_HAL_startThermostatCallback,
+		  BatteryTester_HAL_stopThermostatCallback,
+		  BatteryTester_HAL_setThermostatPwmPulseCallback);
   BatteryTester_CellsVoltcontrol_initVoltageProtectCells();
-  BatteryTester_ClimatRegulator_init();
   BatteryTester_DessipatorControl_initHeaterControl();
-  BatteryTester_RegulatorCellTwo_init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -726,6 +738,65 @@ void BatteryTester_HAL_stopCh1PwmCallback(){
 
 void BatteryTester_HAL_setCh1PwmPulseCallback(unsigned int pulse){
 	WRITE_REG(htim17.Instance->CCR1, pulse);
+}
+
+void BatteryTester_HAL_startCh2PwmCallback(){
+	if(HAL_TIM_PWM_Start(&htim17, TIM_CHANNEL_1) != HAL_OK){
+		Error_Handler();
+	}
+	if(HAL_TIMEx_PWMN_Start(&htim17, TIM_CHANNEL_1) != HAL_OK){
+		Error_Handler();
+	}
+}
+
+void BatteryTester_HAL_stopCh2PwmCallback(){
+	if(HAL_TIM_PWM_Stop(&htim17, TIM_CHANNEL_1) != HAL_OK){
+		Error_Handler();
+	}
+	if(HAL_TIMEx_PWMN_Stop(&htim17, TIM_CHANNEL_1) != HAL_OK){
+		Error_Handler();
+	}
+}
+
+void BatteryTester_HAL_setCh2PwmPulseCallback(unsigned int pulse){
+	WRITE_REG(htim17.Instance->CCR1, pulse);
+}
+
+void BatteryTester_HAL_startThermostatCallback(){
+	if(HAL_TIM_PWM_Start(&htim17, TIM_CHANNEL_1) != HAL_OK){
+		Error_Handler();
+	}
+	if(HAL_TIMEx_PWMN_Start(&htim17, TIM_CHANNEL_1) != HAL_OK){
+		Error_Handler();
+	}
+	if(HAL_TIM_PWM_Start(&htim16, TIM_CHANNEL_1) != HAL_OK){
+		Error_Handler();
+	}
+	if(HAL_TIMEx_PWMN_Start(&htim16, TIM_CHANNEL_1) != HAL_OK){
+		Error_Handler();
+	}
+}
+
+void BatteryTester_HAL_stopThermostatCallback(){
+	if(HAL_TIM_PWM_Stop(&htim17, TIM_CHANNEL_1) != HAL_OK){
+		Error_Handler();
+	}
+	if(HAL_TIMEx_PWMN_Stop(&htim17, TIM_CHANNEL_1) != HAL_OK){
+		Error_Handler();
+	}
+	if(HAL_TIM_PWM_Stop(&htim16, TIM_CHANNEL_1) != HAL_OK){
+		Error_Handler();
+	}
+	if(HAL_TIMEx_PWMN_Stop(&htim16, TIM_CHANNEL_1) != HAL_OK){
+		Error_Handler();
+	}
+}
+
+void BatteryTester_HAL_setThermostatPwmPulseCallback(int pulse){
+	unsigned int pulsePhA = 50 + pulse / 2;
+	unsigned int pulsePhB = 50 - pulse / 2;
+	WRITE_REG(htim17.Instance->CCR1, pulsePhA);
+	WRITE_REG(htim16.Instance->CCR1, pulsePhB);
 }
 /* USER CODE END 4 */
 

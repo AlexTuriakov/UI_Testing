@@ -25,6 +25,8 @@
 #include "keypad.h"
 #include "conversion_data.h"
 #include "regulator_cell_one.h"
+#include "regulator_cell_two.h"
+#include "climat_regulator.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -203,6 +205,28 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc){
 				BatteryTester_RegulatorCellOne_setPulse(0);
 			}
 	}
-
+	if(BatteryTester_RegulatorCellTwo_getRunStatus()){
+		float sp = BatteryTester_RegulatorCellTwo_getSetpoint();
+		if(sp > 0.0){
+			BatteryTester_RegulatorCellTwo_setPulse(
+					BatteryTester_RegulatorCellTwo_updateBuck(sp,
+							BatteryTester_ConversionData_getPhisicValues().ch2_CurrentInA));
+		}
+		else
+			if(sp < 0.0){
+				BatteryTester_RegulatorCellTwo_setPulse(
+						BatteryTester_RegulatorCellTwo_updateBoost(sp,
+								BatteryTester_ConversionData_getPhisicValues().ch2_CurrentInA));
+			}
+			else{
+				BatteryTester_RegulatorCellTwo_setPulse(0);
+			}
+	}
+	if(BatteryTester_ClimatRegulator_getRunStatus()){
+		float sp = BatteryTester_ClimatRegulator_getSetpoint();
+		BatteryTester_ClimatRegulator_setPulse(
+				BatteryTester_ClimatRegulator_update(sp,
+						BatteryTester_ConversionData_getPhisicValues().AverageTemps));
+	}
 }
 /* USER CODE END 1 */

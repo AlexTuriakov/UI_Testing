@@ -12,7 +12,7 @@
 
 
 #define VREF 3.0
-#define RESOLUTION 65535
+#define RESOLUTION 4095
 #define NUM_TEMPERATURE 4
 #define DAC_RESOLUTION  4095
 
@@ -76,7 +76,7 @@ void BatteryTester_ConversionData_calcPhisicValueFromAdcCodeEx(
 		*(((float*)&value) + i) = rawData[i] * *(((float*)&scale) + i) + *(((float*)&offset) + i);
 	}
 	BatteryTester_ConversionData_calcPhisicTemperatureEx(rawData, sizeDataEx);
-	value.AvaregeTemps =
+	value.AverageTemps =
 			(value.temp1IndegC +
 			value.temp2IndegC +
 			value.temp3IndegC +
@@ -116,10 +116,10 @@ void BatteryTester_ConversionData_initScaleFactorsStruct(){
 		ntcParams[i].temperatureOrigIndegC = 25.0;
 	}
 
-	offset.temp1IndegC =
+	/*offset.temp1IndegC =
 			offset.temp2IndegC =
 					offset.temp3IndegC =
-							offset.temp4IndegC = -30.0;
+							offset.temp4IndegC = 0.0;*/
 }
 
 void BatteryTester_ConversionData_calcScale(void){
@@ -135,17 +135,17 @@ inline void BatteryTester_ConversionData_calcPhisicTemperatureEx(
 	if(!pValue || sizeDataEx < sizeData){// end item to be AvaregeTemps
 		return;
 	}
-
+	float temp;
 	const uint32_t size = sizeDataEx - NUM_TEMPERATURE;
-	for(int i = --sizeDataEx, j = 0; i >= size; i--, j++ ){
-		*(((float*)&value) + i) = 1 /
-		(1 / ntcParams[j].temperatureOrigIndegC +
-		1 / ntcParams[j].factorB *
-		log(*(((float*)pValue) + i) /
-		(RESOLUTION - *(pValue + i)) *
-		ntcParams[j].resistanceUpInOhm / ntcParams[j].resistanceOrigInOhm));
-		*(((float*)&value) + i) += *(((float*)&offset) + i);
+	for(int i = --sizeDataEx, j = NUM_TEMPERATURE - 1; i >= size; i--, j-- ){
+		temp = ntcParams[j].resistanceUpInOhm / ntcParams[j].resistanceOrigInOhm;
+		temp /= (float)RESOLUTION / pValue[i] - 1.0f;
+		temp = log(temp) / ntcParams[j].factorB + 1.0f / (ntcParams[j].temperatureOrigIndegC/* + 273.15f*/);
+		temp = 1.0f / temp/* - 273.15f*/ + *(((float*)&offset) + i);
+		*(((float*)&value) + i) = temp;
 	}
+
+
 }
 
 ntcSchemeParameters_t BatteryTester_ConversionData_getNtcSchemeParams(unsigned short index){

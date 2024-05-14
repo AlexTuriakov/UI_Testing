@@ -228,6 +228,15 @@
 	void BatteryTester_Menu_selectSetCh1Setpoint(void);
 	void BatteryTester_Menu_enterSetCh1Setpoint(void);
 	void BatteryTester_Menu_enterToggleRunCh1(void);
+	void BatteryTester_Menu_selectToggleRunCh1(void);
+	void BatteryTester_Menu_selectSetCh2Setpoint(void);
+	void BatteryTester_Menu_enterSetCh2Setpoint(void);
+	void BatteryTester_Menu_selectToggleRunCh2(void);
+	void BatteryTester_Menu_enterToggleRunCh2(void);
+	void BatteryTester_Menu_selectSetThermostatSetpoint(void);
+	void BatteryTester_Menu_enterSetThermostatSetpoint(void);
+	void BatteryTester_Menu_selectToggleThermostat(void);
+	void BatteryTester_Menu_enterToggleThermostat(void);
 
 	void BatteryTester_Menu_init();
 #endif /* INC_MENU_H_ */

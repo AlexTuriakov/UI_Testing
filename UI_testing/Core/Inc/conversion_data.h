@@ -51,7 +51,7 @@ typedef struct _sphisicValueEx_t{
 	float temp2IndegC;
 	float temp3IndegC;
 	float temp4IndegC;
-	float AvaregeTemps;
+	float AverageTemps;
 } sphisicValueEx_t;
 
 typedef struct _ntcSchemeParameters_t{

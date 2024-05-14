@@ -206,21 +206,22 @@ MENU_ITEM(menuCh2CellVoltCtrlMax, menuCh2CellVoltCtrlMin, menuCh2CellVoltCtrlMin
 MENU_ITEM(menuStartCh1Sp, menuStartCh1On, menuStartCh1State, menuStartCh1, menuSetCh1Sp,
 		0, 0, "Start channel 1 setpoint...");
 MENU_ITEM(menuStartCh1On, menuStartCh1State, menuStartCh1Sp, menuStartCh1, NULL_MENU,
-		0, BatteryTester_Menu_enterToggleRunCh1, "Toggle on/off   channel 1");
+		BatteryTester_Menu_selectToggleRunCh1, BatteryTester_Menu_enterToggleRunCh1,
+		"");
 MENU_ITEM(menuStartCh1State, menuStartCh1Sp, menuStartCh1On, menuStartCh1, NULL_MENU,
 		0, 0, "Start channel 1 status...");
 /*SUBMENU Start Ch2... LEVEL 3*/
-MENU_ITEM(menuStartCh2Sp, menuStartCh2On, menuStartCh2State, menuStartCh2, NULL_MENU,
+MENU_ITEM(menuStartCh2Sp, menuStartCh2On, menuStartCh2State, menuStartCh2, menuSetCh2Sp,
 		0, 0, "Start channel 2 setpoint...");
 MENU_ITEM(menuStartCh2On, menuStartCh2State, menuStartCh2Sp, menuStartCh2, NULL_MENU,
-		0, 0, "Start channel 2 on/off...");
+		BatteryTester_Menu_selectToggleRunCh2, BatteryTester_Menu_enterToggleRunCh2, "");
 MENU_ITEM(menuStartCh2State, menuStartCh2Sp, menuStartCh2On, menuStartCh2, NULL_MENU,
 		0, 0, "Start channel 2 status...");
 /*SUBMENU Start Tstat... LEVEL 3*/
-MENU_ITEM(menuStartTstatSp, menuStartTstatOn, menuStartTstatState, menuStartThermostat, NULL_MENU,
+MENU_ITEM(menuStartTstatSp, menuStartTstatOn, menuStartTstatState, menuStartThermostat, menuSetTstatSp,
 		0, 0, "Start thermostatsetpoint...");
 MENU_ITEM(menuStartTstatOn, menuStartTstatState, menuStartTstatSp, menuStartThermostat, NULL_MENU,
-		0, 0, "Start thermostaron/off...");
+		BatteryTester_Menu_selectToggleThermostat, BatteryTester_Menu_enterToggleThermostat, "");
 MENU_ITEM(menuStartTstatState, menuStartTstatSp, menuStartTstatOn, menuStartThermostat, NULL_MENU,
 		0, 0, "Start thermostatstatus...");
 /*SUBMENU Start Dessipator... LEVEL 3*/
@@ -500,6 +501,14 @@ MENU_ITEM(menuSetRefOffset, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
 /*SUBMENU Start channel 1 setpoint... LEVEL 4*/
 MENU_ITEM(menuSetCh1Sp, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
 		BatteryTester_Menu_selectSetCh1Setpoint, BatteryTester_Menu_enterSetCh1Setpoint, "");
+
+/*SUBMENU Start channel 1 setpoint... LEVEL 4*/
+MENU_ITEM(menuSetCh2Sp, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
+		BatteryTester_Menu_selectSetCh2Setpoint, BatteryTester_Menu_enterSetCh2Setpoint, "");
+
+/*SUBMENU Start channel 1 setpoint... LEVEL 4*/
+MENU_ITEM(menuSetTstatSp, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
+		BatteryTester_Menu_selectSetThermostatSetpoint, BatteryTester_Menu_enterSetThermostatSetpoint, "");
 /** \internal
  *  Pointer to the generic menu text display function
  *  callback, to display the configured text of a menu item
@@ -1422,10 +1431,75 @@ void BatteryTester_Menu_enterSetCh1Setpoint(void){
 		BatteryTester_Menu_returnInMenu(&menuStartCh1Sp);
 }
 
-void BatteryTester_Menu_enterToggleRunCh1(void){
-	BatteryTester_RegulatorCellOne_toggleRunMode();
+void BatteryTester_Menu_selectToggleRunCh1(void){
+	if (MenuWriteFunc){
+		if(BatteryTester_RegulatorCellOne_getRunStatus()){
+			MenuWriteFunc("Switch off      channel 1");
+		}
+		else{
+			MenuWriteFunc("Switch on       channel 1");
+		}
+	}
 }
 
+void BatteryTester_Menu_enterToggleRunCh1(void){
+	BatteryTester_RegulatorCellOne_toggleRunMode();
+	BatteryTester_Menu_returnInMenu(&menuStartCh1On);
+}
+
+void BatteryTester_Menu_selectSetCh2Setpoint(void){
+	BatteryTester_Menu_selectSetNewValue("Ch2 Sp, A",
+			BatteryTester_RegulatorCellTwo_getSetpoint());
+}
+
+void BatteryTester_Menu_enterSetCh2Setpoint(void){
+	BatteryTester_RegulatorCellTwo_setSetpoint(
+			BatteryTester_State_sendNewParamFromState());
+	BatteryTester_Menu_returnInMenu(&menuStartCh2Sp);
+}
+
+void BatteryTester_Menu_selectToggleRunCh2(void){
+	if (MenuWriteFunc){
+		if(BatteryTester_RegulatorCellTwo_getRunStatus()){
+			MenuWriteFunc("Switch off      channel 2");
+		}
+		else{
+			MenuWriteFunc("Switch on       channel 2");
+		}
+	}
+}
+
+void BatteryTester_Menu_enterToggleRunCh2(void){
+	BatteryTester_RegulatorCellTwo_toggleRunMode();
+	BatteryTester_Menu_returnInMenu(&menuStartCh2On);
+}
+
+void BatteryTester_Menu_selectSetThermostatSetpoint(void){
+	BatteryTester_Menu_selectSetNewValue("Thermost. Sp, \xdf\x43",
+			BatteryTester_ClimatRegulator_getSetpoint());
+}
+
+void BatteryTester_Menu_enterSetThermostatSetpoint(void){
+	BatteryTester_ClimatRegulator_setSetpoint(
+				BatteryTester_State_sendNewParamFromState());
+		BatteryTester_Menu_returnInMenu(&menuStartTstatSp);
+}
+
+void BatteryTester_Menu_selectToggleThermostat(void){
+	if (MenuWriteFunc){
+		if(BatteryTester_ClimatRegulator_getRunStatus()){
+			MenuWriteFunc("Switch off      thermostat");
+		}
+		else{
+			MenuWriteFunc("Switch on       thermostat");
+		}
+	}
+}
+
+void BatteryTester_Menu_enterToggleThermostat(void){
+	BatteryTester_ClimatRegulator_toggleRunMode();
+	BatteryTester_Menu_returnInMenu(&menuStartTstatOn);
+}
 /*@brief:
  * Fill in the top line of the display.
  * Change the state and pass the parameter.

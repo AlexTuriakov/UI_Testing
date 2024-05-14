@@ -54,6 +54,9 @@ typedef struct _sPWMSettings_t{
     float maxPidOutput;
     float scale;
     float periodPwm;
+    /*@brief: deadTime
+     * @deprecated
+     */
     float deadTime;
 } sPWMSettings_t;
 
@@ -86,55 +89,20 @@ float PID_update(volatile sPIDController_t *pid, float setpoint, float feedback)
  *
  * */
 HAL_StatusTypeDef PID_initPWM(
-		volatile sPIDController_t* pidSettings,
-		volatile sPWMSettings_t* pwmSettings,
-		float minDutyInPercent,
-		float maxDutyInPercent,
-		float periodPwm
+		volatile sPIDController_t*,
+		volatile sPWMSettings_t*,
+		float,
+		float,
+		float
 		);
-
-/**
- * @brief Визволити  захвачені ресурси
- * */
 void PID_deinitPWM(sPWMSettings_t* pwmSettings);
-
-/*
- * @brief
- * */
-unsigned int PID_calcOutputToPWM(volatile sPWMSettings_t* pwmSettings,
-		float pidOut);
-
-/*
- * @brief
- * */
-void PID_setProportionalFactor(volatile sPIDController_t *pid,
-		float kp);
-
-/*
- * @brief
- * */
-void PID_setIntegralFactor(volatile sPIDController_t *pid,
-		float ki);
-
-/*
- * @brief
- * */
-void PID_setDerivativeFactor(volatile sPIDController_t *pid,
-		float kd);
-
-/*
- * @brief
- * */
-void PID_setTime(volatile sPIDController_t *pid,
-		float dt);
-
-/*
- * @brief
- * */
-void TA_setLimits(volatile sPIDController_t *pid,
-		float min,
-		float max);
-
-void PID_resetAccumulatedDeviation(volatile sPIDController_t *ppid);
+int PID_calcOutputToPWM(volatile sPWMSettings_t*, float);
+void PID_setProportionalFactor(volatile sPIDController_t *,	float);
+void PID_setIntegralFactor(volatile sPIDController_t *,	float);
+void PID_setDerivativeFactor(volatile sPIDController_t *, float);
+void PID_setTime(volatile sPIDController_t *, float);
+void TA_setLimits(volatile sPIDController_t *, float, float);
+void PID_resetAccumulatedDeviation(volatile sPIDController_t *);
+float PID_updateDelta(volatile sPIDController_t *, float, float);
 
 #endif /* INC_PID_REGULATOR_H_ */

@@ -9,9 +9,24 @@
 #define INC_CLIMAT_REGULATOR_H_
 
 #include "pid_regulator.h"
+/*
+ * @brief:
+ * @deprecated
+ */
 typedef void (*BatteryTester_ClimatRegulator_callbackChangeSettingsPwm_t)(unsigned int newValue);
 
-void BatteryTester_ClimatRegulator_init();
+typedef enum{
+	THERMOSTAT_RUN_OFF,
+	THERMOSTAT_RUN_ON
+} eThermostatRun_t;
+
+typedef void (*BatteryTester_ClimatRegulator_HardwareCallback_t)(void);
+typedef void (*BatteryTester_ClimatRegulator_setHardwarePwmPulseCallback_t)(int pulse);
+
+void BatteryTester_ClimatRegulator_initDecorator(
+		BatteryTester_ClimatRegulator_HardwareCallback_t,
+		BatteryTester_ClimatRegulator_HardwareCallback_t,
+		BatteryTester_ClimatRegulator_setHardwarePwmPulseCallback_t);
 void BatteryTester_ClimatRegulator_onPWMModeHeat();
 void BatteryTester_ClimatRegulator_onPWMModeCool();
 void BatteryTester_ClimatRegulator_selectPWMMode(float, float);
@@ -29,4 +44,14 @@ void BatteryTester_ClimatRegulator_startPhBHigh();
 void BatteryTester_ClimatRegulator_calcScalePwmClimatSettings();
 void BatteryTester_ClimatRegulator_setCallbackChangePeriodPwm(void (*callback)(unsigned int newValue));
 void BatteryTester_ClimatRegulator_setCallbackChangeDeadTimePwm(void (*callback)(unsigned int newValue));
+void BatteryTester_ClimatRegulator__setPWMSettings(sPWMSettings_t*);
+float BatteryTester_ClimatRegulator_getSetpoint();
+void BatteryTester_ClimatRegulator_setSetpoint(float);
+eThermostatRun_t BatteryTester_ClimatRegulator_getRunStatus();
+void BatteryTester_ClimatRegulator_toggleRunMode();
+HAL_StatusTypeDef BatteryTester_ClimatRegulator_readDataFromEEPROM();
+void BatteryTester_ClimatRegulator_startHardware();
+void BatteryTester_ClimatRegulator_stopHardware();
+void BatteryTester_ClimatRegulator_setPulse(int);
+
 #endif /* INC_CLIMAT_REGULATOR_H_ */

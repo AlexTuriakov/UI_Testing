@@ -11,6 +11,7 @@
 #include "regulator_cell_one.h"
 #include "conversion_data.h"
 #include "auxiliary_function.h"
+#include <stdlib.h>
 
 #define TESTING
 /*
@@ -50,8 +51,8 @@ void BatteryTester_RegulatorCellOne_initDecorator(
 		regulatorBuckSettingsCellOne.minLimit = 0.0;
 
 		pwmBuckSettingsCellOne.maxDutyCycle = 50;
-		pwmBuckSettingsCellOne.minDutyCycle = 10;
-		pwmBuckSettingsCellOne.periodPwm = 500;
+		pwmBuckSettingsCellOne.minDutyCycle = 5;
+		pwmBuckSettingsCellOne.periodPwm = 499;
 		pwmBuckSettingsCellOne.minPidOutput = regulatorBuckSettingsCellOne.minLimit;
 		pwmBuckSettingsCellOne.maxPidOutput = regulatorBuckSettingsCellOne.maxLimit;
 		pwmBuckSettingsCellOne.scale = (float)(pwmBuckSettingsCellOne.maxDutyCycle - pwmBuckSettingsCellOne.minDutyCycle) /
@@ -64,9 +65,9 @@ void BatteryTester_RegulatorCellOne_initDecorator(
 		regulatorBoostSettingsCellOne.maxLimit = 18;
 		regulatorBoostSettingsCellOne.minLimit = 0.0;
 
-		pwmBoostSettingsCellOne.maxDutyCycle = 90;
+		pwmBoostSettingsCellOne.maxDutyCycle = 95;
 		pwmBoostSettingsCellOne.minDutyCycle = 50;
-		pwmBoostSettingsCellOne.periodPwm = 500;
+		pwmBoostSettingsCellOne.periodPwm = 499;
 		pwmBoostSettingsCellOne.minPidOutput = regulatorBoostSettingsCellOne.minLimit;
 		pwmBoostSettingsCellOne.maxPidOutput = regulatorBoostSettingsCellOne.maxLimit;
 		pwmBoostSettingsCellOne.scale = (float)(pwmBoostSettingsCellOne.maxDutyCycle - pwmBoostSettingsCellOne.minDutyCycle) /
@@ -136,6 +137,9 @@ void BatteryTester_RegulatorCellOne_setBuckRegulatorSettings(sPIDController_t* p
 	if(regulatorBuckSettingsCellOne.maxLimit != pSettings->maxLimit){
 		pwmBuckSettingsCellOne.maxPidOutput = pSettings->maxLimit;
 	}
+	pwmBuckSettingsCellOne.scale = (float)(pwmBuckSettingsCellOne.maxDutyCycle -
+			pwmBuckSettingsCellOne.minDutyCycle) /
+			(regulatorBuckSettingsCellOne.maxLimit - regulatorBuckSettingsCellOne.minLimit);
 	unsigned int size = sizeof(sPIDController_t) / sizeof(float);
 	__BatteryTester_AuxiliaryFunction_copy(
 			(void*)pSettings, (void*)&regulatorBuckSettingsCellOne, size);
@@ -168,6 +172,9 @@ void BatteryTester_RegulatorCellOne_setBoostRegulatorSettings(sPIDController_t* 
 	if(regulatorBoostSettingsCellOne.maxLimit != pSettings->maxLimit){
 		pwmBoostSettingsCellOne.maxPidOutput = pSettings->maxLimit;
 	}
+	pwmBoostSettingsCellOne.scale = (float)(pwmBoostSettingsCellOne.maxDutyCycle -
+			pwmBoostSettingsCellOne.minDutyCycle) /
+			(regulatorBoostSettingsCellOne.maxLimit - regulatorBoostSettingsCellOne.minLimit);
 	unsigned int size = sizeof(sPIDController_t) / sizeof(float);
 	__BatteryTester_AuxiliaryFunction_copy(
 			(void*)pSettings, (void*)&regulatorBoostSettingsCellOne, size);
@@ -225,34 +232,34 @@ void BatteryTester_RegulatorCellOne_toggleRunMode(){
 HAL_StatusTypeDef BatteryTester_RegulatorCellOne_readDataFromEEPROM(){
 #ifdef TESTING
 	regulatorBuckSettingsCellOne.Kd = 0.0;
-		regulatorBuckSettingsCellOne.Ki = -0.1;
-		regulatorBuckSettingsCellOne.Kp = 10.0;
-		regulatorBuckSettingsCellOne.dt = 1.0 / 16000;
-		regulatorBuckSettingsCellOne.maxLimit = 18.0;
-		regulatorBuckSettingsCellOne.minLimit = 0.0;
+	regulatorBuckSettingsCellOne.Ki = -0.1;
+	regulatorBuckSettingsCellOne.Kp = 10.0;
+	regulatorBuckSettingsCellOne.dt = 1.0 / 16000;
+	regulatorBuckSettingsCellOne.maxLimit = 18.0;
+	regulatorBuckSettingsCellOne.minLimit = 0.0;
 
-		pwmBuckSettingsCellOne.maxDutyCycle = 50;
-		pwmBuckSettingsCellOne.minDutyCycle = 10;
-		pwmBuckSettingsCellOne.periodPwm = 500;
-		pwmBuckSettingsCellOne.minPidOutput = regulatorBuckSettingsCellOne.minLimit;
-		pwmBuckSettingsCellOne.maxPidOutput = regulatorBuckSettingsCellOne.maxLimit;
-		pwmBuckSettingsCellOne.scale = (float)(pwmBuckSettingsCellOne.maxDutyCycle - pwmBuckSettingsCellOne.minDutyCycle) /
-				(regulatorBuckSettingsCellOne.maxLimit - regulatorBuckSettingsCellOne.minLimit);
-	//// BOOST CONVERTER //////////////
-		regulatorBoostSettingsCellOne.Kd = 0.0;
-		regulatorBoostSettingsCellOne.Ki = -0.1;
-		regulatorBoostSettingsCellOne.Kp = 10.0;
-		regulatorBoostSettingsCellOne.dt = 1.0 / 16000;
-		regulatorBoostSettingsCellOne.maxLimit = 18;
-		regulatorBoostSettingsCellOne.minLimit = 0.0;
+	pwmBuckSettingsCellOne.maxDutyCycle = 50;
+	pwmBuckSettingsCellOne.minDutyCycle = 10;
+	pwmBuckSettingsCellOne.periodPwm = 499;
+	pwmBuckSettingsCellOne.minPidOutput = regulatorBuckSettingsCellOne.minLimit;
+	pwmBuckSettingsCellOne.maxPidOutput = regulatorBuckSettingsCellOne.maxLimit;
+	pwmBuckSettingsCellOne.scale = (float)(pwmBuckSettingsCellOne.maxDutyCycle - pwmBuckSettingsCellOne.minDutyCycle) /
+			(regulatorBuckSettingsCellOne.maxLimit - regulatorBuckSettingsCellOne.minLimit);
+//// BOOST CONVERTER //////////////
+	regulatorBoostSettingsCellOne.Kd = 0.0;
+	regulatorBoostSettingsCellOne.Ki = -0.1;
+	regulatorBoostSettingsCellOne.Kp = 10.0;
+	regulatorBoostSettingsCellOne.dt = 1.0 / 16000;
+	regulatorBoostSettingsCellOne.maxLimit = 18;
+	regulatorBoostSettingsCellOne.minLimit = 0.0;
 
-		pwmBoostSettingsCellOne.maxDutyCycle = 90;
-		pwmBoostSettingsCellOne.minDutyCycle = 50;
-		pwmBoostSettingsCellOne.periodPwm = 500;
-		pwmBoostSettingsCellOne.minPidOutput = regulatorBoostSettingsCellOne.minLimit;
-		pwmBoostSettingsCellOne.maxPidOutput = regulatorBoostSettingsCellOne.maxLimit;
-		pwmBoostSettingsCellOne.scale = (float)(pwmBoostSettingsCellOne.maxDutyCycle - pwmBoostSettingsCellOne.minDutyCycle) /
-				(regulatorBoostSettingsCellOne.maxLimit - regulatorBoostSettingsCellOne.minLimit);
+	pwmBoostSettingsCellOne.maxDutyCycle = 90;
+	pwmBoostSettingsCellOne.minDutyCycle = 50;
+	pwmBoostSettingsCellOne.periodPwm = 499;
+	pwmBoostSettingsCellOne.minPidOutput = regulatorBoostSettingsCellOne.minLimit;
+	pwmBoostSettingsCellOne.maxPidOutput = regulatorBoostSettingsCellOne.maxLimit;
+	pwmBoostSettingsCellOne.scale = (float)(pwmBoostSettingsCellOne.maxDutyCycle - pwmBoostSettingsCellOne.minDutyCycle) /
+			(regulatorBoostSettingsCellOne.maxLimit - regulatorBoostSettingsCellOne.minLimit);
 #endif
 	return HAL_OK;
 }
@@ -271,6 +278,6 @@ void BatteryTester_RegulatorCellOne_stopHardware(){
 
 void BatteryTester_RegulatorCellOne_setPulse(unsigned int pulse){
 	if(g_setPulse){
-		g_setPulse(pulse);
+		g_setPulse(abs(pulse));
 	}
 }
