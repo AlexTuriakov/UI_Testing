@@ -24,7 +24,7 @@ typedef void (*BatteryTester_ClimatRegulator_setPWMSettingsNew_t)(sPWMSettings_t
 static sPIDController_t regulatorClimatSettings = {0};
 static sPWMSettings_t pwmClimatSettings = {0};
 static float startSetpoint = 0.0;
-static eThermostatRun_t on = THERMOSTAT_RUN_ON;
+static eThermostatRun_t on = THERMOSTAT_RUN_OFF;
 static BatteryTester_ClimatRegulator_HardwareCallback_t g_startHardware = 0;
 static BatteryTester_ClimatRegulator_HardwareCallback_t g_stopHardware = 0;
 static BatteryTester_ClimatRegulator_setHardwarePwmPulseCallback_t g_setPulse = 0;
