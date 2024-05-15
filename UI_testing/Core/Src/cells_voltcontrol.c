@@ -74,6 +74,9 @@ eBatteryCellVoltageStatusProtect_t BatteryTester_CellsVoltcontrol_getStatusProte
 	return VOLTAGE_PROTECT_CELL_OFF;
 }
 
+/*@brief: BatteryTester_CellsVoltcontrol_resetProtectVoltageCellx
+ *@deprecated
+ */
 void BatteryTester_CellsVoltcontrol_resetProtectVoltageCellx(eBatteryCellSelector_t cell){
 	switch(cell){
 	case CELL_ONE:{
