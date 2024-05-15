@@ -30,6 +30,7 @@
 #include "regulator_cell_one.h"
 #include "regulator_cell_two.h"
 #include "conversion_data.h"
+#include "cells_voltcontrol.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -170,6 +171,9 @@ int main(void)
   BatteryTester_DessipatorControl_initDecorator(
 		  BatteryTester_HAL_onDessipatorHardwareCallback,
 		  BatteryTester_HAL_offDessipatorHardwareCallback, 0, 0);
+  BatteryTester_CellsVoltcontrol_initDecorator(
+		  BatteryTester_HAL_isStartCh1PwmCallback,
+		  BatteryTester_HAL_isStartCh2PwmCallback);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -908,6 +912,14 @@ void BatteryTester_HAL_offDessipatorHardwareCallback(){
 				Fan_Control_GPIO_Port,
 				Fan_Control_Pin,
 				GPIO_PIN_RESET);
+}
+
+eBool_t BatteryTester_HAL_isStartCh1PwmCallback(){
+
+}
+
+eBool_t BatteryTester_HAL_isStartCh2PwmCallback(){
+
 }
 /* USER CODE END 4 */
 
