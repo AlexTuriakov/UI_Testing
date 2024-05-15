@@ -92,6 +92,8 @@ void BatteryTester_HAL_stopThermostatCallback();
 void BatteryTester_HAL_setThermostatPwmPulseCallback(int pulse);
 void BatteryTester_HAL_onDessipatorHardwareCallback();
 void BatteryTester_HAL_offDessipatorHardwareCallback();
+eBool_t BatteryTester_HAL_isStartCh1PwmCallback();
+eBool_t BatteryTester_HAL_isStartCh2PwmCallback();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -915,11 +917,11 @@ void BatteryTester_HAL_offDessipatorHardwareCallback(){
 }
 
 eBool_t BatteryTester_HAL_isStartCh1PwmCallback(){
-
+	return TRUE;
 }
 
 eBool_t BatteryTester_HAL_isStartCh2PwmCallback(){
-
+	return TRUE;
 }
 /* USER CODE END 4 */
 
