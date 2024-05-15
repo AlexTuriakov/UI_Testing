@@ -9,6 +9,7 @@
 
 #define TESTING
 
+/*********declaration of variables***********/
 static sVoltRange_t dessipatorControlRange = {0};
 static eDessipatorStatus_t dessipatorStatus = DESSIPATOR_OFF;
 static BatteryTester_DessipatorControl_toggleHardware_t g_onHeaterCallback = 0;
@@ -17,7 +18,7 @@ static BatteryTester_DessipatorControl_toggleHardware_t g_onFanCallback = 0;
 static BatteryTester_DessipatorControl_toggleHardware_t g_offFanCallback = 0;
 
 
-
+/**********functional implementation**************/
 void BatteryTester_DessipatorControl_initDecorator(
 		BatteryTester_DessipatorControl_toggleHardware_t onHeaterCallback,
 		BatteryTester_DessipatorControl_toggleHardware_t offHeaterCallback,
@@ -58,51 +59,30 @@ void BattetyTester_DessipatorControl_onHeaterControl(float inputBusVoltage){
 }
 
 void BatteryTester_DessipatorControl_onHeater(){
-/*	HAL_GPIO_WritePin(
-			Heater_Control_GPIO_Port,
-			Heater_Control_Pin,
-			GPIO_PIN_SET);*/
+/*	HAL_GPIO_WritePin(Heater_Control_GPIO_Port,Heater_Control_Pin,GPIO_PIN_SET);*/
 	if(g_onHeaterCallback){
 		g_onHeaterCallback();
 		dessipatorStatus = DESSIPATOR_ON;
 	}
 }
 
-/*@brief: BatteryTester_DessipatorControl_offHeater
- * @deprecated
- */
 void BatteryTester_DessipatorControl_offHeater(){
-/*	HAL_GPIO_WritePin(
-			Heater_Control_GPIO_Port,
-			Heater_Control_Pin,
-			GPIO_PIN_RESET);*/
+/*	HAL_GPIO_WritePin(Heater_Control_GPIO_Port,Heater_Control_Pin,GPIO_PIN_RESET);*/
 	if(g_offHeaterCallback){
 		g_offHeaterCallback();
 		dessipatorStatus = DESSIPATOR_OFF;
 	}
 }
 
-/*@brief: BatteryTester_DessipatorControl_onFan
- * @deprecated
- */
 void BatteryTester_DessipatorControl_onFan(){
-/*	HAL_GPIO_WritePin(
-			Fan_Control_GPIO_Port,
-			Fan_Control_Pin,
-			GPIO_PIN_SET);*/
+/*	HAL_GPIO_WritePin(Fan_Control_GPIO_Port,Fan_Control_Pin,GPIO_PIN_SET);*/
 	if(g_onFanCallback){
 		g_onFanCallback();
 	}
 }
 
-/*@brief: BatteryTester_DessipatorControl_offFan
- * @deprecated
- */
 void BatteryTester_DessipatorControl_offFan(){
-/*	HAL_GPIO_WritePin(
-			Fan_Control_GPIO_Port,
-			Fan_Control_Pin,
-			GPIO_PIN_RESET);*/
+/*	HAL_GPIO_WritePin(Fan_Control_GPIO_Port,Fan_Control_Pin,GPIO_PIN_RESET);*/
 	if(g_offFanCallback){
 		g_offFanCallback();
 	}
@@ -123,6 +103,10 @@ void BatteryTester_DessipatorControl_setHeaterControlRange(
 			pRange->maxVoltageInVolts;
 }
 
+eDessipatorStatus_t BatteryTester_DessipatorControl_getDessipatorStatus(){
+	return dessipatorStatus;
+}
+
 /*@brief: BatteryTester_DessipatorControl_resetDessipatorStatus
  * @deprecated
  */
@@ -130,14 +114,16 @@ void BatteryTester_DessipatorControl_resetDessipatorStatus(){
 	dessipatorStatus = DESSIPATOR_OFF;
 }
 
-eDessipatorStatus_t BatteryTester_DessipatorControl_getDessipatorStatus(){
-	return dessipatorStatus;
-}
-
+/*@brief: BatteryTester_DessipatorControl_setHeaterControlMin
+ * @deprecated
+ */
 void BatteryTester_DessipatorControl_setHeaterControlMin(float newVal){
 	dessipatorControlRange.minVoltageInVolts = newVal;
 }
 
+/*@brief: BatteryTester_DessipatorControl_setHeaterControlMax
+ * @deprecated
+ */
 void BatteryTester_DessipatorControl_setHeaterControlMax(float newVal){
 	dessipatorControlRange.maxVoltageInVolts = newVal;
 }

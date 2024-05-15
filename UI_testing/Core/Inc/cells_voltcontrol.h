@@ -10,25 +10,33 @@
 
 #include "auxiliary_function.h"
 
+/**************type declaration****************/
 typedef enum { CELL_ONE = 0,
-	   	       CELL_TWO = 1 } BatteryCellSelector_t;
-
+	   	       CELL_TWO = 1 } eBatteryCellSelector_t;
 typedef enum {VOLTAGE_PROTECT_CELL_OFF = 0,
-	VOLTAGE_PROTECT_CELL_ON = 1} BatteryCellVoltageStatusProtect_t;
+			  VOLTAGE_PROTECT_CELL_ON = 1} eBatteryCellVoltageStatusProtect_t;
+typedef enum{ FALSE,
+			  TRUE } eBool_t;
+typedef eBool_t (*BatteryTester_CellsVoltcontrol_isStartHardwareCallback_t)(void);
 
-BatteryCellVoltageStatusProtect_t BatteryTester_CellsVoltcontrol_protectVoltageCellx(
-			BatteryCellSelector_t, float);
+/****************Function declaration****************/
+void BatteryTester_CellsVoltcontrol_protectVoltageCellx(
+			eBatteryCellSelector_t, float);
 void BatteryTester_CellsVoltcontrol_resetProtectVoltageCellx(
-		BatteryCellSelector_t cell);
-BatteryCellVoltageStatusProtect_t BatteryTester_CellsVoltcontrol_getStatusProtectVoltageCellx(
-		BatteryCellSelector_t);
+		eBatteryCellSelector_t cell);
+eBatteryCellVoltageStatusProtect_t BatteryTester_CellsVoltcontrol_getStatusProtectVoltageCellx(
+		eBatteryCellSelector_t);
 sVoltRange_t BatteryTester_CellsVoltcontrol_getVoltRangeCellx(
-		BatteryCellSelector_t);
+		eBatteryCellSelector_t);
 void BatteryTester_CellsVoltcontrol_setVoltRangeCellx(
-		BatteryCellSelector_t, sVoltRange_t*);
-void BatteryTester_CellsVoltcontrol_initVoltageProtectCells();
+		eBatteryCellSelector_t, sVoltRange_t*);
+void BatteryTester_CellsVoltcontrol_initDecorator(
+		BatteryTester_CellsVoltcontrol_isStartHardwareCallback_t,
+		BatteryTester_CellsVoltcontrol_isStartHardwareCallback_t);
+HAL_StatusTypeDef BatteryTester_CellsVoltcontrol_readDataFromEEPROM();
+eBool_t BatteryTester_CellsVoltcontrol_isStartCellOne();
+eBool_t BatteryTester_CellsVoltcontrol_isStartCellTwo();
 void BatteryTester_CellsVoltcontrol_stopPWMCh1();
 void BatteryTester_CellsVoltcontrol_stopPWMCh2();
-
 
 #endif /* INC_CELLS_VOLTCONTROL_H_ */

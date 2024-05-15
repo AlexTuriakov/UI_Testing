@@ -8,6 +8,7 @@
 #ifndef INC_STATE_EVENTS_H_
 #define INC_STATE_EVENTS_H_
 
+/**************type declaration****************/
 typedef enum {
 	MENU_NAVIGATE,
 	SET_PARAMETERS,
@@ -15,7 +16,6 @@ typedef enum {
 	ALARM,
 	NUM_STATES
 } eStates_t;
-
 typedef enum{
 	EVENT_NONE,
 	EVENT_KEY_OK,
@@ -25,9 +25,10 @@ typedef enum{
 	EVENT_KEY_LEFT,
 	NUM_EVENTS
 } eEvents_t;
-
 typedef void (*_handlerState_t)(eEvents_t, void*);
 
+
+/****************Function declaration****************/
 void BatteryTester_State_initState();
 void BatteryTester_State_proccessEvents();
 void BatteryTester_State_handlerMenuNavigate(eEvents_t, void*);

@@ -8,12 +8,10 @@
 #ifndef INC_PID_REGULATOR_H_
 #define INC_PID_REGULATOR_H_
 
-//#include <stdio.h>
-//#include <stdint.h>
-//#include <stdlib.h>
-//#include <math.h>
+
 #include "stm32f0xx_hal.h"
 
+/**************type declaration****************/
 /** @brief Структура для хранения параметров PID
  * float Kp Коэффициент пропорциональности
  * float Ki Коэффициент интегральной составляющей
@@ -73,21 +71,10 @@ HAL_StatusTypeDef PID_init(
 		float min,
 		float max);
 
-/**
- * @brief Функція чищення
- *
- */
+
+/****************Function declaration****************/
 void PID_deinit(sPIDController_t* pidSettings);
-
-/** @brief Функция расчета управляющего сигнала
- *
- */
 float PID_update(volatile sPIDController_t *pid, float setpoint, float feedback);
-
-/**
- * @brief
- *
- * */
 HAL_StatusTypeDef PID_initPWM(
 		volatile sPIDController_t*,
 		volatile sPWMSettings_t*,

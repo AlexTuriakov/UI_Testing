@@ -8,6 +8,7 @@
 #ifndef INC_CONVERSION_DATA_H_
 #define INC_CONVERSION_DATA_H_
 
+/**************type declaration****************/
 /*
  * @deprecated
  * */
@@ -23,8 +24,6 @@ typedef struct _sphisicValue_t{
 	float val9;
 	float val10;
 } sphisicValue_t;
-
-
 /*
  * @deprecated
  * */
@@ -40,7 +39,6 @@ typedef struct _sscaleFactors_t{
 	float fac9;
 	float fac10;
 } sscaleFactors_t;
-
 typedef struct _sphisicValueEx_t{
 	float ch1_CurrentInA;
 	float ch2_CurrentInA;
@@ -53,14 +51,12 @@ typedef struct _sphisicValueEx_t{
 	float temp4IndegC;
 	float AverageTemps;
 } sphisicValueEx_t;
-
 typedef struct _ntcSchemeParameters_t{
 	float resistanceUpInOhm;
 	float resistanceOrigInOhm;
 	float temperatureOrigIndegC;
 	float factorB;
 } ntcSchemeParameters_t;
-
 /*
  * @deprecated
  * */
@@ -75,7 +71,6 @@ typedef struct _sValue_t{
 	float temp3InDegC;
 	float temp4InDegC;
 } sValue_t;
-
 typedef struct _sMinValueFromRange_t{
 	float ch1_minCurrentInAmp;
 	float ch2_minCurrentInAmp;
@@ -87,7 +82,6 @@ typedef struct _sMinValueFromRange_t{
 	float minTemp3InDegC;
 	float minTemp4InDegC;*/
 } sMinValueFromRange_t;
-
 typedef struct _sMaxValueFromRange_t{
 	float ch1_maxCurrentInAmp;
 	float ch2_maxCurrentInAmp;
@@ -99,7 +93,6 @@ typedef struct _sMaxValueFromRange_t{
 	float maxTemp3InDegC;
 	float maxTemp4InDegC;*/
 } sMaxValueFromRange_t;
-
 typedef struct _sValueScale_t{
 	float ch1_currentScale;
 	float ch2_currentScale;
@@ -111,7 +104,6 @@ typedef struct _sValueScale_t{
 	float temp3Scale;
 	float temp4Scale;*/
 } sValueScale_t;
-
 typedef struct _sValueCalibrationOffset{
 	float ch1_CurrentInA;
 	float ch2_CurrentInA;
@@ -123,11 +115,12 @@ typedef struct _sValueCalibrationOffset{
 	float temp3IndegC;
 	float temp4IndegC;
 } sValueCalibrationOffset_t;
-
 typedef void (*BatteryTester_ConversionData_initCallback_t)(void);
 typedef void (*BatteryTester_ConversionData_setDACCallback_t)(unsigned int);
 typedef void (*BatteryTester_ConversionData_stopCallback_t)(void);
 
+
+/****************Function declaration****************/
 void BatteryTester_ConversionData_setDacDecorator(BatteryTester_ConversionData_setDACCallback_t);
 void BatteryTester_ConversionData_calcPhisicValueFromAdcCode(
 		volatile uint32_t*, uint32_t, volatile sphisicValue_t*);

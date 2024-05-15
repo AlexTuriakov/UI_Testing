@@ -10,14 +10,16 @@
 
 #include "pid_regulator.h"
 
+/**************type declaration****************/
 typedef enum{
 	CELL_TWO_RUN_OFF,
 	CELL_TWO_RUN_ON
 } eCellTwoRun_t;
-
 typedef void (*BatteryTester_RegulatorCellTwo_HardwareCallback_t)(void);
 typedef void (*BatteryTester_RegulatorCellTwo_setHardwarePwmPulseCallback_t)(unsigned int pulse);
 
+
+/****************Function declaration****************/
 void BatteryTester_RegulatorCellTwo_initDecorator(
 		BatteryTester_RegulatorCellTwo_HardwareCallback_t,
 		BatteryTester_RegulatorCellTwo_HardwareCallback_t,

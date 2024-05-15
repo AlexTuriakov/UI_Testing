@@ -12,6 +12,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
+/**************type declaration****************/
 	/** Type define for a menu item. Menu items should be initialized via the helper
 	 *  macro \ref MENU_ITEM(), not created from this type directly in user-code.
 	 */
@@ -57,6 +58,8 @@
 	/** Null menu entry, used in \ref MENU_ITEM() definitions where no menu link is to be made. */
 	extern Menu_Item_t NULL_MENU;
 
+
+	/****************Function declaration****************/
 	/** Retrieves the currently selected meny item.
 	 *
 	 *  \return Pointer to the currently selected meny item.

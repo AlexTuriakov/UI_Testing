@@ -8,6 +8,7 @@
 #ifndef INC_EVENTS_H_
 #define INC_EVENTS_H_
 
+/**************type declaration****************/
 typedef enum{
 	BUTTONS_NONE_PRESSED,
 	BUTTON_OK_SHORT_PRESSED,
@@ -28,4 +29,5 @@ typedef enum{
 } eEvents_t;
 
 
+/****************Function declaration****************/
 #endif /* INC_EVENTS_H_ */

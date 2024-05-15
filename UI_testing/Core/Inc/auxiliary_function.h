@@ -10,11 +10,13 @@
 
 #define SIZE_LINE_BUFFER_LCD 17
 
+/**************type declaration****************/
 typedef struct _sVoltRange_t{
 	float minVoltageInVolts;
 	float maxVoltageInVolts;
 } sVoltRange_t;
 
+/****************Function declaration****************/
 void __BatteryTester_AuxiliaryFunction_copy(void*, void*, unsigned int);
 
 #endif /* INC_AUXILIARY_FUNCTION_H_ */

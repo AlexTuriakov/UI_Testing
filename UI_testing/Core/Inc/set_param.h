@@ -10,7 +10,9 @@
 
 #include "state_events.h"
 
+/**************type declaration****************/
 
+/****************Function declaration****************/
 void BatteryTester_SetParam_init(float);
 float BatteryTester_SetParam_getParam();
 void BatteryTester_SetParam_setParam(float);

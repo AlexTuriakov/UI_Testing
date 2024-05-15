@@ -33,6 +33,7 @@
 #define CURSOR_OFF 0b00001100
 
 
+/****************Function declaration****************/
 void BatteryTester_WC1602A_Delay(unsigned int);
 void BatteryTester_WC1602A_init();
 void BatteryTester_WC1602A_sendCommand(GPIO_PinState, unsigned short);

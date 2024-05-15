@@ -8,6 +8,8 @@
 #ifndef INC_PARAMS_H_
 #define INC_PARAMS_H_
 
+/**************type declaration****************/
 
+/****************Function declaration****************/
 
 #endif /* INC_PARAMS_H_ */

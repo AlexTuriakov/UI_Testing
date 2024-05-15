@@ -9,20 +9,22 @@
 #define INC_CLIMAT_REGULATOR_H_
 
 #include "pid_regulator.h"
+
+/**************type declaration****************/
 /*
  * @brief:
  * @deprecated
  */
 typedef void (*BatteryTester_ClimatRegulator_callbackChangeSettingsPwm_t)(unsigned int newValue);
-
 typedef enum{
 	THERMOSTAT_RUN_OFF,
 	THERMOSTAT_RUN_ON
 } eThermostatRun_t;
-
 typedef void (*BatteryTester_ClimatRegulator_HardwareCallback_t)(void);
 typedef void (*BatteryTester_ClimatRegulator_setHardwarePwmPulseCallback_t)(int pulse);
 
+
+/****************Function declaration****************/
 void BatteryTester_ClimatRegulator_initDecorator(
 		BatteryTester_ClimatRegulator_HardwareCallback_t,
 		BatteryTester_ClimatRegulator_HardwareCallback_t,
