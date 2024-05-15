@@ -49,11 +49,11 @@ MENU_ITEM(menuStartCh1, menuStartCh2, menuResetAlarm, menuStart, menuStartCh1Sp,
 		0, 0, "Ch1 start...");
 MENU_ITEM(menuStartCh2, menuStartThermostat, menuStartCh1, menuStart, menuStartCh2Sp,
 		0, 0, "Ch2 start...");
-MENU_ITEM(menuStartThermostat, menuStartDessipator, menuStartCh2, menuStart, menuStartTstatSp,
+MENU_ITEM(menuStartThermostat, menuStatusDessipator, menuStartCh2, menuStart, menuStartTstatSp,
 		0, 0, "Thermostat      start...");
-MENU_ITEM(menuStartDessipator, menuResetAlarm, menuStartThermostat, menuStart, menuStartDessipatorOn,
-		0, 0, "Dessipator      start...");
-MENU_ITEM(menuResetAlarm, menuStartCh1, menuStartDessipator, menuStart, menuAlarmState,
+MENU_ITEM(menuStatusDessipator, menuResetAlarm, menuStartThermostat, menuStart, menuDessipatorState,
+		0, 0, "Dessipator      status...");
+MENU_ITEM(menuResetAlarm, menuStartCh1, menuStatusDessipator, menuStart, menuAlarmState,
 		0, 0, "Reset Alarm...");
 /*SUBMENU Ch1 settings...  LEVEL 2*/
 MENU_ITEM(menuCh1Buck, menuCh1Boost, menuCh1VRange, menuSetsChannel1, menuCh1BuckKp,
@@ -225,10 +225,10 @@ MENU_ITEM(menuStartTstatOn, menuStartTstatState, menuStartTstatSp, menuStartTher
 MENU_ITEM(menuStartTstatState, menuStartTstatSp, menuStartTstatOn, menuStartThermostat, NULL_MENU,
 		0, 0, "Start thermostatstatus...");
 /*SUBMENU Start Dessipator... LEVEL 3*/
-MENU_ITEM(menuStartDessipatorOn, menuStartDessipatorState, menuStartDessipatorState, menuStartDessipator, NULL_MENU,
-		0, 0, "Start dessipatoron/off...");
-MENU_ITEM(menuStartDessipatorState, menuStartDessipatorOn, menuStartDessipatorOn, menuStartDessipator, NULL_MENU,
-		0, 0, "Start dessipatorstatus...");
+/*MENU_ITEM(menuStartDessipatorOn, menuStartDessipatorState, menuStartDessipatorState, menuStartDessipator, NULL_MENU,
+		0, 0, "Start dessipatoron/off...");*/
+MENU_ITEM(menuDessipatorState, NULL_MENU, NULL_MENU, menuStatusDessipator, NULL_MENU,
+		0, 0, "Sorry, dessipator status not release");
 /*SUBMENU Reset Alarm... LEVEL 3*/
 MENU_ITEM(menuAlarmState, menuAlarmReset, menuAlarmReset, menuResetAlarm, NULL_MENU,
 		0, 0, "Hardware alarm  status...");
@@ -712,13 +712,13 @@ void BatteryTester_Menu_enterSetTemp1TemperatureOrig(void){
 }
 
 void BatteryTester_Menu_selectSetTemp1FactorB(void){
-	BatteryTester_Menu_selectSetNewValue("T1 fac.B, ppm/\xdf\x43",
-			BatteryTester_ConversionData_getNtcSchemeParams(0).factorB);//,3);
+	BatteryTester_Menu_selectSetNewValue("T1 f.B, kppm/\xdf\x43",
+			BatteryTester_ConversionData_getNtcSchemeParams(0).factorB / 1000);//,3);
 }
 
 void BatteryTester_Menu_enterSetTemp1FactorB(void){
 	ntcSchemeParameters_t settings = BatteryTester_ConversionData_getNtcSchemeParams(0);
-	settings.factorB = BatteryTester_State_sendNewParamFromState();
+	settings.factorB = BatteryTester_State_sendNewParamFromState() * 1000;
 	BatteryTester_ConversionData_setNtcSchemeParams(0, &settings);
 	BatteryTester_Menu_returnInMenu(&menuTemp1FactorBParam);
 }
@@ -760,13 +760,13 @@ void BatteryTester_Menu_enterSetTemp2TemperatureOrig(void){
 }
 
 void BatteryTester_Menu_selectSetTemp2FactorB(void){
-	BatteryTester_Menu_selectSetNewValue("T2 fac.B, ppm/\xdf\x43",
-			BatteryTester_ConversionData_getNtcSchemeParams(1).factorB);//,3);
+	BatteryTester_Menu_selectSetNewValue("T2 f.B, kppm/\xdf\x43",
+			BatteryTester_ConversionData_getNtcSchemeParams(1).factorB / 1000);//,3);
 }
 
 void BatteryTester_Menu_enterSetTemp2FactorB(void){
 	ntcSchemeParameters_t settings = BatteryTester_ConversionData_getNtcSchemeParams(1);
-	settings.factorB = BatteryTester_State_sendNewParamFromState();
+	settings.factorB = BatteryTester_State_sendNewParamFromState() * 1000;
 	BatteryTester_ConversionData_setNtcSchemeParams(1, &settings);
 	BatteryTester_Menu_returnInMenu(&menuTemp2FactorBParam);
 }
@@ -808,13 +808,13 @@ void BatteryTester_Menu_enterSetTemp3TemperatureOrig(void){
 }
 
 void BatteryTester_Menu_selectSetTemp3FactorB(void){
-	BatteryTester_Menu_selectSetNewValue("T3 fac.B, ppm/\xdf\x43",
-			BatteryTester_ConversionData_getNtcSchemeParams(2).factorB);//,	3);
+	BatteryTester_Menu_selectSetNewValue("T3 f.B, kppm/\xdf\x43",
+			BatteryTester_ConversionData_getNtcSchemeParams(2).factorB / 1000);//,	3);
 }
 
 void BatteryTester_Menu_enterSetTemp3FactorB(void){
 	ntcSchemeParameters_t settings = BatteryTester_ConversionData_getNtcSchemeParams(2);
-	settings.factorB = BatteryTester_State_sendNewParamFromState();
+	settings.factorB = BatteryTester_State_sendNewParamFromState() * 1000;
 	BatteryTester_ConversionData_setNtcSchemeParams(2, &settings);
 	BatteryTester_Menu_returnInMenu(&menuTemp3FactorBParam);
 }
@@ -856,13 +856,13 @@ void BatteryTester_Menu_enterSetTemp4TemperatureOrig(void){
 }
 
 void BatteryTester_Menu_selectSetTemp4FactorB(void){
-	BatteryTester_Menu_selectSetNewValue("T4 fac.B, ppm/\xdf\x43",
-			BatteryTester_ConversionData_getNtcSchemeParams(3).factorB);//,3);
+	BatteryTester_Menu_selectSetNewValue("T4 f.B, kppm/\xdf\x43",
+			BatteryTester_ConversionData_getNtcSchemeParams(3).factorB / 1000);//,3);
 }
 
 void BatteryTester_Menu_enterSetTemp4FactorB(void){
 	ntcSchemeParameters_t settings = BatteryTester_ConversionData_getNtcSchemeParams(3);
-	settings.factorB = BatteryTester_State_sendNewParamFromState();
+	settings.factorB = BatteryTester_State_sendNewParamFromState() * 1000;
 	BatteryTester_ConversionData_setNtcSchemeParams(3, &settings);
 	BatteryTester_Menu_returnInMenu(&menuTemp4FactorBParam);
 }

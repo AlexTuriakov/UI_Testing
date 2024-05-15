@@ -73,6 +73,10 @@ void Error_Handler(void);
 #define LCD_Enable_GPIO_Port GPIOB
 #define LCD_RS_Pin GPIO_PIN_15
 #define LCD_RS_GPIO_Port GPIOB
+#define Fan_Control_Pin GPIO_PIN_7
+#define Fan_Control_GPIO_Port GPIOC
+#define Heater_Control_Pin GPIO_PIN_8
+#define Heater_Control_GPIO_Port GPIOC
 #define UP_Pin GPIO_PIN_8
 #define UP_GPIO_Port GPIOA
 #define DOWN_Pin GPIO_PIN_9

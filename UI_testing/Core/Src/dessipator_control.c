@@ -6,17 +6,42 @@
  */
 
 #include "dessipator_control.h"
-#include "main.h"
-#include "stm32f0xx_hal.h"
 
-sVoltRange_t dessipatorControlRange = {0};
-DessipatorStatus_t dessipatorStatus = DESSIPATOR_OFF;
+#define TESTING
+
+static sVoltRange_t dessipatorControlRange = {0};
+static eDessipatorStatus_t dessipatorStatus = DESSIPATOR_OFF;
+static BatteryTester_DessipatorControl_toggleHardware_t g_onHeaterCallback = 0;
+static BatteryTester_DessipatorControl_toggleHardware_t g_offHeaterCallback = 0;
+static BatteryTester_DessipatorControl_toggleHardware_t g_onFanCallback = 0;
+static BatteryTester_DessipatorControl_toggleHardware_t g_offFanCallback = 0;
 
 
-void BatteryTester_DessipatorControl_initHeaterControl(){
-	dessipatorControlRange.minVoltageInVolts = 12.0;
-	dessipatorControlRange.maxVoltageInVolts = 12.3;
-	/*Reading parameters from flash memory is under development*/
+
+void BatteryTester_DessipatorControl_initDecorator(
+		BatteryTester_DessipatorControl_toggleHardware_t onHeaterCallback,
+		BatteryTester_DessipatorControl_toggleHardware_t offHeaterCallback,
+		BatteryTester_DessipatorControl_toggleHardware_t onFanCallback,
+		BatteryTester_DessipatorControl_toggleHardware_t offFanCallback){
+
+	g_onHeaterCallback = onHeaterCallback;
+	g_offHeaterCallback = offHeaterCallback;
+	g_onFanCallback = onFanCallback;
+	g_offFanCallback = offFanCallback;
+	if(BatteryTester_DessipatorControl_readDataFromEEPROM() != HAL_OK){
+		dessipatorControlRange.minVoltageInVolts = 12.0;
+		dessipatorControlRange.maxVoltageInVolts = 14.8;
+	}
+}
+
+/*@brief:
+ * @Todo: Implementation required
+ */
+HAL_StatusTypeDef BatteryTester_DessipatorControl_readDataFromEEPROM(){
+#ifdef TESTING
+
+#endif
+	return HAL_OK;
 }
 
 void BattetyTester_DessipatorControl_onHeaterControl(float inputBusVoltage){
@@ -24,13 +49,11 @@ void BattetyTester_DessipatorControl_onHeaterControl(float inputBusVoltage){
 			inputBusVoltage >= dessipatorControlRange.maxVoltageInVolts){
 		BatteryTester_DessipatorControl_onHeater();
 		BatteryTester_DessipatorControl_onFan();
-		dessipatorStatus = DESSIPATOR_ON;
 	}
 	else if(dessipatorStatus &&
 			inputBusVoltage <= dessipatorControlRange.minVoltageInVolts){
 		BatteryTester_DessipatorControl_offHeater();
 		BatteryTester_DessipatorControl_offFan();
-		dessipatorStatus = DESSIPATOR_OFF;
 	}
 }
 
@@ -39,27 +62,50 @@ void BatteryTester_DessipatorControl_onHeater(){
 			Heater_Control_GPIO_Port,
 			Heater_Control_Pin,
 			GPIO_PIN_SET);*/
+	if(g_onHeaterCallback){
+		g_onHeaterCallback();
+		dessipatorStatus = DESSIPATOR_ON;
+	}
 }
 
+/*@brief: BatteryTester_DessipatorControl_offHeater
+ * @deprecated
+ */
 void BatteryTester_DessipatorControl_offHeater(){
 /*	HAL_GPIO_WritePin(
 			Heater_Control_GPIO_Port,
 			Heater_Control_Pin,
 			GPIO_PIN_RESET);*/
+	if(g_offHeaterCallback){
+		g_offHeaterCallback();
+		dessipatorStatus = DESSIPATOR_OFF;
+	}
 }
 
+/*@brief: BatteryTester_DessipatorControl_onFan
+ * @deprecated
+ */
 void BatteryTester_DessipatorControl_onFan(){
 /*	HAL_GPIO_WritePin(
 			Fan_Control_GPIO_Port,
 			Fan_Control_Pin,
 			GPIO_PIN_SET);*/
+	if(g_onFanCallback){
+		g_onFanCallback();
+	}
 }
 
+/*@brief: BatteryTester_DessipatorControl_offFan
+ * @deprecated
+ */
 void BatteryTester_DessipatorControl_offFan(){
 /*	HAL_GPIO_WritePin(
 			Fan_Control_GPIO_Port,
 			Fan_Control_Pin,
 			GPIO_PIN_RESET);*/
+	if(g_offFanCallback){
+		g_offFanCallback();
+	}
 }
 
 sVoltRange_t BatteryTester_DessipatorControl_getHeaterControlRange(){
@@ -77,17 +123,22 @@ void BatteryTester_DessipatorControl_setHeaterControlRange(
 			pRange->maxVoltageInVolts;
 }
 
+/*@brief: BatteryTester_DessipatorControl_resetDessipatorStatus
+ * @deprecated
+ */
 void BatteryTester_DessipatorControl_resetDessipatorStatus(){
 	dessipatorStatus = DESSIPATOR_OFF;
 }
 
-DessipatorStatus_t BatteryTester_DessipatorControl_getDessipatorStatus(){
+eDessipatorStatus_t BatteryTester_DessipatorControl_getDessipatorStatus(){
 	return dessipatorStatus;
 }
 
 void BatteryTester_DessipatorControl_setHeaterControlMin(float newVal){
 	dessipatorControlRange.minVoltageInVolts = newVal;
 }
+
 void BatteryTester_DessipatorControl_setHeaterControlMax(float newVal){
 	dessipatorControlRange.maxVoltageInVolts = newVal;
 }
+

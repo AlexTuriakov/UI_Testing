@@ -131,7 +131,7 @@ typedef void (*BatteryTester_ConversionData_stopCallback_t)(void);
 void BatteryTester_ConversionData_setDacDecorator(BatteryTester_ConversionData_setDACCallback_t);
 void BatteryTester_ConversionData_calcPhisicValueFromAdcCode(
 		volatile uint32_t*, uint32_t, volatile sphisicValue_t*);
-void BatteryTester_ConversionData_calcPhisicValueFromAdcCodeEx(
+sphisicValueEx_t BatteryTester_ConversionData_calcPhisicValueFromAdcCodeEx(
 		volatile uint32_t*, uint32_t);
 void BatteryTester_ConversionData_initScaleFactorsStruct();
 void BatteryTester_ConversionData_calcPhisicTemperatureEx(

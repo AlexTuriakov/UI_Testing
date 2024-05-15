@@ -89,6 +89,8 @@ void BatteryTester_HAL_setCh2PwmPulseCallback(unsigned int);
 void BatteryTester_HAL_startThermostatCallback();
 void BatteryTester_HAL_stopThermostatCallback();
 void BatteryTester_HAL_setThermostatPwmPulseCallback(int pulse);
+void BatteryTester_HAL_onDessipatorHardwareCallback();
+void BatteryTester_HAL_offDessipatorHardwareCallback();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -165,8 +167,10 @@ int main(void)
 		  BatteryTester_HAL_startThermostatCallback,
 		  BatteryTester_HAL_stopThermostatCallback,
 		  BatteryTester_HAL_setThermostatPwmPulseCallback);
+  BatteryTester_DessipatorControl_initDecorator(
+		  BatteryTester_HAL_onDessipatorHardwareCallback,
+		  BatteryTester_HAL_offDessipatorHardwareCallback, 0, 0);
   BatteryTester_CellsVoltcontrol_initVoltageProtectCells();
-  BatteryTester_DessipatorControl_initHeaterControl();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -720,6 +724,9 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOB, LCD_D7_Pin|LCD_D6_Pin|LCD_D5_Pin|LCD_D4_Pin
                           |LCD_Enable_Pin|LCD_RS_Pin, GPIO_PIN_RESET);
 
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOC, Fan_Control_Pin|Heater_Control_Pin, GPIO_PIN_RESET);
+
   /*Configure GPIO pins : LCD_D7_Pin LCD_D6_Pin LCD_D5_Pin LCD_D4_Pin
                            LCD_Enable_Pin LCD_RS_Pin */
   GPIO_InitStruct.Pin = LCD_D7_Pin|LCD_D6_Pin|LCD_D5_Pin|LCD_D4_Pin
@@ -728,6 +735,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : Fan_Control_Pin Heater_Control_Pin */
+  GPIO_InitStruct.Pin = Fan_Control_Pin|Heater_Control_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : UP_Pin DOWN_Pin LEFT_Pin RIGHT_Pin */
   GPIO_InitStruct.Pin = UP_Pin|DOWN_Pin|LEFT_Pin|RIGHT_Pin;
@@ -873,6 +887,28 @@ void BatteryTester_HAL_setThermostatPwmPulseCallback(int pulse){
 	unsigned int pulsePhB = 50 - pulse / 2;
 	WRITE_REG(htim17.Instance->CCR1, pulsePhA);
 	WRITE_REG(htim16.Instance->CCR1, pulsePhB);
+}
+
+void BatteryTester_HAL_onDessipatorHardwareCallback(){
+	HAL_GPIO_WritePin(
+				Heater_Control_GPIO_Port,
+				Heater_Control_Pin,
+				GPIO_PIN_SET);
+	HAL_GPIO_WritePin(
+				Fan_Control_GPIO_Port,
+				Fan_Control_Pin,
+				GPIO_PIN_SET);
+}
+
+void BatteryTester_HAL_offDessipatorHardwareCallback(){
+	HAL_GPIO_WritePin(
+				Heater_Control_GPIO_Port,
+				Heater_Control_Pin,
+				GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(
+				Fan_Control_GPIO_Port,
+				Fan_Control_Pin,
+				GPIO_PIN_RESET);
 }
 /* USER CODE END 4 */
 

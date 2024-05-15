@@ -65,11 +65,11 @@ void BatteryTester_ConversionData_calcPhisicValueFromAdcCode(
 
 }
 
-void BatteryTester_ConversionData_calcPhisicValueFromAdcCodeEx(
+sphisicValueEx_t BatteryTester_ConversionData_calcPhisicValueFromAdcCodeEx(
 		volatile uint32_t* rawData, uint32_t sizeDataEx){
 	const unsigned int sizeData = sizeof(sphisicValueEx_t) / sizeof(float) - 1;
 	if(!rawData || sizeDataEx < sizeData){
-		return;
+		return value;
 	}
 	const unsigned int size = sizeof(sValueScale_t) / sizeof(float);
 	for(int i = 0; i < size; i++ ){
@@ -81,6 +81,7 @@ void BatteryTester_ConversionData_calcPhisicValueFromAdcCodeEx(
 			value.temp2IndegC +
 			value.temp3IndegC +
 			value.temp4IndegC) / 4.0;
+	return value;
 }
 
 /*@brief:

@@ -27,6 +27,7 @@
 #include "regulator_cell_one.h"
 #include "regulator_cell_two.h"
 #include "climat_regulator.h"
+#include "dessipator_control.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -186,20 +187,23 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 }
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc){
-	BatteryTester_ConversionData_calcPhisicValueFromAdcCodeEx(
-			rawAdcData, LENGTH_DATA_ADC);
+	sphisicValueEx_t measuringValue =
+			BatteryTester_ConversionData_calcPhisicValueFromAdcCodeEx(
+				rawAdcData, LENGTH_DATA_ADC);
+	BattetyTester_DessipatorControl_onHeaterControl(
+				measuringValue.busVoltageInV);
 	if(BatteryTester_RegulatorCellOne_getRunStatus()){
 		float sp = BatteryTester_RegulatorCellOne_getSetpoint();
 		if(sp > 0.0){
 			BatteryTester_RegulatorCellOne_setPulse(
 					BatteryTester_RegulatorCellOne_updateBuck(sp,
-							BatteryTester_ConversionData_getPhisicValues().ch1_CurrentInA));
+							measuringValue.ch1_CurrentInA));
 		}
 		else
 			if(sp < 0.0){
 				BatteryTester_RegulatorCellOne_setPulse(
 						BatteryTester_RegulatorCellOne_updateBoost(sp,
-								BatteryTester_ConversionData_getPhisicValues().ch1_CurrentInA));
+								measuringValue.ch1_CurrentInA));
 			}
 			else{
 				BatteryTester_RegulatorCellOne_setPulse(0);
@@ -210,13 +214,13 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc){
 		if(sp > 0.0){
 			BatteryTester_RegulatorCellTwo_setPulse(
 					BatteryTester_RegulatorCellTwo_updateBuck(sp,
-							BatteryTester_ConversionData_getPhisicValues().ch2_CurrentInA));
+							measuringValue.ch2_CurrentInA));
 		}
 		else
 			if(sp < 0.0){
 				BatteryTester_RegulatorCellTwo_setPulse(
 						BatteryTester_RegulatorCellTwo_updateBoost(sp,
-								BatteryTester_ConversionData_getPhisicValues().ch2_CurrentInA));
+								measuringValue.ch2_CurrentInA));
 			}
 			else{
 				BatteryTester_RegulatorCellTwo_setPulse(0);
@@ -226,7 +230,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc){
 		float sp = BatteryTester_ClimatRegulator_getSetpoint();
 		BatteryTester_ClimatRegulator_setPulse(
 				BatteryTester_ClimatRegulator_update(sp,
-						BatteryTester_ConversionData_getPhisicValues().AverageTemps));
+						measuringValue.AverageTemps));
 	}
 }
 /* USER CODE END 1 */
