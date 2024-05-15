@@ -9,6 +9,7 @@
 #define INC_CELLS_VOLTCONTROL_H_
 
 #include "auxiliary_function.h"
+#include "stm32f0xx_hal.h"
 
 /**************type declaration****************/
 typedef enum { CELL_ONE = 0,

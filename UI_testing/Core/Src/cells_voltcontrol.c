@@ -5,7 +5,6 @@
  *      Author: Tyuryakov_OA
  */
 #include "cells_voltcontrol.h"
-#include "stm32f0xx_hal.h"
 #include "regulator_cell_one.h"
 #include "regulator_cell_two.h"
 #include "auxiliary_function.h"

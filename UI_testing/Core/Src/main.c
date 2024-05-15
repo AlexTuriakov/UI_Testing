@@ -170,7 +170,6 @@ int main(void)
   BatteryTester_DessipatorControl_initDecorator(
 		  BatteryTester_HAL_onDessipatorHardwareCallback,
 		  BatteryTester_HAL_offDessipatorHardwareCallback, 0, 0);
-  BatteryTester_CellsVoltcontrol_initVoltageProtectCells();
   /* USER CODE END 2 */
 
   /* Infinite loop */
