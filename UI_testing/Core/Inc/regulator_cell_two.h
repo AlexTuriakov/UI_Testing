@@ -41,6 +41,6 @@ void BatteryTester_RegulatorCellTwo_toggleRunMode();
 HAL_StatusTypeDef BatteryTester_RegulatorCellTwo_readDataFromEEPROM();
 void BatteryTester_RegulatorCellTwo_startHardware();
 void BatteryTester_RegulatorCellTwo_stopHardware();
-void BatteryTester_RegulatorCellTwo_setPulse(unsigned int);
+void BatteryTester_RegulatorCellTwo_setPulse(int);
 
 #endif /* INC_REGULATOR_CELL_TWO_H_ */

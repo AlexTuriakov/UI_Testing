@@ -201,7 +201,7 @@ HAL_StatusTypeDef BatteryTester_ClimatRegulator_readDataFromEEPROM(){
 
 	pwmClimatSettings.maxDutyCycle = 95;
 	pwmClimatSettings.minDutyCycle = 5;
-//		pwmClimatSettings.periodPwm = 500;
+	pwmClimatSettings.periodPwm = 499;
 	pwmClimatSettings.minPidOutput = regulatorClimatSettings.minLimit;
 	pwmClimatSettings.maxPidOutput = regulatorClimatSettings.maxLimit;
 	BatteryTester_ClimatRegulator_calcScalePwmClimatSettings();

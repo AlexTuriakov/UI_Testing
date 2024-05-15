@@ -54,6 +54,7 @@ DMA_HandleTypeDef hdma_adc;
 DAC_HandleTypeDef hdac;
 
 TIM_HandleTypeDef htim1;
+TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim6;
 TIM_HandleTypeDef htim14;
 TIM_HandleTypeDef htim16;
@@ -74,6 +75,7 @@ static void MX_TIM1_Init(void);
 static void MX_DAC_Init(void);
 static void MX_TIM16_Init(void);
 static void MX_TIM17_Init(void);
+static void MX_TIM2_Init(void);
 /* USER CODE BEGIN PFP */
 void BatteryTester_HAL_startAdcDmaCallback(void);
 void BatteryTester_HAL_setDacCallback(unsigned int);
@@ -130,6 +132,7 @@ int main(void)
   MX_DAC_Init();
   MX_TIM16_Init();
   MX_TIM17_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
   if(HAL_TIM_PWM_Start(&htim14, TIM_CHANNEL_1) != HAL_OK){
 	  Error_Handler();
@@ -417,6 +420,59 @@ static void MX_TIM1_Init(void)
   /* USER CODE BEGIN TIM1_Init 2 */
 
   /* USER CODE END TIM1_Init 2 */
+
+}
+
+/**
+  * @brief TIM2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM2_Init(void)
+{
+
+  /* USER CODE BEGIN TIM2_Init 0 */
+
+  /* USER CODE END TIM2_Init 0 */
+
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+  TIM_OC_InitTypeDef sConfigOC = {0};
+
+  /* USER CODE BEGIN TIM2_Init 1 */
+
+  /* USER CODE END TIM2_Init 1 */
+  htim2.Instance = TIM2;
+  htim2.Init.Prescaler = 0;
+  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim2.Init.Period = 499;
+  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_PWM_Init(&htim2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sConfigOC.OCMode = TIM_OCMODE_PWM2;
+  sConfigOC.Pulse = 0;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+  if (HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM2_Init 2 */
+
+  /* USER CODE END TIM2_Init 2 */
+  HAL_TIM_MspPostInit(&htim2);
 
 }
 
@@ -719,47 +775,67 @@ void BatteryTester_HAL_stopAdcCallback(void){
 }
 
 void BatteryTester_HAL_startCh1PwmCallback(){
-	if(HAL_TIM_PWM_Start(&htim17, TIM_CHANNEL_1) != HAL_OK){
+	/*if(HAL_TIM_PWM_Start(&htim17, TIM_CHANNEL_1) != HAL_OK){
 		Error_Handler();
 	}
 	if(HAL_TIMEx_PWMN_Start(&htim17, TIM_CHANNEL_1) != HAL_OK){
+		Error_Handler();
+	}*/
+	/********FOR TESTING***********/
+	if(HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1) != HAL_OK){
 		Error_Handler();
 	}
 }
 
 void BatteryTester_HAL_stopCh1PwmCallback(){
-	if(HAL_TIM_PWM_Stop(&htim17, TIM_CHANNEL_1) != HAL_OK){
+	/*if(HAL_TIM_PWM_Stop(&htim17, TIM_CHANNEL_1) != HAL_OK){
 		Error_Handler();
 	}
 	if(HAL_TIMEx_PWMN_Stop(&htim17, TIM_CHANNEL_1) != HAL_OK){
+		Error_Handler();
+	}*/
+	/********FOR TESTING***********/
+	if(HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1) != HAL_OK){
 		Error_Handler();
 	}
 }
 
 void BatteryTester_HAL_setCh1PwmPulseCallback(unsigned int pulse){
-	WRITE_REG(htim17.Instance->CCR1, pulse);
+	//WRITE_REG(htim17.Instance->CCR1, pulse);
+	/********FOR TESTING***********/
+	WRITE_REG(htim2.Instance->CCR1, pulse);
 }
 
 void BatteryTester_HAL_startCh2PwmCallback(){
-	if(HAL_TIM_PWM_Start(&htim17, TIM_CHANNEL_1) != HAL_OK){
+	/*if(HAL_TIM_PWM_Start(&htim17, TIM_CHANNEL_1) != HAL_OK){
 		Error_Handler();
 	}
 	if(HAL_TIMEx_PWMN_Start(&htim17, TIM_CHANNEL_1) != HAL_OK){
+		Error_Handler();
+	}*/
+	/********FOR TESTING***********/
+	if(HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2) != HAL_OK){
 		Error_Handler();
 	}
 }
 
 void BatteryTester_HAL_stopCh2PwmCallback(){
-	if(HAL_TIM_PWM_Stop(&htim17, TIM_CHANNEL_1) != HAL_OK){
+	/*if(HAL_TIM_PWM_Stop(&htim17, TIM_CHANNEL_1) != HAL_OK){
 		Error_Handler();
 	}
 	if(HAL_TIMEx_PWMN_Stop(&htim17, TIM_CHANNEL_1) != HAL_OK){
+		Error_Handler();
+	}*/
+	/********FOR TESTING***********/
+	if(HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2) != HAL_OK){
 		Error_Handler();
 	}
 }
 
 void BatteryTester_HAL_setCh2PwmPulseCallback(unsigned int pulse){
-	WRITE_REG(htim17.Instance->CCR1, pulse);
+	//WRITE_REG(htim17.Instance->CCR1, pulse);
+	/********FOR TESTING***********/
+	WRITE_REG(htim2.Instance->CCR2, pulse);
 }
 
 void BatteryTester_HAL_startThermostatCallback(){

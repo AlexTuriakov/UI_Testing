@@ -41,7 +41,7 @@ void BatteryTester_RegulatorCellOne_toggleRunMode();
 HAL_StatusTypeDef BatteryTester_RegulatorCellOne_readDataFromEEPROM();
 void BatteryTester_RegulatorCellOne_startHardware();
 void BatteryTester_RegulatorCellOne_stopHardware();
-void BatteryTester_RegulatorCellOne_setPulse(unsigned int);
+void BatteryTester_RegulatorCellOne_setPulse(int);
 void BatteryTester_RegulatorCellOne_setSetpoint(float);
 float BatteryTester_RegulatorCellOne_getSetpoint();
 

@@ -257,7 +257,7 @@ void BatteryTester_RegulatorCellTwo_stopHardware(){
 	}
 }
 
-void BatteryTester_RegulatorCellTwo_setPulse(unsigned int pulse){
+void BatteryTester_RegulatorCellTwo_setPulse(int pulse){
 	if(g_setPulse){
 		g_setPulse(abs(pulse));
 	}
