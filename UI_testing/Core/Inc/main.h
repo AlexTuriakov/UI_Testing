@@ -59,8 +59,12 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define Sound_Pin GPIO_PIN_14
+#define Sound_GPIO_Port GPIOC
 #define PWM_Pin GPIO_PIN_1
 #define PWM_GPIO_Port GPIOB
+#define Converter_Fault_Pin GPIO_PIN_2
+#define Converter_Fault_GPIO_Port GPIOB
 #define LCD_D7_Pin GPIO_PIN_10
 #define LCD_D7_GPIO_Port GPIOB
 #define LCD_D6_Pin GPIO_PIN_11
@@ -73,6 +77,8 @@ void Error_Handler(void);
 #define LCD_Enable_GPIO_Port GPIOB
 #define LCD_RS_Pin GPIO_PIN_15
 #define LCD_RS_GPIO_Port GPIOB
+#define Protection_Reset_Pin GPIO_PIN_6
+#define Protection_Reset_GPIO_Port GPIOC
 #define Fan_Control_Pin GPIO_PIN_7
 #define Fan_Control_GPIO_Port GPIOC
 #define Heater_Control_Pin GPIO_PIN_8

@@ -31,6 +31,7 @@
 #include "regulator_cell_two.h"
 #include "conversion_data.h"
 #include "cells_voltcontrol.h"
+#include "converter_fault.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -94,6 +95,10 @@ void BatteryTester_HAL_onDessipatorHardwareCallback();
 void BatteryTester_HAL_offDessipatorHardwareCallback();
 eBool_t BatteryTester_HAL_isStartCh1PwmCallback();
 eBool_t BatteryTester_HAL_isStartCh2PwmCallback();
+eBool_t BatteryTester_HAL_isConverterFaultCallback();
+void BatteryTester_HAL_resetConverterFaultCallback();
+void BatteryTester_HAL_onSoundHardwareCallback();
+void BatteryTester_HAL_offSoundHardwareCallback();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -176,6 +181,11 @@ int main(void)
   BatteryTester_CellsVoltcontrol_initDecorator(
 		  BatteryTester_HAL_isStartCh1PwmCallback,
 		  BatteryTester_HAL_isStartCh2PwmCallback);
+  BatteryTester_ConverterFault_initDecorator(
+		  BatteryTester_HAL_isConverterFaultCallback,
+		  BatteryTester_HAL_resetConverterFaultCallback,
+		  BatteryTester_HAL_onSoundHardwareCallback,
+		  BatteryTester_HAL_offSoundHardwareCallback);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -726,11 +736,24 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOC, Sound_Pin|Protection_Reset_Pin|Fan_Control_Pin|Heater_Control_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, LCD_D7_Pin|LCD_D6_Pin|LCD_D5_Pin|LCD_D4_Pin
                           |LCD_Enable_Pin|LCD_RS_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, Fan_Control_Pin|Heater_Control_Pin, GPIO_PIN_RESET);
+  /*Configure GPIO pins : Sound_Pin Protection_Reset_Pin Fan_Control_Pin Heater_Control_Pin */
+  GPIO_InitStruct.Pin = Sound_Pin|Protection_Reset_Pin|Fan_Control_Pin|Heater_Control_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : Converter_Fault_Pin */
+  GPIO_InitStruct.Pin = Converter_Fault_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  HAL_GPIO_Init(Converter_Fault_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LCD_D7_Pin LCD_D6_Pin LCD_D5_Pin LCD_D4_Pin
                            LCD_Enable_Pin LCD_RS_Pin */
@@ -740,13 +763,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : Fan_Control_Pin Heater_Control_Pin */
-  GPIO_InitStruct.Pin = Fan_Control_Pin|Heater_Control_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : UP_Pin DOWN_Pin LEFT_Pin RIGHT_Pin */
   GPIO_InitStruct.Pin = UP_Pin|DOWN_Pin|LEFT_Pin|RIGHT_Pin;
@@ -801,8 +817,10 @@ void BatteryTester_HAL_startCh1PwmCallback(){
 		Error_Handler();
 	}*/
 	/********FOR TESTING***********/
-	if(HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1) != HAL_OK){
-		Error_Handler();
+	if (TIM_CHANNEL_STATE_GET(&htim2, TIM_CHANNEL_1) == HAL_TIM_CHANNEL_STATE_READY){
+		if(HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1) != HAL_OK){
+			Error_Handler();
+		}
 	}
 }
 
@@ -814,8 +832,10 @@ void BatteryTester_HAL_stopCh1PwmCallback(){
 		Error_Handler();
 	}*/
 	/********FOR TESTING***********/
-	if(HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1) != HAL_OK){
-		Error_Handler();
+	if (TIM_CHANNEL_STATE_GET(&htim2, TIM_CHANNEL_1) == HAL_TIM_CHANNEL_STATE_BUSY){
+		if(HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1) != HAL_OK){
+			Error_Handler();
+		}
 	}
 }
 
@@ -833,8 +853,10 @@ void BatteryTester_HAL_startCh2PwmCallback(){
 		Error_Handler();
 	}*/
 	/********FOR TESTING***********/
-	if(HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2) != HAL_OK){
-		Error_Handler();
+	if(TIM_CHANNEL_STATE_GET(&htim2, TIM_CHANNEL_2) == HAL_TIM_CHANNEL_STATE_READY){
+		if(HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2) != HAL_OK){
+			Error_Handler();
+		}
 	}
 }
 
@@ -846,8 +868,10 @@ void BatteryTester_HAL_stopCh2PwmCallback(){
 		Error_Handler();
 	}*/
 	/********FOR TESTING***********/
-	if(HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2) != HAL_OK){
-		Error_Handler();
+	if(TIM_CHANNEL_STATE_GET(&htim2, TIM_CHANNEL_2) == HAL_TIM_CHANNEL_STATE_BUSY){
+		if(HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2) != HAL_OK){
+			Error_Handler();
+		}
 	}
 }
 
@@ -858,32 +882,48 @@ void BatteryTester_HAL_setCh2PwmPulseCallback(unsigned int pulse){
 }
 
 void BatteryTester_HAL_startThermostatCallback(){
-	if(HAL_TIM_PWM_Start(&htim17, TIM_CHANNEL_1) != HAL_OK){
-		Error_Handler();
+	if(TIM_CHANNEL_STATE_GET(&htim17, TIM_CHANNEL_1) == HAL_TIM_CHANNEL_STATE_READY){
+		if(HAL_TIM_PWM_Start(&htim17, TIM_CHANNEL_1) != HAL_OK){
+			Error_Handler();
+		}
 	}
-	if(HAL_TIMEx_PWMN_Start(&htim17, TIM_CHANNEL_1) != HAL_OK){
-		Error_Handler();
+	if (TIM_CHANNEL_N_STATE_GET(&htim17, TIM_CHANNEL_1) == HAL_TIM_CHANNEL_STATE_READY){
+		if(HAL_TIMEx_PWMN_Start(&htim17, TIM_CHANNEL_1) != HAL_OK){
+			Error_Handler();
+		}
 	}
-	if(HAL_TIM_PWM_Start(&htim16, TIM_CHANNEL_1) != HAL_OK){
-		Error_Handler();
+	if(TIM_CHANNEL_STATE_GET(&htim16, TIM_CHANNEL_1) == HAL_TIM_CHANNEL_STATE_READY){
+		if(HAL_TIM_PWM_Start(&htim16, TIM_CHANNEL_1) != HAL_OK){
+			Error_Handler();
+		}
 	}
-	if(HAL_TIMEx_PWMN_Start(&htim16, TIM_CHANNEL_1) != HAL_OK){
-		Error_Handler();
+	if (TIM_CHANNEL_N_STATE_GET(&htim16, TIM_CHANNEL_1) == HAL_TIM_CHANNEL_STATE_READY){
+		if(HAL_TIMEx_PWMN_Start(&htim16, TIM_CHANNEL_1) != HAL_OK){
+			Error_Handler();
+		}
 	}
 }
 
 void BatteryTester_HAL_stopThermostatCallback(){
-	if(HAL_TIM_PWM_Stop(&htim17, TIM_CHANNEL_1) != HAL_OK){
-		Error_Handler();
+	if(TIM_CHANNEL_STATE_GET(&htim17, TIM_CHANNEL_1) == HAL_TIM_CHANNEL_STATE_BUSY){
+		if(HAL_TIM_PWM_Stop(&htim17, TIM_CHANNEL_1) != HAL_OK){
+			Error_Handler();
+		}
 	}
-	if(HAL_TIMEx_PWMN_Stop(&htim17, TIM_CHANNEL_1) != HAL_OK){
-		Error_Handler();
+	if (TIM_CHANNEL_N_STATE_GET(&htim17, TIM_CHANNEL_1) == HAL_TIM_CHANNEL_STATE_BUSY){
+		if(HAL_TIMEx_PWMN_Stop(&htim17, TIM_CHANNEL_1) != HAL_OK){
+			Error_Handler();
+		}
 	}
-	if(HAL_TIM_PWM_Stop(&htim16, TIM_CHANNEL_1) != HAL_OK){
-		Error_Handler();
+	if(TIM_CHANNEL_STATE_GET(&htim16, TIM_CHANNEL_1) == HAL_TIM_CHANNEL_STATE_BUSY){
+		if(HAL_TIM_PWM_Stop(&htim16, TIM_CHANNEL_1) != HAL_OK){
+			Error_Handler();
+		}
 	}
-	if(HAL_TIMEx_PWMN_Stop(&htim16, TIM_CHANNEL_1) != HAL_OK){
-		Error_Handler();
+	if (TIM_CHANNEL_N_STATE_GET(&htim16, TIM_CHANNEL_1) == HAL_TIM_CHANNEL_STATE_BUSY){
+		if(HAL_TIMEx_PWMN_Stop(&htim16, TIM_CHANNEL_1) != HAL_OK){
+			Error_Handler();
+		}
 	}
 }
 
@@ -917,11 +957,53 @@ void BatteryTester_HAL_offDessipatorHardwareCallback(){
 }
 
 eBool_t BatteryTester_HAL_isStartCh1PwmCallback(){
-	return TRUE;
+	if (TIM_CHANNEL_STATE_GET(&htim2, TIM_CHANNEL_1) == HAL_TIM_CHANNEL_STATE_BUSY){
+		return TRUE;
+	}
+	return FALSE;
 }
 
 eBool_t BatteryTester_HAL_isStartCh2PwmCallback(){
-	return TRUE;
+	if(TIM_CHANNEL_STATE_GET(&htim2, TIM_CHANNEL_2) == HAL_TIM_CHANNEL_STATE_BUSY){
+		return TRUE;
+	}
+	return FALSE;
+}
+
+eBool_t BatteryTester_HAL_isConverterFaultCallback(){
+	if(HAL_GPIO_ReadPin(Converter_Fault_GPIO_Port, Converter_Fault_Pin) == GPIO_PIN_SET){
+		return TRUE;
+	}
+	return FALSE;
+}
+
+/*@brief: Hardware reset converter fault signal callback
+ * @danger: use blocking wait
+ */
+void BatteryTester_HAL_resetConverterFaultCallback(){
+	HAL_GPIO_WritePin(
+			Protection_Reset_GPIO_Port,
+			Protection_Reset_Pin,
+			GPIO_PIN_SET);
+	HAL_Delay(100);
+	HAL_GPIO_WritePin(
+			Protection_Reset_GPIO_Port,
+			Protection_Reset_Pin,
+			GPIO_PIN_RESET);
+}
+
+void BatteryTester_HAL_onSoundHardwareCallback(){
+	HAL_GPIO_WritePin(
+			Sound_GPIO_Port,
+			Sound_Pin,
+			GPIO_PIN_SET);
+}
+
+void BatteryTester_HAL_offSoundHardwareCallback(){
+	HAL_GPIO_WritePin(
+			Sound_GPIO_Port,
+			Sound_Pin,
+			GPIO_PIN_RESET);
 }
 /* USER CODE END 4 */
 

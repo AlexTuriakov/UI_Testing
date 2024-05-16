@@ -16,8 +16,6 @@ typedef enum { CELL_ONE = 0,
 	   	       CELL_TWO = 1 } eBatteryCellSelector_t;
 typedef enum {VOLTAGE_PROTECT_CELL_OFF = 0,
 			  VOLTAGE_PROTECT_CELL_ON = 1} eBatteryCellVoltageStatusProtect_t;
-typedef enum{ FALSE,
-			  TRUE } eBool_t;
 typedef eBool_t (*BatteryTester_CellsVoltcontrol_isStartHardwareCallback_t)(void);
 
 /****************Function declaration****************/

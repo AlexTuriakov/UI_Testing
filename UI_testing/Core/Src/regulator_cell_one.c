@@ -217,8 +217,7 @@ eCellOneRun_t BatteryTester_RegulatorCellOne_getRunStatus(){
 }
 
 void BatteryTester_RegulatorCellOne_toggleRunMode(){
-	on ^= CELL_ONE_RUN_ON;
-	if(on == CELL_ONE_RUN_ON){
+	if(on == CELL_ONE_RUN_OFF){
 		BatteryTester_RegulatorCellOne_startHardware();
 	}
 	else{
@@ -267,12 +266,14 @@ HAL_StatusTypeDef BatteryTester_RegulatorCellOne_readDataFromEEPROM(){
 void BatteryTester_RegulatorCellOne_startHardware(){
 	if(g_startHardware){
 		g_startHardware();
+		on = CELL_ONE_RUN_ON;
 	}
 }
 
 void BatteryTester_RegulatorCellOne_stopHardware(){
 	if(g_stopHardware){
 		g_stopHardware();
+		on = CELL_ONE_RUN_OFF;
 	}
 }
 

@@ -97,7 +97,7 @@ void BatteryTester_ClimatRegulator_initDecorator(
 	g_stopHardware = stopHardware;
 	g_setPulse = setPulse;
 	if(BatteryTester_ClimatRegulator_readDataFromEEPROM() != HAL_OK){
-		regulatorClimatSettings.Kd = 0.0;
+		regulatorClimatSettings.Kd = 0.01;
 		regulatorClimatSettings.Ki = -0.1;
 		regulatorClimatSettings.Kp = 10.0;
 		regulatorClimatSettings.dt = 1.0 / 16000;
@@ -178,8 +178,7 @@ eThermostatRun_t BatteryTester_ClimatRegulator_getRunStatus(){
 }
 
 void BatteryTester_ClimatRegulator_toggleRunMode(){
-	on ^= THERMOSTAT_RUN_ON;
-	if(on == THERMOSTAT_RUN_ON){
+	if(on == THERMOSTAT_RUN_OFF){
 		BatteryTester_ClimatRegulator_startHardware();
 	}
 	else{
@@ -192,7 +191,7 @@ void BatteryTester_ClimatRegulator_toggleRunMode(){
  */
 HAL_StatusTypeDef BatteryTester_ClimatRegulator_readDataFromEEPROM(){
 #ifdef TESTING
-	regulatorClimatSettings.Kd = 0.0;
+	regulatorClimatSettings.Kd = 0.01;
 	regulatorClimatSettings.Ki = -0.1;
 	regulatorClimatSettings.Kp = 10.0;
 	regulatorClimatSettings.dt = 1.0 / 16000;
@@ -212,12 +211,14 @@ HAL_StatusTypeDef BatteryTester_ClimatRegulator_readDataFromEEPROM(){
 void BatteryTester_ClimatRegulator_startHardware(){
 	if(g_startHardware){
 		g_startHardware();
+		on = THERMOSTAT_RUN_ON;
 	}
 }
 
 void BatteryTester_ClimatRegulator_stopHardware(){
 	if(g_stopHardware){
 		g_stopHardware();
+		on = THERMOSTAT_RUN_OFF;
 	}
 }
 
@@ -232,12 +233,12 @@ void BatteryTester_ClimatRegulator_setPulse(int pulse){
  * @deprecated
  */
 inline void BatteryTester_ClimatRegulator_onPWMModeHeat(){
-	if(htim1.Instance->CCMR1 & TIM_CCMR1_OC1M_0){
+	/*if(htim1.Instance->CCMR1 & TIM_CCMR1_OC1M_0){
 		htim1.Instance->CCMR1 &= ~TIM_CCMR1_OC1M_0;
 	}
 	if(!(htim1.Instance->CCMR1 & TIM_CCMR1_OC2M_0)){
 		htim1.Instance->CCMR1 |= TIM_CCMR1_OC2M_0;
-	}
+	}*/
 }
 
 /*
@@ -246,12 +247,12 @@ inline void BatteryTester_ClimatRegulator_onPWMModeHeat(){
  */
 inline void BatteryTester_ClimatRegulator_onPWMModeCool(){
 
-	if(!(htim1.Instance->CCMR1 & TIM_CCMR1_OC1M_0)){
+/*	if(!(htim1.Instance->CCMR1 & TIM_CCMR1_OC1M_0)){
 		htim1.Instance->CCMR1 |= TIM_CCMR1_OC1M_0;
 	}
 	if(htim1.Instance->CCMR1 & TIM_CCMR1_OC2M_0){
 		htim1.Instance->CCMR1 &= ~TIM_CCMR1_OC2M_0;
-	}
+	}*/
 }
 
 /*
@@ -259,7 +260,7 @@ inline void BatteryTester_ClimatRegulator_onPWMModeCool(){
  * @deprecated
  */
 inline void BatteryTester_ClimatRegulator_stopTimerCounter(){
-	htim1.Instance->CR1 &= ~TIM_CR1_CEN;
+//	htim1.Instance->CR1 &= ~TIM_CR1_CEN;
 }
 
 /*
@@ -267,7 +268,7 @@ inline void BatteryTester_ClimatRegulator_stopTimerCounter(){
  * @deprecated
  */
 inline void BatteryTester_ClimatRegulator_startTimerCounter(){
-	htim1.Instance->CR1 |= TIM_CR1_CEN;
+//	htim1.Instance->CR1 |= TIM_CR1_CEN;
 }
 
 /*
@@ -275,9 +276,9 @@ inline void BatteryTester_ClimatRegulator_startTimerCounter(){
  * @deprecated
  */
 inline void BatteryTester_ClimatRegulator_stopPhAHigh(){
-	if(htim1.Instance->CCER & TIM_CCER_CC1E){
+/*	if(htim1.Instance->CCER & TIM_CCER_CC1E){
 		htim1.Instance->CCER &= ~TIM_CCER_CC1E;
-	}
+	}*/
 }
 
 /*
@@ -285,9 +286,9 @@ inline void BatteryTester_ClimatRegulator_stopPhAHigh(){
  * @deprecated
  */
 inline void BatteryTester_ClimatRegulator_startPhAHigh(){
-	if(!(htim1.Instance->CCER & TIM_CCER_CC1E)){
+/*	if(!(htim1.Instance->CCER & TIM_CCER_CC1E)){
 		htim1.Instance->CCER |= TIM_CCER_CC1E;
-	}
+	}*/
 }
 
 /*
@@ -295,9 +296,9 @@ inline void BatteryTester_ClimatRegulator_startPhAHigh(){
  * @deprecated
  */
 inline void BatteryTester_ClimatRegulator_stopPhBHigh(){
-	if(htim1.Instance->CCER & TIM_CCER_CC2E){
+/*	if(htim1.Instance->CCER & TIM_CCER_CC2E){
 		htim1.Instance->CCER &= ~TIM_CCER_CC2E;
-	}
+	}*/
 }
 
 /*
@@ -305,9 +306,9 @@ inline void BatteryTester_ClimatRegulator_stopPhBHigh(){
  * @deprecated
  */
 inline void BatteryTester_ClimatRegulator_startPhBHigh(){
-	if(!(htim1.Instance->CCER & TIM_CCER_CC2E)){
+/*	if(!(htim1.Instance->CCER & TIM_CCER_CC2E)){
 		htim1.Instance->CCER |= TIM_CCER_CC2E;
-	}
+	}*/
 }
 
 /*
@@ -367,7 +368,7 @@ void BatteryTester_ClimatRegulator_setCallbackChangeDeadTimePwm(
  * @deprecated
  */
 inline void BatteryTester_ClimatRegulator_selectPWMMode(float setpoint, float feedback){
-	if(setpoint - feedback < -hysteresis){
+/*	if(setpoint - feedback < -hysteresis){
 		// cool
 //		BatteryTester_ClimatRegulator_stopTimerCounter();
 		BatteryTester_ClimatRegulator_onPWMModeCool();
@@ -382,6 +383,6 @@ inline void BatteryTester_ClimatRegulator_selectPWMMode(float setpoint, float fe
 		BatteryTester_ClimatRegulator_startPhBHigh();
 		BatteryTester_ClimatRegulator_stopPhAHigh();
 //		BatteryTester_ClimatRegulator_startTimerCounter();
-	}
+	}*/
 }
 

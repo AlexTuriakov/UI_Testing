@@ -16,6 +16,8 @@ typedef struct _sVoltRange_t{
 	float maxVoltageInVolts;
 } sVoltRange_t;
 
+typedef enum{ FALSE,
+			  TRUE } eBool_t;
 /****************Function declaration****************/
 void __BatteryTester_AuxiliaryFunction_copy(void*, void*, unsigned int);
 

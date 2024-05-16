@@ -1444,7 +1444,8 @@ void BatteryTester_Menu_selectToggleRunCh1(void){
 
 void BatteryTester_Menu_enterToggleRunCh1(void){
 	BatteryTester_RegulatorCellOne_toggleRunMode();
-	BatteryTester_Menu_returnInMenu(&menuStartCh1On);
+//	BatteryTester_Menu_returnInMenu(&menuStartCh1On);
+	BatteryTester_Menu_returnInMenu(&menuStartCh1State);
 }
 
 void BatteryTester_Menu_selectSetCh2Setpoint(void){
@@ -1471,7 +1472,8 @@ void BatteryTester_Menu_selectToggleRunCh2(void){
 
 void BatteryTester_Menu_enterToggleRunCh2(void){
 	BatteryTester_RegulatorCellTwo_toggleRunMode();
-	BatteryTester_Menu_returnInMenu(&menuStartCh2On);
+//	BatteryTester_Menu_returnInMenu(&menuStartCh2On);
+	BatteryTester_Menu_returnInMenu(&menuStartCh2State);
 }
 
 void BatteryTester_Menu_selectSetThermostatSetpoint(void){
@@ -1498,7 +1500,8 @@ void BatteryTester_Menu_selectToggleThermostat(void){
 
 void BatteryTester_Menu_enterToggleThermostat(void){
 	BatteryTester_ClimatRegulator_toggleRunMode();
-	BatteryTester_Menu_returnInMenu(&menuStartTstatOn);
+//	BatteryTester_Menu_returnInMenu(&menuStartTstatOn);
+	BatteryTester_Menu_returnInMenu(&menuStartTstatState);
 }
 /*@brief:
  * Fill in the top line of the display.
