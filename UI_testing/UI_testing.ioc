@@ -1,11 +1,12 @@
 #MicroXplorer Configuration settings - do not modify
 ADC.ClockPrescaler=ADC_CLOCK_ASYNC_DIV1
-ADC.ContinuousConvMode=DISABLE
+ADC.ContinuousConvMode=ENABLE
 ADC.DMAContinuousRequests=ENABLE
 ADC.EOCSelection=ADC_EOC_SEQ_CONV
 ADC.ExternalTrigConv=ADC_EXTERNALTRIGCONV_T1_TRGO
-ADC.IPParameters=DMAContinuousRequests,EOCSelection,ContinuousConvMode,Overrun,ExternalTrigConv,ClockPrescaler
+ADC.IPParameters=DMAContinuousRequests,EOCSelection,ContinuousConvMode,Overrun,ExternalTrigConv,ClockPrescaler,SamplingTime
 ADC.Overrun=ADC_OVR_DATA_OVERWRITTEN
+ADC.SamplingTime=ADC_SAMPLETIME_7CYCLES_5
 CAD.formats=
 CAD.pinconfig=
 CAD.provider=
@@ -16,7 +17,7 @@ Dma.ADC.0.MemInc=DMA_MINC_ENABLE
 Dma.ADC.0.Mode=DMA_CIRCULAR
 Dma.ADC.0.PeriphDataAlignment=DMA_PDATAALIGN_HALFWORD
 Dma.ADC.0.PeriphInc=DMA_PINC_DISABLE
-Dma.ADC.0.Priority=DMA_PRIORITY_LOW
+Dma.ADC.0.Priority=DMA_PRIORITY_HIGH
 Dma.ADC.0.RequestParameters=Instance,Direction,PeriphInc,MemInc,PeriphDataAlignment,MemDataAlignment,Mode,Priority
 Dma.Request0=ADC
 Dma.RequestsNb=1

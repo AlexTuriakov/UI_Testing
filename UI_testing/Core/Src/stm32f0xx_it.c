@@ -29,6 +29,7 @@
 #include "climat_regulator.h"
 #include "dessipator_control.h"
 #include "cells_voltcontrol.h"
+#include "converter_fault.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -67,6 +68,7 @@ extern DAC_HandleTypeDef hdac;
 extern TIM_HandleTypeDef htim6;
 /* USER CODE BEGIN EV */
 extern volatile uint32_t rawAdcData[LENGTH_DATA_ADC];
+unsigned long int qcall = 0;
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -159,8 +161,8 @@ void DMA1_Channel1_IRQHandler(void)
   /* USER CODE END DMA1_Channel1_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_adc);
   /* USER CODE BEGIN DMA1_Channel1_IRQn 1 */
-//   SET_BIT(hdma_adc.DmaBaseAddress->IFCR, DMA_IFCR_CHTIF1);
-//   SET_BIT(hdma_adc.DmaBaseAddress->IFCR, DMA_IFCR_CTCIF1);
+   SET_BIT(hdma_adc.DmaBaseAddress->IFCR, DMA_IFCR_CHTIF1);
+   SET_BIT(hdma_adc.DmaBaseAddress->IFCR, DMA_IFCR_CTCIF1);
    SET_BIT(hdma_adc.DmaBaseAddress->IFCR, DMA_IFCR_CGIF1);
   /* USER CODE END DMA1_Channel1_IRQn 1 */
 }
@@ -188,9 +190,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 }
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc){
+	qcall++;
 	sphisicValueEx_t measuringValue =
 			BatteryTester_ConversionData_calcPhisicValueFromAdcCodeEx(
 				rawAdcData, LENGTH_DATA_ADC);
+	BatteryTester_ConverterFault_faultHandler();
 	BattetyTester_DessipatorControl_onHeaterControl(
 				measuringValue.busVoltageInV);
 	BatteryTester_CellsVoltcontrol_protectVoltageCellx(

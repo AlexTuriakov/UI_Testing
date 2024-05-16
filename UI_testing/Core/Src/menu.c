@@ -16,6 +16,7 @@
 #include "regulator_cell_one.h"
 #include "regulator_cell_two.h"
 #include "cells_voltcontrol.h"
+#include "converter_fault.h"
 
 /** This is used when an invalid menu handle is required in
  *  a \ref MENU_ITEM() definition, i.e. to indicate that a
@@ -233,8 +234,7 @@ MENU_ITEM(menuDessipatorState, NULL_MENU, NULL_MENU, menuStatusDessipator, NULL_
 MENU_ITEM(menuAlarmState, menuAlarmReset, menuAlarmReset, menuResetAlarm, NULL_MENU,
 		0, 0, "Hardware alarm  status...");
 MENU_ITEM(menuAlarmReset, menuAlarmState, menuAlarmState, menuResetAlarm, NULL_MENU,
-		0, BatteryTester_Menu_resetAlarm,
-			  "!Hardware alarm reset!");
+		0, BatteryTester_Menu_resetAlarm, "!Hardware alarm reset!");
 /*SUBMENU Reset Alarm... LEVEL 3*/
 MENU_ITEM(menuSetDessipMin, NULL_MENU, NULL_MENU, NULL_MENU, NULL_MENU,
 		BatteryTester_Menu_selectDessipatorMinThreshold,
@@ -565,7 +565,8 @@ void BatteryTester_Menu_EnterCurrentItem(void)
 }
 
 void BatteryTester_Menu_resetAlarm(void){
-
+	BatteryTester_ConverterFault_resetFaultHandler();
+	BatteryTester_Menu_returnInMenu(&menuAlarmState);
 }
 
 void BatteryTester_Menu_selectDessipatorMinThreshold(void){
