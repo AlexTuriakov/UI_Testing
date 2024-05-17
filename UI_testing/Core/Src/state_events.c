@@ -17,6 +17,7 @@
 #include "menu.h"
 #include "keypad.h"
 #include "set_param.h"
+#include "work_status.h"
 
 
 	static eStates_t currentState;
@@ -52,8 +53,8 @@ void BatteryTester_State_proccessEvents(){
 	case SET_PARAMETERS:
 		BatteryTester_State_handlerSetParams(currentEvent , (void*)0);
 		break;
-	case WORK:
-		BatteryTester_State_handlerWork(currentEvent , (void*)0);
+	case WORK_STATUS:
+		BatteryTester_State_handlerWorkStatus(currentEvent , (void*)0);
 		break;
 	case ALARM:
 		BatteryTester_State_handlerAlarm(currentEvent , (void*)0);
@@ -111,8 +112,21 @@ void BatteryTester_State_handlerSetParams(eEvents_t event, void* param){
 		}
 }
 
-void BatteryTester_State_handlerWork(eEvents_t event, void* param){
-
+void BatteryTester_State_handlerWorkStatus(eEvents_t event, void* param){
+	switch(event){
+	case EVENT_NONE:
+		BatteryTester_WorkStatus_updateStatus((void*) param);
+		break;
+	case EVENT_KEY_UP:
+		BatteryTester_WorkStatus_upStatus((void*) param);
+		break;
+	case EVENT_KEY_DOWN:
+		BatteryTester_WorkStatus_downStatus((void*) param);
+		break;
+	case EVENT_KEY_LEFT:
+		BatteryTester_WorkStatus_returnToPreviousState((void*) param);
+		break;
+	}
 }
 
 void BatteryTester_State_handlerAlarm(eEvents_t event, void* param){
@@ -135,7 +149,7 @@ void BatteryTester_State_setCurrentEvent(eEvents_t newEvent){
 	currentEvent = newEvent;
 }
 
-void BatteryTester_State_pushEventThroughIteration(eEvents_t newEvent){
+void BatteryTester_State_pushEventThroughIteration(eEvents_t newEvent){ //continueEvent
 	BatteryTester_State_setCurrentEvent(newEvent);
 	flagPushEventThroughIteration = 1;
 }

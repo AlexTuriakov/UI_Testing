@@ -12,7 +12,7 @@
 typedef enum {
 	MENU_NAVIGATE,
 	SET_PARAMETERS,
-	WORK,
+	WORK_STATUS,
 	ALARM,
 	NUM_STATES
 } eStates_t;
@@ -33,7 +33,7 @@ void BatteryTester_State_initState();
 void BatteryTester_State_proccessEvents();
 void BatteryTester_State_handlerMenuNavigate(eEvents_t, void*);
 void BatteryTester_State_handlerSetParams(eEvents_t, void*);
-void BatteryTester_State_handlerWork(eEvents_t, void*);
+void BatteryTester_State_handlerWorkStatus(eEvents_t, void*);
 void BatteryTester_State_handlerAlarm(eEvents_t, void*);
 eStates_t BatteryTester_State_getCurrentState();
 void BatteryTester_State_setCurrentState(eStates_t);
