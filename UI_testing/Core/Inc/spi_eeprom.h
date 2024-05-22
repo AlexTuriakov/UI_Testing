@@ -86,6 +86,10 @@ typedef enum {
 
 typedef unsigned char (*BatteryTester_AT25SF081_HardwareTransmitReceiveCallback_t)(unsigned char data);
 typedef void(*BatteryTester_AT25SF081_HardwareControlCallback_t)(eCSAdapter_t select);
+typedef void (*BatteryTester_AT25SF081_HardwareTransferCallback_t)(
+		unsigned char* pBuffer,
+		unsigned short size,
+		unsigned int timeout);
 //extern w25qxx_t	w25qxx;
 extern sAT25SF081_t eeprom;
 

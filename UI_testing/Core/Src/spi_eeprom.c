@@ -17,10 +17,13 @@ extern UART_HandleTypeDef huart1;
 
 
 #define AT25SF081_DUMMY_BYTE        0xA5
+#define BatteryTester_AT25SF081_postAddress BatteryTester_AT25SF081_postCommand
 
 sAT25SF081_t eeprom;
 static BatteryTester_AT25SF081_HardwareTransmitReceiveCallback_t g_transmitReceiveCallback = 0;
 static BatteryTester_AT25SF081_HardwareControlCallback_t g_selectChipCallback = 0;
+static BatteryTester_AT25SF081_HardwareTransferCallback_t g_receiveCallback = 0;
+static BatteryTester_AT25SF081_HardwareTransferCallback_t g_transmitCallback = 0;
 
 #if (_AT25SF081_USE_FREERTOS == 1)
 #define	 BatteryTester_AT25SF081_Delay(delay)		osDelay(delay)
@@ -442,9 +445,13 @@ uint8_t  BatteryTester_AT25SF081_Init(void)
 /********************************************************************/
 void BatteryTester_AT25SF081_initDecorator(
 		BatteryTester_AT25SF081_HardwareTransmitReceiveCallback_t transmitReceiveCallback,
-		BatteryTester_AT25SF081_HardwareControlCallback_t selectChipCallback){
+		BatteryTester_AT25SF081_HardwareControlCallback_t selectChipCallback,
+		BatteryTester_AT25SF081_HardwareTransferCallback_t receiveCallback,
+		BatteryTester_AT25SF081_HardwareTransferCallback_t transmitCallback){
 	g_transmitReceiveCallback = transmitReceiveCallback;
 	g_selectChipCallback = selectChipCallback;
+	g_receiveCallback = receiveCallback;
+	g_transmitCallback = transmitCallback;
 	eeprom.Lock = 1;
 	BatteryTester_AT25SF081_Delay(100);
 	BatteryTester_AT25SF081_selectChip(UNSELECT);
@@ -461,7 +468,30 @@ void BatteryTester_AT25SF081_initDecorator(
 	eeprom.Lock = 0;
 }
 
+/*
+ * @denger: blocking wait
+ */
+void BatteryTester_AT25SF081_receiveData(
+		unsigned char* pBuffer,
+		unsigned short size,
+		unsigned int timeout){
+	if(g_receiveCallback){
+		g_receiveCallback(pBuffer, size, timeout);
+	}
+}
+
+void BatteryTester_AT25SF081_transmitData(
+		unsigned char* pBuffer,
+		unsigned short size,
+		unsigned int timeout){
+	if(g_transmitCallback){
+		g_transmitCallback(pBuffer, size, timeout);
+	}
+}
 //###################################################################################################################
+/*
+ * @denger: blocking wait
+ */
 void  BatteryTester_AT25SF081_EraseChip(void)
 {
 	while(eeprom.Lock == 1){
@@ -471,12 +501,15 @@ void  BatteryTester_AT25SF081_EraseChip(void)
 	BatteryTester_AT25SF081_WaitForReady();
 	BatteryTester_AT25SF081_WriteEnable();
 	BatteryTester_AT25SF081_transmitReceiveSpi(AT25SF081_CHIP_ERASE);
-	BatteryTester_AT25SF081_WaitForReady();
+//	BatteryTester_AT25SF081_WaitForReady();
 //	BatteryTester_AT25SF081_Delay(10);
 	eeprom.Lock = 0;
 }
 
 //###################################################################################################################
+/*
+ * @denger: blocking wait
+ */
 void  BatteryTester_AT25SF081_EraseSector(unsigned int SectorAddr)
 {
 	while(eeprom.Lock == 1)
@@ -487,16 +520,19 @@ void  BatteryTester_AT25SF081_EraseSector(unsigned int SectorAddr)
 	SectorAddr *= eeprom.SectorSize;
 	BatteryTester_AT25SF081_selectChip(SELECT);
 	BatteryTester_AT25SF081_postCommand(AT25SF081_SECTOR_ERASE);
-	BatteryTester_AT25SF081_postCommand((SectorAddr & 0xFF0000) >> 16);
-	BatteryTester_AT25SF081_postCommand((SectorAddr & 0xFF00) >> 8);
-	BatteryTester_AT25SF081_postCommand(SectorAddr & 0xFF);
+	BatteryTester_AT25SF081_postAddress((SectorAddr & 0xFF0000) >> 16);
+	BatteryTester_AT25SF081_postAddress((SectorAddr & 0xFF00) >> 8);
+	BatteryTester_AT25SF081_postAddress(SectorAddr & 0xFF);
 	BatteryTester_AT25SF081_selectChip(UNSELECT);
-	BatteryTester_AT25SF081_WaitForReady();
+//	BatteryTester_AT25SF081_WaitForReady();
 	//BatteryTester_AT25SF081_Delay(1);
 	eeprom.Lock = 0;
 }
 
 //###################################################################################################################
+/*
+ * @denger: blocking wait
+ */
 void  BatteryTester_AT25SF081_EraseBlock(uint32_t BlockAddr)
 {
 	while(eeprom.Lock == 1)
@@ -507,11 +543,11 @@ void  BatteryTester_AT25SF081_EraseBlock(uint32_t BlockAddr)
 	BlockAddr *= eeprom.BlockSize;
 	BatteryTester_AT25SF081_selectChip(SELECT);
 	BatteryTester_AT25SF081_postCommand(AT25SF081_BLOCK_ERASE);
-	BatteryTester_AT25SF081_postCommand((BlockAddr & 0xFF0000) >> 16);
-	BatteryTester_AT25SF081_postCommand((BlockAddr & 0xFF00) >> 8);
-	BatteryTester_AT25SF081_postCommand(BlockAddr & 0xFF);
+	BatteryTester_AT25SF081_postAddress((BlockAddr & 0xFF0000) >> 16);
+	BatteryTester_AT25SF081_postAddress((BlockAddr & 0xFF00) >> 8);
+	BatteryTester_AT25SF081_postAddress(BlockAddr & 0xFF);
 	BatteryTester_AT25SF081_selectChip(UNSELECT);
-	BatteryTester_AT25SF081_WaitForReady();
+//	BatteryTester_AT25SF081_WaitForReady();
     //BatteryTester_AT25SF081_Delay(1);
 	eeprom.Lock = 0;
 }
@@ -547,345 +583,273 @@ unsigned int  BatteryTester_AT25SF081_BlockToPage(unsigned int BlockAddress)
 }
 
 //###################################################################################################################
-uint8_t  BatteryTester_AT25SF081_IsEmptyPage(uint32_t Page_Address, uint32_t OffsetInByte)
+/*
+ * @denger: blocking wait
+ */
+unsigned char  BatteryTester_AT25SF081_IsEmptyPage(
+		unsigned int Page_Address,
+		unsigned int OffsetInByte)
 {
 	while(eeprom.Lock == 1)
 	 BatteryTester_AT25SF081_Delay(1);
 
 	eeprom.Lock = 1;
+	BatteryTester_AT25SF081_WaitForReady();
+	unsigned char	pBuffer[256] = {0,};
+	unsigned int WorkAddress = OffsetInByte + Page_Address * eeprom.PageSize;
+	unsigned short size = eeprom.PageSize - OffsetInByte;
+	BatteryTester_AT25SF081_readPageFastCommand(WorkAddress, pBuffer, size,	100);
+	unsigned char ret = BatteryTester_AT25SF081_isEmptyBuffer(pBuffer, size);
+	eeprom.Lock = 0;
+	return ret;
+}
 
-	uint8_t	pBuffer[256] = {0,};
-	uint32_t WorkAddress = 0;
-	uint16_t size = 0;
+inline void BatteryTester_AT25SF081_readPageFastCommand(
+		unsigned int address,
+		unsigned char* pBuffer,
+		unsigned short size,
+		unsigned int timeout){
+	if(!pBuffer || size == 0 || size > 256){
+		return;
+	}
+	BatteryTester_AT25SF081_selectChip(SELECT);
+	BatteryTester_AT25SF081_postCommand(AT25SF081_FAST_READ);
+	BatteryTester_AT25SF081_postAddress((address & 0xFF0000) >> 16);
+	BatteryTester_AT25SF081_postAddress((address & 0xFF00) >> 8);
+	BatteryTester_AT25SF081_postAddress(address & 0xFF);
+	BatteryTester_AT25SF081_postCommand(AT25SF081_DUMMY_BYTE);
+	BatteryTester_AT25SF081_receiveData(pBuffer, size, timeout);
+	BatteryTester_AT25SF081_selectChip(UNSELECT);
+}
 
-	size = eeprom.PageSize - OffsetInByte;
-	WorkAddress = (OffsetInByte + Page_Address * eeprom.PageSize);
-
-	AT25SF081_CS_SELECT;
-
-	 BatteryTester_AT25SF081_Spi(AT25SF081_FAST_READ);
-
-	if(eeprom.ID >= W25Q256)
-		 BatteryTester_AT25SF081_Spi((WorkAddress & 0xFF000000) >> 24);
-
-	 BatteryTester_AT25SF081_Spi((WorkAddress & 0xFF0000) >> 16);
-	 BatteryTester_AT25SF081_Spi((WorkAddress & 0xFF00) >> 8);
-	 BatteryTester_AT25SF081_Spi(WorkAddress & 0xFF);
-
-	 BatteryTester_AT25SF081_Spi(0);
-
-	HAL_SPI_Receive(AT25SF081_SPI_PTR, pBuffer, size, 100);
-
-	AT25SF081_CS_UNSELECT;
-
-	for(uint16_t i = 0; i < size; i++)
+inline unsigned char BatteryTester_AT25SF081_isEmptyBuffer(
+		unsigned char* pBuffer,
+		unsigned short size){
+	if(!pBuffer || size == 0){
+		return 0;
+	}
+	for(unsigned short i = 0; i < size; i++)
 	{
 		if(pBuffer[i] != 0xFF)
 		{
-			eeprom.Lock = 0;
 			return 0;
 		}
 	}
-
-	eeprom.Lock = 0;
 	return 1;
 }
-
 //##################################################################################################################
-uint8_t  BatteryTester_AT25SF081_IsEmptySector(uint32_t Sector_Address, uint32_t OffsetInByte)
+unsigned char  BatteryTester_AT25SF081_IsEmptySector(unsigned int Sector_Address, unsigned int OffsetInByte)
 {
-	while(eeprom.Lock == 1)
-	 BatteryTester_AT25SF081_Delay(1);
-
-	eeprom.Lock = 1;
-
-	uint8_t	pBuffer[256] = {0,};
-	uint32_t WorkAddress = 0;
-	uint16_t s_buf = 256;
-	uint16_t size = 0;
-
-	size = eeprom.SectorSize - OffsetInByte;
-	WorkAddress = (OffsetInByte + Sector_Address * eeprom.SectorSize);
-
-//char buf2[64] = {0,};
-//snprintf(buf2, 64, "SIZE %d \n", size);
-//HAL_UART_Transmit(&huart1, (uint8_t*)buf2, strlen(buf2), 100);
-
-	uint16_t cikl = size / 256;
-	uint16_t cikl2 = size % 256;
-	uint16_t count_cikle = 0;
-
-	if(size <= 256)
-	{
-		count_cikle = 1;
-		//HAL_UART_Transmit(&huart1, (uint8_t*)"1\n", 2, 100);
+	/*while(eeprom.Lock == 1)
+	 BatteryTester_AT25SF081_Delay(1);*/
+	if(OffsetInByte >= eeprom.SectorSize){
+		return 0;
 	}
-	else if(cikl2 == 0)
-	{
-		count_cikle = cikl;
-		//HAL_UART_Transmit(&huart1, (uint8_t*)"2\n", 2, 100);
-	}
-	else
-	{
-		count_cikle = cikl + 1;
-		//HAL_UART_Transmit(&huart1, (uint8_t*)"3\n", 2, 100);
-	}
-
-
-	for(uint16_t i = 0; i < count_cikle; i++)
-	{
-		AT25SF081_CS_SELECT;
-		 BatteryTester_AT25SF081_Spi(AT25SF081_FAST_READ);
-
-		if(eeprom.ID>=W25Q256)
-			 BatteryTester_AT25SF081_Spi((WorkAddress & 0xFF000000) >> 24);
-
-		 BatteryTester_AT25SF081_Spi((WorkAddress & 0xFF0000) >> 16);
-		 BatteryTester_AT25SF081_Spi((WorkAddress & 0xFF00) >> 8);
-		 BatteryTester_AT25SF081_Spi(WorkAddress & 0xFF);
-
-		 BatteryTester_AT25SF081_Spi(0);
-
-		if(size < 256) s_buf = size;
-
-//snprintf(buf2, 64, "RECIV %d %d %d %lu\n", size, s_buf, i, WorkAddress);
-//HAL_UART_Transmit(&huart1, (uint8_t*)buf2, strlen(buf2), 100);
-
-		HAL_SPI_Receive(AT25SF081_SPI_PTR, pBuffer, s_buf, 100);
-
-		AT25SF081_CS_UNSELECT;
-
-		for(uint16_t i = 0; i < s_buf; i++)
-		{
-			if(pBuffer[i] != 0xFF)
-			{
-				eeprom.Lock = 0;
-				return 0;
-			}
+	//eeprom.Lock = 1;
+	/*unsigned char pBuffer[256] = {0,};
+	unsigned int WorkAddress = OffsetInByte + Sector_Address * eeprom.SectorSize;
+	unsigned short size = eeprom.SectorSize - OffsetInByte;
+	unsigned short pages = size / eeprom.PageSize;
+	unsigned short remaindInPage = size % eeprom.PageSize; //size - pages * eeprom.PageSize;
+	BatteryTester_AT25SF081_WaitForReady();
+	if(remaindInPage != 0){
+		BatteryTester_AT25SF081_readPageFastCommand(WorkAddress, pBuffer, remaindInPage, 100);
+		if(!BatteryTester_AT25SF081_isEmptyBuffer(pBuffer, remaindInPage)){
+			eeprom.Lock = 0;
+			return 0;
 		}
-
-		size = size - 256;
-		WorkAddress = WorkAddress + 256;
+		WorkAddress += remaindInPage;
 	}
-
-	eeprom.Lock = 0;
+	for(unsigned short i = 0; i < pages; i++)
+	{
+		BatteryTester_AT25SF081_readPageFastCommand(WorkAddress, pBuffer, eeprom.PageSize, 100);
+		if(!BatteryTester_AT25SF081_isEmptyBuffer(pBuffer, eeprom.PageSize)){
+			eeprom.Lock = 0;
+				return 0;
+		}
+		WorkAddress += eeprom.PageSize;
+	}*/
+	unsigned int StartPage = BatteryTester_AT25SF081_SectorToPage(Sector_Address) +
+				(OffsetInByte / eeprom.PageSize);
+	unsigned int BytesToCheck = eeprom.SectorSize - OffsetInByte;
+	unsigned int LocalOffset = OffsetInByte % eeprom.PageSize;
+	while(BytesToCheck > 0)
+	{
+		if(!BatteryTester_AT25SF081_IsEmptyPage(StartPage, LocalOffset)){
+//			eeprom.Lock = 0;
+			return 0;
+		}
+		StartPage++;
+		BytesToCheck -= eeprom.PageSize - LocalOffset;
+		LocalOffset = 0;
+	}
+//	eeprom.Lock = 0;
 	return 1;
 }
 
 //###################################################################################################################
-uint8_t  BatteryTester_AT25SF081_IsEmptyBlock(uint32_t Block_Address, uint32_t OffsetInByte)
+unsigned char  BatteryTester_AT25SF081_IsEmptyBlock(unsigned int Block_Address, unsigned int OffsetInByte)
 {
-	while(eeprom.Lock == 1)
-	 BatteryTester_AT25SF081_Delay(1);
-
+	/*while(eeprom.Lock == 1)
+		BatteryTester_AT25SF081_Delay(1);
 	eeprom.Lock = 1;
-
-	uint8_t	pBuffer[256] = {0,};
-	uint32_t WorkAddress = 0;
-	uint16_t s_buf = 256;
-	uint32_t size = 0;
-
+	unsigned char	pBuffer[256] = {0,};
+	unsigned int WorkAddress = 0;
+	unsigned short s_buf = 256;
+	unsigned short size = 0;
 	size = eeprom.BlockSize - OffsetInByte;
 	WorkAddress = (OffsetInByte + Block_Address * eeprom.BlockSize);
-
-//char buf2[64] = {0,};
-//snprintf(buf2, 64, "SIZEB %lu \n", size);
-//HAL_UART_Transmit(&huart1, (uint8_t*)buf2, strlen(buf2), 100);
-
-	uint16_t cikl = size / 256;
-	uint16_t cikl2 = size % 256;
-	uint16_t count_cikle = 0;
-
+	unsigned short cikl = size / 256;
+	unsigned short cikl2 = size % 256;
+	unsigned short count_cikle = 0;
 	if(size <= 256)
 	{
 		count_cikle = 1;
-		//HAL_UART_Transmit(&huart1, (uint8_t*)"1\n", 2, 100);
 	}
 	else if(cikl2 == 0)
 	{
 		count_cikle = cikl;
-		//HAL_UART_Transmit(&huart1, (uint8_t*)"2\n", 2, 100);
 	}
 	else
 	{
 		count_cikle = cikl + 1;
-		//HAL_UART_Transmit(&huart1, (uint8_t*)"3\n", 2, 100);
 	}
-
-
+	BatteryTester_AT25SF081_WaitForReady();
 	for(uint16_t i = 0; i < count_cikle; i++)
 	{
-		AT25SF081_CS_SELECT;
-		 BatteryTester_AT25SF081_Spi(AT25SF081_FAST_READ);
-
-		if(eeprom.ID>=W25Q256)
-			 BatteryTester_AT25SF081_Spi((WorkAddress & 0xFF000000) >> 24);
-
-		 BatteryTester_AT25SF081_Spi((WorkAddress & 0xFF0000) >> 16);
-		 BatteryTester_AT25SF081_Spi((WorkAddress & 0xFF00) >> 8);
-		 BatteryTester_AT25SF081_Spi(WorkAddress & 0xFF);
-
-		 BatteryTester_AT25SF081_Spi(0);
-
 		if(size < 256) s_buf = size;
-
-//snprintf(buf2, 64, "RECIVB %lu %d %d %lu\n", size, s_buf, i, WorkAddress);
-//HAL_UART_Transmit(&huart1, (uint8_t*)buf2, strlen(buf2), 100);
-
-		HAL_SPI_Receive(AT25SF081_SPI_PTR, pBuffer, s_buf, 100);
-
-		AT25SF081_CS_UNSELECT;
-
-		for(uint16_t i = 0; i < s_buf; i++)
-		{
-			if(pBuffer[i] != 0xFF)
-			{
-				eeprom.Lock = 0;
+		BatteryTester_AT25SF081_readPageFastCommand(WorkAddress, pBuffer, s_buf, 100);
+		if(!BatteryTester_AT25SF081_isEmptyBuffer(pBuffer, s_buf)){
+			eeprom.Lock = 0;
 				return 0;
-			}
 		}
-
 		size = size - 256;
 		WorkAddress = WorkAddress + 256;
 	}
-
-	eeprom.Lock = 0;
+	eeprom.Lock = 0;*/
+	if(OffsetInByte > eeprom.BlockSize){
+		return 0;
+	}
+	unsigned int StartPage = BatteryTester_AT25SF081_BlockToPage(Block_Address)+
+			(OffsetInByte/eeprom.PageSize);
+	unsigned int BytesToCheck = eeprom.BlockSize - OffsetInByte;
+	unsigned int LocalOffset = OffsetInByte % eeprom.PageSize;
+	while(BytesToCheck > 0)
+	{
+		if(!BatteryTester_AT25SF081_IsEmptyPage(StartPage, LocalOffset)){
+			return 0;
+		}
+		StartPage++;
+		BytesToCheck -= eeprom.PageSize - LocalOffset;
+		LocalOffset = 0;
+	}
 	return 1;
 }
 
 //###################################################################################################################
-void  BatteryTester_AT25SF081_WriteByte(uint8_t byte, uint32_t addr)
+void  BatteryTester_AT25SF081_WriteByte(unsigned char byte, unsigned int addr)
 {
 	while(eeprom.Lock == 1)
 		 BatteryTester_AT25SF081_Delay(1);
-
 	eeprom.Lock = 1;
 
-	 BatteryTester_AT25SF081_WaitForReady();
-	 BatteryTester_AT25SF081_WriteEnable();
-
-	AT25SF081_CS_SELECT;
-
-	 BatteryTester_AT25SF081_Spi(AT25SF081_PAGE_PROGRAMM);
-
-	if(eeprom.ID >= W25Q256)
-		 BatteryTester_AT25SF081_Spi((addr & 0xFF000000) >> 24);
-
-	 BatteryTester_AT25SF081_Spi((addr & 0xFF0000) >> 16);
-	 BatteryTester_AT25SF081_Spi((addr & 0xFF00) >> 8);
-	 BatteryTester_AT25SF081_Spi(addr & 0xFF);
-
-	 BatteryTester_AT25SF081_Spi(byte);
-
-	AT25SF081_CS_UNSELECT;
-
-	 BatteryTester_AT25SF081_WaitForReady();
+	BatteryTester_AT25SF081_WaitForReady();
+	BatteryTester_AT25SF081_WriteEnable();
+	BatteryTester_AT25SF081_selectChip(SELECT);
+	BatteryTester_AT25SF081_postCommand(AT25SF081_PAGE_PROGRAMM);
+	BatteryTester_AT25SF081_postAddress((addr & 0xFF0000) >> 16);
+	BatteryTester_AT25SF081_postAddress((addr & 0xFF00) >> 8);
+	BatteryTester_AT25SF081_postAddress(addr & 0xFF);
+	BatteryTester_AT25SF081_postCommand(byte);
+	BatteryTester_AT25SF081_selectChip(UNSELECT);
+//	BatteryTester_AT25SF081_WaitForReady();
 
 	eeprom.Lock = 0;
 }
 
 //###################################################################################################################
-void  BatteryTester_AT25SF081_WritePage(uint8_t *pBuffer, uint32_t Page_Address, uint32_t OffsetInByte, uint32_t NumByteToWrite_up_to_PageSize)
+void  BatteryTester_AT25SF081_WritePage(
+		unsigned char* pBuffer,
+		unsigned int Page_Address,
+		unsigned int OffsetInByte,
+		unsigned int NumByteToWrite_up_to_PageSize)
 {
 	while(eeprom.Lock == 1)
 		 BatteryTester_AT25SF081_Delay(1);
-
 	eeprom.Lock = 1;
-
-	if(((NumByteToWrite_up_to_PageSize + OffsetInByte) > eeprom.PageSize) || (NumByteToWrite_up_to_PageSize == 0))
+	if(((NumByteToWrite_up_to_PageSize + OffsetInByte) > eeprom.PageSize) ||
+			(NumByteToWrite_up_to_PageSize == 0)){
 		NumByteToWrite_up_to_PageSize = eeprom.PageSize - OffsetInByte;
-
-	if((OffsetInByte + NumByteToWrite_up_to_PageSize) > eeprom.PageSize)
-		NumByteToWrite_up_to_PageSize = eeprom.PageSize - OffsetInByte;
-
-
-	 BatteryTester_AT25SF081_WaitForReady();
-
-	 BatteryTester_AT25SF081_WriteEnable();
-
-	AT25SF081_CS_SELECT;
-
-	 BatteryTester_AT25SF081_Spi(AT25SF081_PAGE_PROGRAMM);
-
+	}
 	Page_Address = (Page_Address * eeprom.PageSize) + OffsetInByte;
-
-	if(eeprom.ID >= W25Q256)
-		 BatteryTester_AT25SF081_Spi((Page_Address & 0xFF000000) >> 24);
-
-	 BatteryTester_AT25SF081_Spi((Page_Address & 0xFF0000) >> 16);
-	 BatteryTester_AT25SF081_Spi((Page_Address & 0xFF00) >> 8);
-	 BatteryTester_AT25SF081_Spi(Page_Address & 0xFF);
-
-	HAL_SPI_Transmit(AT25SF081_SPI_PTR, pBuffer, NumByteToWrite_up_to_PageSize, 100);
-
-	AT25SF081_CS_UNSELECT;
-
-	 BatteryTester_AT25SF081_WaitForReady();
-
-	 BatteryTester_AT25SF081_Delay(1);
+	BatteryTester_AT25SF081_WaitForReady();
+	BatteryTester_AT25SF081_WriteEnable();
+	BatteryTester_AT25SF081_selectChip(SELECT);
+	BatteryTester_AT25SF081_postCommand(AT25SF081_PAGE_PROGRAMM);
+	BatteryTester_AT25SF081_postAddress((addr & 0xFF0000) >> 16);
+	BatteryTester_AT25SF081_postAddress((addr & 0xFF00) >> 8);
+	BatteryTester_AT25SF081_postAddress(addr & 0xFF);
+	BatteryTester_AT25SF081_transmitData(pBuffer, NumButeToWrite_up_to_PageSize, 100);
+	BatteryTester_AT25SF081_selectChip(UNSELECT);
+//	BatteryTester_AT25SF081_WaitForReady();
+//	BatteryTester_AT25SF081_Delay(1);
 	eeprom.Lock = 0;
 }
 
 //###################################################################################################################
-void  BatteryTester_AT25SF081_WriteSector(uint8_t *pBuffer, uint32_t Sector_Address, uint32_t OffsetInByte, uint32_t NumByteToWrite_up_to_SectorSize)
+void  BatteryTester_AT25SF081_WriteSector(
+		unsigned char* pBuffer,
+		unsigned int Sector_Address,
+		unsigned int OffsetInByte,
+		unsigned int NumByteToWrite_up_to_SectorSize)
 {
-	if((NumByteToWrite_up_to_SectorSize > eeprom.SectorSize) || (NumByteToWrite_up_to_SectorSize == 0))
-		NumByteToWrite_up_to_SectorSize = eeprom.SectorSize;
-
-	uint32_t StartPage;
-	int32_t	BytesToWrite;
-	uint32_t LocalOffset;
-
-	if((OffsetInByte + NumByteToWrite_up_to_SectorSize) > eeprom.SectorSize)
-		BytesToWrite = eeprom.SectorSize - OffsetInByte;
-	else
-		BytesToWrite = NumByteToWrite_up_to_SectorSize;
-
-	StartPage =  BatteryTester_AT25SF081_SectorToPage(Sector_Address) + (OffsetInByte / eeprom.PageSize);
-	LocalOffset = OffsetInByte % eeprom.PageSize;
-
-	do
+	if(OffsetInByte > eeprom.SectorSize){
+		return;
+	}
+	if((NumByteToWrite_up_to_SectorSize + OffsetInByte > eeprom.SectorSize)
+			|| (NumByteToWrite_up_to_SectorSize == 0)){
+		NumByteToWrite_up_to_SectorSize = eeprom.SectorSize - OffsetInByte;
+	}
+	unsigned int StartPage = BatteryTester_AT25SF081_SectorToPage(Sector_Address) +
+			(OffsetInByte / eeprom.PageSize);
+	unsigned int BytesToWrite = NumByteToWrite_up_to_SectorSize;
+	unsigned int LocalOffset = OffsetInByte % eeprom.PageSize;
+	while(BytesToWrite > 0)
 	{
-		 BatteryTester_AT25SF081_WritePage(pBuffer, StartPage, LocalOffset, BytesToWrite);
+		BatteryTester_AT25SF081_WritePage(pBuffer, StartPage, LocalOffset, BytesToWrite);
 		StartPage++;
-
 		BytesToWrite -= eeprom.PageSize - LocalOffset;
-		//pBuffer += eeprom.PageSize;
 		pBuffer += eeprom.PageSize - LocalOffset;
 		LocalOffset = 0;
 	}
-	while(BytesToWrite > 0);
 }
 
 //###################################################################################################################
-void  BatteryTester_AT25SF081_WriteBlock(uint8_t* pBuffer, uint32_t Block_Address, uint32_t OffsetInByte, uint32_t NumByteToWrite_up_to_BlockSize)
+void  BatteryTester_AT25SF081_WriteBlock(
+		unsigned char* pBuffer,
+		unsigned int Block_Address,
+		unsigned int OffsetInByte,
+		unsigned int NumByteToWrite_up_to_BlockSize)
 {
-	if((NumByteToWrite_up_to_BlockSize>eeprom.BlockSize)||(NumByteToWrite_up_to_BlockSize == 0))
-		NumByteToWrite_up_to_BlockSize=eeprom.BlockSize;
-
-	uint32_t	StartPage;
-	int32_t		BytesToWrite;
-	uint32_t	LocalOffset;
-
-	if((OffsetInByte+NumByteToWrite_up_to_BlockSize) > eeprom.BlockSize)
-		BytesToWrite = eeprom.BlockSize - OffsetInByte;
-	else
-		BytesToWrite = NumByteToWrite_up_to_BlockSize;
-
-	StartPage =  BatteryTester_AT25SF081_BlockToPage(Block_Address)+(OffsetInByte/eeprom.PageSize);
-
-	LocalOffset = OffsetInByte%eeprom.PageSize;
-
-	do
+	if(OffsetInByte > eeprom.BlockSize){
+		return;
+	}
+	if((NumByteToWrite_up_to_BlockSize + OffsetInByte > eeprom.BlockSize)||
+			(NumByteToWrite_up_to_BlockSize == 0)){
+		NumByteToWrite_up_to_BlockSize = eeprom.BlockSize - OffsetInByte;
+	}
+	unsigned int StartPage = BatteryTester_AT25SF081_BlockToPage(Block_Address)+
+			(OffsetInByte/eeprom.PageSize);
+	unsigned int BytesToWrite = NumByteToWrite_up_to_BlockSize;
+	unsigned int LocalOffset = OffsetInByte % eeprom.PageSize;
+	while(BytesToWrite > 0)
 	{
-		 BatteryTester_AT25SF081_WritePage(pBuffer,StartPage,LocalOffset,BytesToWrite);
+		BatteryTester_AT25SF081_WritePage(pBuffer, StartPage, LocalOffset, BytesToWrite);
 		StartPage++;
 		BytesToWrite -= eeprom.PageSize - LocalOffset;
-		//pBuffer += eeprom.PageSize;
 		pBuffer += eeprom.PageSize - LocalOffset;
 		LocalOffset = 0;
 	}
-	while(BytesToWrite > 0);
 }
 
 //###################################################################################################################
