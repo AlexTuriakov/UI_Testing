@@ -61,6 +61,8 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define Sound_Pin GPIO_PIN_14
 #define Sound_GPIO_Port GPIOC
+#define MEM_NSS_Pin GPIO_PIN_15
+#define MEM_NSS_GPIO_Port GPIOC
 #define PWM_Pin GPIO_PIN_1
 #define PWM_GPIO_Port GPIOB
 #define Converter_Fault_Pin GPIO_PIN_2

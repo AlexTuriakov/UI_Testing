@@ -32,6 +32,7 @@
 #include "conversion_data.h"
 #include "cells_voltcontrol.h"
 #include "converter_fault.h"
+#include "spi_eeprom.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -102,6 +103,10 @@ eBool_t BatteryTester_HAL_isConverterFaultCallback();
 void BatteryTester_HAL_resetConverterFaultCallback();
 void BatteryTester_HAL_onSoundHardwareCallback();
 void BatteryTester_HAL_offSoundHardwareCallback();
+uint8_t BatteryTester_HAL_transmitReceiveSpiCallback(uint8_t data);
+void BatteryTester_HAL_selectChipCallback(GPIO_PinState select);
+void BatteryTester_HAL_receiveSpiCallback(uint8_t* pBuffer, uint16_t size, uint32_t timeout);
+void BatteryTester_HAL_transmitSpiCallback(uint8_t* pBuffer, uint16_t size, uint32_t timeout);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -190,6 +195,11 @@ int main(void)
 		  BatteryTester_HAL_resetConverterFaultCallback,
 		  BatteryTester_HAL_onSoundHardwareCallback,
 		  BatteryTester_HAL_offSoundHardwareCallback);
+  BatteryTester_AT25SF081_initDecorator(
+		  BatteryTester_HAL_transmitReceiveSpiCallback,
+		  BatteryTester_HAL_selectChipCallback,
+		  BatteryTester_HAL_receiveSpiCallback,
+		  BatteryTester_HAL_transmitSpiCallback);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -776,7 +786,8 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, Sound_Pin|Protection_Reset_Pin|Fan_Control_Pin|Heater_Control_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, Sound_Pin|MEM_NSS_Pin|Protection_Reset_Pin|Fan_Control_Pin
+                          |Heater_Control_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, LCD_D7_Pin|LCD_D6_Pin|LCD_D5_Pin|LCD_D4_Pin
@@ -788,6 +799,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : MEM_NSS_Pin */
+  GPIO_InitStruct.Pin = MEM_NSS_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(MEM_NSS_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : Converter_Fault_Pin */
   GPIO_InitStruct.Pin = Converter_Fault_Pin;
@@ -1044,6 +1062,47 @@ void BatteryTester_HAL_offSoundHardwareCallback(){
 			Sound_GPIO_Port,
 			Sound_Pin,
 			GPIO_PIN_RESET);
+}
+
+uint8_t BatteryTester_HAL_transmitReceiveSpiCallback(uint8_t data){
+	uint8_t ret;
+	if(HAL_SPI_TransmitReceive(&hspi1, &data, &ret, 1, 100) != HAL_OK){
+		Error_Handler();
+	}
+	return ret;
+}
+
+void BatteryTester_HAL_selectChipCallback(GPIO_PinState select){
+	HAL_GPIO_WritePin(MEM_NSS_GPIO_Port, MEM_NSS_Pin, select);
+}
+
+/*@brief  Receive an amount of data in blocking mode.
+* @param  hspi pointer to a SPI_HandleTypeDef structure that contains
+*               the configuration information for SPI module.
+* @param  pData pointer to data buffer
+* @param  Size amount of data to be received
+* @param  Timeout Timeout duration
+* @retval HAL status
+*/
+void BatteryTester_HAL_receiveSpiCallback(uint8_t* pBuffer, uint16_t size, uint32_t timeout){
+	if(HAL_SPI_Receive(&hspi1, pBuffer, size, timeout) != HAL_OK){
+		Error_Handler();
+	}
+}
+
+/**
+	  * @brief  Transmit an amount of data in blocking mode.
+	  * @param  hspi pointer to a SPI_HandleTypeDef structure that contains
+	  *               the configuration information for SPI module.
+	  * @param  pData pointer to data buffer
+	  * @param  Size amount of data to be sent
+	  * @param  Timeout Timeout duration
+	  * @retval HAL status
+	  */
+void BatteryTester_HAL_transmitSpiCallback(uint8_t* pBuffer, uint16_t size, uint32_t timeout){
+	if(HAL_SPI_Transmit(&hspi1, pBuffer, size, timeout) != HAL_OK){
+		Error_Handler();
+	}
 }
 /* USER CODE END 4 */
 
