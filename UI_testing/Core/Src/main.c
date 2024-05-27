@@ -104,7 +104,7 @@ void BatteryTester_HAL_resetConverterFaultCallback();
 void BatteryTester_HAL_onSoundHardwareCallback();
 void BatteryTester_HAL_offSoundHardwareCallback();
 uint8_t BatteryTester_HAL_transmitReceiveSpiCallback(uint8_t data);
-void BatteryTester_HAL_selectChipCallback(GPIO_PinState select);
+void BatteryTester_HAL_selectChipCallback(eCSAdapter_t select);
 void BatteryTester_HAL_receiveSpiCallback(uint8_t* pBuffer, uint16_t size, uint32_t timeout);
 void BatteryTester_HAL_transmitSpiCallback(uint8_t* pBuffer, uint16_t size, uint32_t timeout);
 /* USER CODE END PFP */
@@ -162,15 +162,6 @@ int main(void)
 
   WRITE_REG(htim14.Instance->CCR1, 79);
 
-  if(HAL_TIM_Base_Start_IT(&htim6) != HAL_OK){
-	  Error_Handler();
-  }
-  if(BatteryTester_ConversionData_initDecorator(
-		BatteryTester_HAL_startAdcDmaCallback,
-		BatteryTester_HAL_setDacCallback,
-		BatteryTester_HAL_stopAdcCallback) != HAL_OK){
-	  Error_Handler();
-  }
   BatteryTester_State_initState();
   BatteryTester_RegulatorCellOne_initDecorator(
   		  BatteryTester_HAL_startCh1PwmCallback,
@@ -200,6 +191,16 @@ int main(void)
 		  BatteryTester_HAL_selectChipCallback,
 		  BatteryTester_HAL_receiveSpiCallback,
 		  BatteryTester_HAL_transmitSpiCallback);
+
+  if(HAL_TIM_Base_Start_IT(&htim6) != HAL_OK){
+ 	  Error_Handler();
+   }
+   if(BatteryTester_ConversionData_initDecorator(
+ 		BatteryTester_HAL_startAdcDmaCallback,
+ 		BatteryTester_HAL_setDacCallback,
+ 		BatteryTester_HAL_stopAdcCallback) != HAL_OK){
+ 	  Error_Handler();
+   }
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -1072,7 +1073,7 @@ uint8_t BatteryTester_HAL_transmitReceiveSpiCallback(uint8_t data){
 	return ret;
 }
 
-void BatteryTester_HAL_selectChipCallback(GPIO_PinState select){
+void BatteryTester_HAL_selectChipCallback(eCSAdapter_t select){
 	HAL_GPIO_WritePin(MEM_NSS_GPIO_Port, MEM_NSS_Pin, select);
 }
 
