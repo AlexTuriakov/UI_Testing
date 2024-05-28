@@ -5,6 +5,7 @@
  *      Author: Tyuryakov_OA
  */
 #include "auxiliary_function.h"
+#include "stm32f0xx_hal.h"
 
 static unsigned int g_periodLoggingTestCellOneInMilliSec = 10000;
 static unsigned int g_periodLoggingTestCellTwoInMilliSec = 10000;

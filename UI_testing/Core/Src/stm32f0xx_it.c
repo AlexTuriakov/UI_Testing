@@ -31,6 +31,7 @@
 #include "cells_voltcontrol.h"
 #include "converter_fault.h"
 #include "auxiliary_function.h"
+#include "flash_operation.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -202,7 +203,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc){
 	if(BatteryTester_RegulatorCellOne_getRunStatus()){
 		if(BatteryTester_AuxiliaryFunction_isTimeLoggedCellOne()){
 			 BatteryTester_EEPROM_logTestingDatasCellOne(
-					HAL_Tick(), measuringValue.ch1_CurrentInA,
+					HAL_GetTick(), measuringValue.ch1_CurrentInA,
 					measuringValue.ch1_VoltageInV, measuringValue.AverageTemps);
 		}
 		float sp = BatteryTester_RegulatorCellOne_getSetpoint();
@@ -227,7 +228,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc){
 	if(BatteryTester_RegulatorCellTwo_getRunStatus()){
 		if(BatteryTester_AuxiliaryFunction_isTimeLoggedCellTwo()){
 			 BatteryTester_EEPROM_logTestingDatasCellTwo(
-					HAL_Tick(), measuringValue.ch2_CurrentInA,
+					HAL_GetTick(), measuringValue.ch2_CurrentInA,
 					measuringValue.ch2_VoltageInV, measuringValue.AverageTemps);
 		}
 		float sp = BatteryTester_RegulatorCellTwo_getSetpoint();
