@@ -10,12 +10,6 @@
 #include <math.h>
 #include "auxiliary_function.h"
 
-
-#define VREF 3.0
-#define RESOLUTION 4095
-#define NUM_TEMPERATURE 4
-#define DAC_RESOLUTION  4095
-
 #define TESTING
 
 /*@deprecated*/

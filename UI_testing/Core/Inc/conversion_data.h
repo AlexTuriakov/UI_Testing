@@ -8,6 +8,11 @@
 #ifndef INC_CONVERSION_DATA_H_
 #define INC_CONVERSION_DATA_H_
 
+#define VREF 3.0
+#define RESOLUTION 4095
+#define NUM_TEMPERATURE 4
+#define DAC_RESOLUTION  4095
+
 /**************type declaration****************/
 /*
  * @deprecated
