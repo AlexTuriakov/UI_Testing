@@ -25,8 +25,10 @@ void BatteryTester_AuxiliaryFunction_setStatrTickForTimerCellTwo();
 void BatteryTester_AuxiliaryFunction_setPeriodLoggingTestCellOneInMillisec(unsigned int);
 void  BatteryTester_AuxiliaryFunction_setPeriodLoggingTestCellTwoInMillisec(unsigned int);
 unsigned int BatteryTester_AuxiliaryFunction_getPeriodLoggingTestCellOneInMillisec();
-unsigned int  BatteryTester_AuxiliaryFunction_getPeriodLoggingTestCellTwoInMillisec();
+unsigned int BatteryTester_AuxiliaryFunction_getPeriodLoggingTestCellTwoInMillisec();
 eBool_t  BatteryTester_AuxiliaryFunction_isTimeLoggedCellOne();
 eBool_t BatteryTester_AuxiliaryFunction_isTimeLoggedCellTwo();
+void BatteryTester_AuxiliaryFunction_setPeriodLoggingTestCellOneInMillisec(unsigned int);
+void BatteryTester_AuxiliaryFunction_setPeriodLoggingTestCellTwoInMillisec(unsigned int);
 
 #endif /* INC_AUXILIARY_FUNCTION_H_ */
