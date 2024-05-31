@@ -24,7 +24,7 @@
 #define _1_ms 			1
 #define BLOCK_SIZE 		0x10000
 #define SPI_WAIT_CYCLE	200000
-#define MARK_DATA_WRITE	0x4C11DB7
+#define MARK_DATA_WRITE	0x1DB7
 
 /******************************************************/
 #define COMMAND_WRITE_ENABLE 	0x06
@@ -371,7 +371,9 @@ eBool_t _BatteryTester_EEPROM_programSettingsRegCellOne(){
 	sPWMSettings_t boostPwm = BattetyTester_RegulatorCellOne_getBoostPWMSettings();
 	unsigned int iter = 4, temp = sizeof(sPIDController_t);
 	// to begin mark of data write
-	g_readWriteBuffer[iter++] = MARK_DATA_WRITE;
+	unsigned short marker = MARK_DATA_WRITE;
+	memcpy(&g_readWriteBuffer[iter], &marker, 2);
+	iter +=2;
 	memcpy(&g_readWriteBuffer[iter], &buck, temp);
 	iter += temp;
 	memcpy(&g_readWriteBuffer[iter], &boost, temp);
@@ -382,7 +384,7 @@ eBool_t _BatteryTester_EEPROM_programSettingsRegCellOne(){
 	memcpy(&g_readWriteBuffer[iter], &boostPwm, temp);
 	iter += temp;
 	// to end crc value
-	g_readWriteBuffer[iter] = BatteryTester_EEPROM_calculateCRC(&g_readWriteBuffer[5], iter - 5);
+	g_readWriteBuffer[iter] = BatteryTester_EEPROM_calculateCRC(&g_readWriteBuffer[6], iter - 6);
 	iter++;
 	for(int i = 0; i < SPI_WAIT_CYCLE; i++){
 		if(!BatteryTester_EEPROM_isBusySpi()){
@@ -416,7 +418,9 @@ eBool_t _BatteryTester_EEPROM_programSettingsRegCellTwo(){
 	sPWMSettings_t boostPwm = BattetyTester_RegulatorCellTwo_getBoostPWMSettings();
 	unsigned int iter = 4, temp = sizeof(sPIDController_t);
 	// to begin mark of data write
-	g_readWriteBuffer[iter++] = MARK_DATA_WRITE;
+	unsigned short marker = MARK_DATA_WRITE;
+	memcpy(&g_readWriteBuffer[iter], &marker, 2);
+	iter +=2;
 	memcpy(&g_readWriteBuffer[iter], &buck, temp);
 	iter += temp;
 	memcpy(&g_readWriteBuffer[iter], &boost, temp);
@@ -427,7 +431,7 @@ eBool_t _BatteryTester_EEPROM_programSettingsRegCellTwo(){
 	memcpy(&g_readWriteBuffer[iter], &boostPwm, temp);
 	iter += temp;
 	// to end crc value
-	g_readWriteBuffer[iter] = BatteryTester_EEPROM_calculateCRC(&g_readWriteBuffer[5], iter - 5);
+	g_readWriteBuffer[iter] = BatteryTester_EEPROM_calculateCRC(&g_readWriteBuffer[6], iter - 6);
 	iter++;
 	for(int i = 0; i < SPI_WAIT_CYCLE; i++){
 		if(!BatteryTester_EEPROM_isBusySpi()){
@@ -451,14 +455,16 @@ eBool_t _BatteryTester_EEPROM_programSettingsRegClimat(){
 	sPWMSettings_t pwm = BattetyTester_ClimatRegulator_getPWMSettings();
 	unsigned int iter = 4, temp = sizeof(sPIDController_t);
 	// to begin mark of data write
-	g_readWriteBuffer[iter++] = MARK_DATA_WRITE;
+	unsigned short marker = MARK_DATA_WRITE;
+	memcpy(&g_readWriteBuffer[iter], &marker, 2);
+	iter +=2;
 	memcpy(&g_readWriteBuffer[iter], &reg, temp);
 	iter += temp;
 	temp = sizeof(sPWMSettings_t);
 	memcpy(&g_readWriteBuffer[iter], &pwm, temp);
 	iter += temp;
 	// to end crc value
-	g_readWriteBuffer[iter] = BatteryTester_EEPROM_calculateCRC(&g_readWriteBuffer[5], iter - 5);
+	g_readWriteBuffer[iter] = BatteryTester_EEPROM_calculateCRC(&g_readWriteBuffer[6], iter - 6);
 	iter++;
 	for(int i = 0; i < SPI_WAIT_CYCLE; i++){
 		if(!BatteryTester_EEPROM_isBusySpi()){
@@ -487,7 +493,9 @@ eBool_t _BatteryTester_EEPROM_programSettingsMeasurement(){
 	float dac = BatteryTester_ConversionData_getRefOffsetInVolts();
 	unsigned int iter = 4, temp = sizeof(sMinValueFromRange_t);
 	// to begin mark of data write
-	g_readWriteBuffer[iter++] = MARK_DATA_WRITE;
+	unsigned short marker = MARK_DATA_WRITE;
+	memcpy(&g_readWriteBuffer[iter], &marker, 2);
+	iter +=2;
 	memcpy(&g_readWriteBuffer[iter], &min, temp);
 	iter += temp;
 	temp = sizeof(sMaxValueFromRange_t);
@@ -503,7 +511,7 @@ eBool_t _BatteryTester_EEPROM_programSettingsMeasurement(){
 	memcpy(&g_readWriteBuffer[iter], &dac, temp);
 	iter += temp;
 	// to end crc value
-	g_readWriteBuffer[iter] = BatteryTester_EEPROM_calculateCRC(&g_readWriteBuffer[5], iter - 5);
+	g_readWriteBuffer[iter] = BatteryTester_EEPROM_calculateCRC(&g_readWriteBuffer[6], iter - 6);
 	iter++;
 	for(int i = 0; i < SPI_WAIT_CYCLE; i++){
 		if(!BatteryTester_EEPROM_isBusySpi()){
@@ -526,11 +534,13 @@ eBool_t _BatteryTester_EEPROM_programSettingsDessipator(){
 	sVoltRange_t rng = BatteryTester_DessipatorControl_getHeaterControlRange();
 	unsigned int iter = 4, temp = sizeof(sVoltRange_t);
 	// to begin mark of data write
-	g_readWriteBuffer[iter++] = MARK_DATA_WRITE;
+	unsigned short marker = MARK_DATA_WRITE;
+	memcpy(&g_readWriteBuffer[iter], &marker, 2);
+	iter +=2;
 	memcpy(&g_readWriteBuffer[iter], &rng, temp);
 	iter += temp;
 	// to end crc value
-	g_readWriteBuffer[iter] = BatteryTester_EEPROM_calculateCRC(&g_readWriteBuffer[5], iter - 5);
+	g_readWriteBuffer[iter] = BatteryTester_EEPROM_calculateCRC(&g_readWriteBuffer[6], iter - 6);
 	iter++;
 	for(int i = 0; i < SPI_WAIT_CYCLE; i++){
 		if(!BatteryTester_EEPROM_isBusySpi()){
@@ -553,11 +563,13 @@ eBool_t _BatteryTester_EEPROM_programSettingsVoltControl(){
 	sVoltRange_t rng = BatteryTester_DessipatorControl_getHeaterControlRange();
 	unsigned int iter = 4, temp = sizeof(sVoltRange_t);
 	// to begin mark of data write
-	g_readWriteBuffer[iter++] = MARK_DATA_WRITE;
+	unsigned short marker = MARK_DATA_WRITE;
+	memcpy(&g_readWriteBuffer[iter], &marker, 2);
+	iter +=2;
 	memcpy(&g_readWriteBuffer[iter], &rng, temp);
 	iter += temp;
 	// to end crc value
-	g_readWriteBuffer[iter] = BatteryTester_EEPROM_calculateCRC(&g_readWriteBuffer[5], iter - 5);
+	g_readWriteBuffer[iter] = BatteryTester_EEPROM_calculateCRC(&g_readWriteBuffer[6], iter - 6);
 	iter++;
 	for(int i = 0; i < SPI_WAIT_CYCLE; i++){
 		if(!BatteryTester_EEPROM_isBusySpi()){
@@ -581,13 +593,15 @@ eBool_t _BatteryTester_EEPROM_programSettingsLogger(){
 	unsigned int set2 = BatteryTester_AuxiliaryFunction_getPeriodLoggingTestCellTwoInMillisec();
 	unsigned int iter = 4, temp = sizeof(unsigned int);
 	// to begin mark of data write
-	g_readWriteBuffer[iter++] = MARK_DATA_WRITE;
+	unsigned short marker = MARK_DATA_WRITE;
+	memcpy(&g_readWriteBuffer[iter], &marker, 2);
+	iter +=2;
 	memcpy(&g_readWriteBuffer[iter], &set1, temp);
 	iter += temp;
 	memcpy(&g_readWriteBuffer[iter], &set2, temp);
 	iter += temp;
 	// to end crc value
-	g_readWriteBuffer[iter] = BatteryTester_EEPROM_calculateCRC(&g_readWriteBuffer[5], iter - 5);
+	g_readWriteBuffer[iter] = BatteryTester_EEPROM_calculateCRC(&g_readWriteBuffer[6], iter - 6);
 	iter++;
 	for(int i = 0; i < SPI_WAIT_CYCLE; i++){
 		if(!BatteryTester_EEPROM_isBusySpi()){
@@ -742,11 +756,13 @@ eBool_t _BatteryTester_EEPROM_readSettings(unsigned int address, unsigned char* 
 eBool_t _BatteryTester_EEPROM_checkRead(unsigned char* pBuffer, unsigned int size){
 	for(int i = 0; i < SPI_WAIT_CYCLE; i++){
 		if(!BatteryTester_EEPROM_isBusySpi()){
-			if(pBuffer[4] != MARK_DATA_WRITE){
+			unsigned short marker;
+			memcpy(&marker, &pBuffer[4], 2);
+			if(marker != MARK_DATA_WRITE){
 				g_lastError |= ERROR_CHECK_WRITE;
 				return FALSE;
 			}
-			unsigned char crc = BatteryTester_EEPROM_calculateCRC(&pBuffer[5], size - 6);
+			unsigned char crc = BatteryTester_EEPROM_calculateCRC(&pBuffer[6], size - 7);
 			if(pBuffer[size - 1] != crc){
 				g_lastError |= ERROR_MATCH_CRC;
 				return FALSE;
