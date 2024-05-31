@@ -67,6 +67,8 @@
 /* External variables --------------------------------------------------------*/
 extern DMA_HandleTypeDef hdma_adc;
 extern DAC_HandleTypeDef hdac;
+extern DMA_HandleTypeDef hdma_spi1_tx;
+extern DMA_HandleTypeDef hdma_spi1_rx;
 extern TIM_HandleTypeDef htim6;
 /* USER CODE BEGIN EV */
 extern volatile uint32_t rawAdcData[LENGTH_DATA_ADC];
@@ -167,6 +169,21 @@ void DMA1_Channel1_IRQHandler(void)
    SET_BIT(hdma_adc.DmaBaseAddress->IFCR, DMA_IFCR_CTCIF1);
    SET_BIT(hdma_adc.DmaBaseAddress->IFCR, DMA_IFCR_CGIF1);
   /* USER CODE END DMA1_Channel1_IRQn 1 */
+}
+
+/**
+  * @brief This function handles DMA1 channel 2 and 3 interrupts.
+  */
+void DMA1_Channel2_3_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA1_Channel2_3_IRQn 0 */
+
+  /* USER CODE END DMA1_Channel2_3_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_spi1_rx);
+  HAL_DMA_IRQHandler(&hdma_spi1_tx);
+  /* USER CODE BEGIN DMA1_Channel2_3_IRQn 1 */
+
+  /* USER CODE END DMA1_Channel2_3_IRQn 1 */
 }
 
 /**

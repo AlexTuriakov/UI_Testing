@@ -9,7 +9,7 @@
 #define INC_CLIMAT_REGULATOR_H_
 
 #include "pid_regulator.h"
-
+#include "auxiliary_function.h"
 /**************type declaration****************/
 /*
  * @brief:
@@ -51,7 +51,7 @@ float BatteryTester_ClimatRegulator_getSetpoint();
 void BatteryTester_ClimatRegulator_setSetpoint(float);
 eThermostatRun_t BatteryTester_ClimatRegulator_getRunStatus();
 void BatteryTester_ClimatRegulator_toggleRunMode();
-HAL_StatusTypeDef BatteryTester_ClimatRegulator_readDataFromEEPROM();
+eBool_t BatteryTester_ClimatRegulator_readDataFromEEPROM();
 void BatteryTester_ClimatRegulator_startHardware();
 void BatteryTester_ClimatRegulator_stopHardware();
 void BatteryTester_ClimatRegulator_setPulse(int);

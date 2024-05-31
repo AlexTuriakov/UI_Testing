@@ -6,9 +6,9 @@
  */
 
 #include "climat_regulator.h"
-#include "pid_regulator.h"
+#include "flash_operation.h"
 //#include "conversion_data.h"
-#include "auxiliary_function.h"
+
 
 #define TESTING
 //#define BatteryTester_ClimatRegulator_setPWMSettings BatteryTester_ClimatRegulator__setPWMSettings
@@ -96,7 +96,7 @@ void BatteryTester_ClimatRegulator_initDecorator(
 	g_startHardware = startHardware;
 	g_stopHardware = stopHardware;
 	g_setPulse = setPulse;
-	if(BatteryTester_ClimatRegulator_readDataFromEEPROM() != HAL_OK){
+	if(!BatteryTester_ClimatRegulator_readDataFromEEPROM()){
 		regulatorClimatSettings.Kd = 0.01;
 		regulatorClimatSettings.Ki = -0.1;
 		regulatorClimatSettings.Kp = 10.0;
@@ -109,8 +109,8 @@ void BatteryTester_ClimatRegulator_initDecorator(
 		pwmClimatSettings.periodPwm = 499;
 		pwmClimatSettings.minPidOutput = regulatorClimatSettings.minLimit;
 		pwmClimatSettings.maxPidOutput = regulatorClimatSettings.maxLimit;
-		BatteryTester_ClimatRegulator_calcScalePwmClimatSettings();
 	}
+	BatteryTester_ClimatRegulator_calcScalePwmClimatSettings();
 //// CLIMAT CONVERTER ///////////////
 }
 
@@ -189,23 +189,12 @@ void BatteryTester_ClimatRegulator_toggleRunMode(){
 /*@brief:
  * @Todo: Implementation required
  */
-HAL_StatusTypeDef BatteryTester_ClimatRegulator_readDataFromEEPROM(){
+eBool_t BatteryTester_ClimatRegulator_readDataFromEEPROM(){
 #ifdef TESTING
-	regulatorClimatSettings.Kd = 0.01;
-	regulatorClimatSettings.Ki = -0.1;
-	regulatorClimatSettings.Kp = 10.0;
-	regulatorClimatSettings.dt = 1.0 / 16000;
-	regulatorClimatSettings.maxLimit = 100.0;
-	regulatorClimatSettings.minLimit = -30.0;
 
-	pwmClimatSettings.maxDutyCycle = 95;
-	pwmClimatSettings.minDutyCycle = 5;
-	pwmClimatSettings.periodPwm = 499;
-	pwmClimatSettings.minPidOutput = regulatorClimatSettings.minLimit;
-	pwmClimatSettings.maxPidOutput = regulatorClimatSettings.maxLimit;
-	BatteryTester_ClimatRegulator_calcScalePwmClimatSettings();
 #endif
-	return HAL_OK;
+	return BatteryTester_EEPROM_readSetClimatcontrol(
+			&regulatorClimatSettings, &pwmClimatSettings);
 }
 
 void BatteryTester_ClimatRegulator_startHardware(){

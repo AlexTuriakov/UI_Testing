@@ -6,6 +6,7 @@
  */
 
 #include "dessipator_control.h"
+#include "flash_operation.h"
 
 #define TESTING
 
@@ -29,20 +30,20 @@ void BatteryTester_DessipatorControl_initDecorator(
 	g_offHeaterCallback = offHeaterCallback;
 	g_onFanCallback = onFanCallback;
 	g_offFanCallback = offFanCallback;
-	if(BatteryTester_DessipatorControl_readDataFromEEPROM() != HAL_OK){
+	if(!BatteryTester_DessipatorControl_readDataFromEEPROM()){
 		dessipatorControlRange.minVoltageInVolts = 12.0;
 		dessipatorControlRange.maxVoltageInVolts = 14.8;
 	}
 }
 
 /*@brief:
- * @Todo: Implementation required
+ *
  */
-HAL_StatusTypeDef BatteryTester_DessipatorControl_readDataFromEEPROM(){
+eBool_t BatteryTester_DessipatorControl_readDataFromEEPROM(){
 #ifdef TESTING
 
 #endif
-	return HAL_OK;
+	return BatteryTester_EEPROM_readSetDessipator(&dessipatorControlRange);
 }
 
 void BattetyTester_DessipatorControl_onHeaterControl(float inputBusVoltage){

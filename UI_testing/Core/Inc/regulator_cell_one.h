@@ -9,6 +9,7 @@
 #define INC_REGULATOR_CELL_ONE_H_
 
 #include "pid_regulator.h"
+#include "auxiliary_function.h"
 
 /**************type declaration****************/
 typedef enum{
@@ -40,7 +41,7 @@ void BatteryTester_RegulatorCellOne_resetBuckAccumulatedDeviation();
 void BatteryTester_RegulatorCellOne_resetBoostAccumulatedDeviation();
 eCellOneRun_t BatteryTester_RegulatorCellOne_getRunStatus();
 void BatteryTester_RegulatorCellOne_toggleRunMode();
-HAL_StatusTypeDef BatteryTester_RegulatorCellOne_readDataFromEEPROM();
+eBool_t BatteryTester_RegulatorCellOne_readDataFromEEPROM();
 void BatteryTester_RegulatorCellOne_startHardware();
 void BatteryTester_RegulatorCellOne_stopHardware();
 void BatteryTester_RegulatorCellOne_setPulse(int);

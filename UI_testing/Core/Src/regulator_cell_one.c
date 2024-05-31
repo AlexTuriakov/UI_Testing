@@ -10,7 +10,7 @@
 #include "pid_regulator.h"
 #include "regulator_cell_one.h"
 #include "conversion_data.h"
-#include "auxiliary_function.h"
+#include "flash_operation.h"
 #include <stdlib.h>
 
 #define TESTING
@@ -41,7 +41,7 @@ void BatteryTester_RegulatorCellOne_initDecorator(
 	g_startHardware = startHardware;
 	g_stopHardware = stopHardware;
 	g_setPulse = setPulse;
-	if(BatteryTester_RegulatorCellOne_readDataFromEEPROM() != HAL_OK){
+	if(!BatteryTester_RegulatorCellOne_readDataFromEEPROM()){
 //// BUCK CONVERTER ///////////////
 		regulatorBuckSettingsCellOne.Kd = 0.0;
 		regulatorBuckSettingsCellOne.Ki = -0.1;
@@ -62,7 +62,7 @@ void BatteryTester_RegulatorCellOne_initDecorator(
 		regulatorBoostSettingsCellOne.Ki = -0.1;
 		regulatorBoostSettingsCellOne.Kp = 10.0;
 		regulatorBoostSettingsCellOne.dt = 1.0 / 16000;
-		regulatorBoostSettingsCellOne.maxLimit = 18;
+		regulatorBoostSettingsCellOne.maxLimit = -18;
 		regulatorBoostSettingsCellOne.minLimit = 0.0;
 
 		pwmBoostSettingsCellOne.maxDutyCycle = 95;
@@ -72,7 +72,6 @@ void BatteryTester_RegulatorCellOne_initDecorator(
 		pwmBoostSettingsCellOne.maxPidOutput = regulatorBoostSettingsCellOne.maxLimit;
 		pwmBoostSettingsCellOne.scale = (float)(pwmBoostSettingsCellOne.maxDutyCycle - pwmBoostSettingsCellOne.minDutyCycle) /
 				(regulatorBoostSettingsCellOne.maxLimit - regulatorBoostSettingsCellOne.minLimit);
-	/*Reading parameters from flash memory is under development*/
 	}
 }
 
@@ -226,41 +225,15 @@ void BatteryTester_RegulatorCellOne_toggleRunMode(){
 }
 
 /*@brief:
- * @Todo: Implementation required
+ *
  */
-HAL_StatusTypeDef BatteryTester_RegulatorCellOne_readDataFromEEPROM(){
+eBool_t BatteryTester_RegulatorCellOne_readDataFromEEPROM(){
 #ifdef TESTING
-	regulatorBuckSettingsCellOne.Kd = 0.0;
-	regulatorBuckSettingsCellOne.Ki = -0.1;
-	regulatorBuckSettingsCellOne.Kp = 10.0;
-	regulatorBuckSettingsCellOne.dt = 1.0 / 16000;
-	regulatorBuckSettingsCellOne.maxLimit = 18.0;
-	regulatorBuckSettingsCellOne.minLimit = 0.0;
 
-	pwmBuckSettingsCellOne.maxDutyCycle = 50;
-	pwmBuckSettingsCellOne.minDutyCycle = 10;
-	pwmBuckSettingsCellOne.periodPwm = 499;
-	pwmBuckSettingsCellOne.minPidOutput = regulatorBuckSettingsCellOne.minLimit;
-	pwmBuckSettingsCellOne.maxPidOutput = regulatorBuckSettingsCellOne.maxLimit;
-	pwmBuckSettingsCellOne.scale = (float)(pwmBuckSettingsCellOne.maxDutyCycle - pwmBuckSettingsCellOne.minDutyCycle) /
-			(regulatorBuckSettingsCellOne.maxLimit - regulatorBuckSettingsCellOne.minLimit);
-//// BOOST CONVERTER //////////////
-	regulatorBoostSettingsCellOne.Kd = 0.0;
-	regulatorBoostSettingsCellOne.Ki = -0.1;
-	regulatorBoostSettingsCellOne.Kp = 10.0;
-	regulatorBoostSettingsCellOne.dt = 1.0 / 16000;
-	regulatorBoostSettingsCellOne.maxLimit = 18;
-	regulatorBoostSettingsCellOne.minLimit = 0.0;
-
-	pwmBoostSettingsCellOne.maxDutyCycle = 90;
-	pwmBoostSettingsCellOne.minDutyCycle = 50;
-	pwmBoostSettingsCellOne.periodPwm = 499;
-	pwmBoostSettingsCellOne.minPidOutput = regulatorBoostSettingsCellOne.minLimit;
-	pwmBoostSettingsCellOne.maxPidOutput = regulatorBoostSettingsCellOne.maxLimit;
-	pwmBoostSettingsCellOne.scale = (float)(pwmBoostSettingsCellOne.maxDutyCycle - pwmBoostSettingsCellOne.minDutyCycle) /
-			(regulatorBoostSettingsCellOne.maxLimit - regulatorBoostSettingsCellOne.minLimit);
 #endif
-	return HAL_OK;
+	return BatteryTester_EEPROM_readSetRegCellOne(
+			&regulatorBuckSettingsCellOne, &regulatorBoostSettingsCellOne,
+			&pwmBuckSettingsCellOne, &pwmBoostSettingsCellOne);
 }
 
 void BatteryTester_RegulatorCellOne_startHardware(){

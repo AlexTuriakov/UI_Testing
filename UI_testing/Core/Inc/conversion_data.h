@@ -8,6 +8,9 @@
 #ifndef INC_CONVERSION_DATA_H_
 #define INC_CONVERSION_DATA_H_
 
+#include "stm32f0xx_hal.h"
+#include "auxiliary_function.h"
+
 #define VREF 3.0
 #define RESOLUTION 4095
 #define NUM_TEMPERATURE 4
@@ -143,7 +146,7 @@ float BatteryTester_ConversionData_getRefOffsetInVolts();
 void BatteryTester_ConversionData_setRefOffsetInVolts(float);
 unsigned short BatteryTester_ConversionData_calcRefOffsetDacCode(float);
 void BatteryTester_ConversionData_calcScale(void);
-HAL_StatusTypeDef BatteryTester_ConversionData_readDataFromEEPROM();
+eBool_t BatteryTester_ConversionData_readDataFromEEPROM();
 sMinValueFromRange_t BatteryTester_ConversionData_getMinValueFromRange();
 void BatteryTester_ConversionData_setMinValueFromRange(sMinValueFromRange_t*);
 sMaxValueFromRange_t BatteryTester_ConversionData_getMaxValueFromRange();

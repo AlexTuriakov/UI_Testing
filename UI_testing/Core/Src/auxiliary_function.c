@@ -5,6 +5,7 @@
  *      Author: Tyuryakov_OA
  */
 #include "auxiliary_function.h"
+#include "flash_operation.h"
 #include "stm32f0xx_hal.h"
 
 static unsigned int g_periodLoggingTestCellOneInMilliSec = 10000;
@@ -58,4 +59,13 @@ eBool_t BatteryTester_AuxiliaryFunction_isTimeLoggedCellTwo(){
 		return TRUE;
 	}
 	return FALSE;
+}
+
+void BatteryTester_AuxiliaryFunction_initLogger(){
+	//read from eeprom or assign default
+	if(!BatteryTester_EEPROM_readSetLogger(
+			&g_periodLoggingTestCellOneInMilliSec, &g_periodLoggingTestCellTwoInMilliSec)){
+		g_periodLoggingTestCellOneInMilliSec = 10000;
+		g_periodLoggingTestCellTwoInMilliSec = 10000;
+	}
 }

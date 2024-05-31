@@ -5,10 +5,9 @@
  *      Author: Tyuryakov_OA
  */
 #include <stdio.h>
-#include "stm32f0xx_hal.h"
 #include "conversion_data.h"
+#include "flash_operation.h"
 #include <math.h>
-#include "auxiliary_function.h"
 
 #define TESTING
 
@@ -93,6 +92,8 @@ void BatteryTester_ConversionData_initScaleFactorsStruct(){
 			minValue.minTemp2InDegC =
 					minValue.minTemp3InDegC =
 							minValue.minTemp4InDegC = -30.0;*/
+	minValue.ch1_minCurrentInAmp =
+			minValue.ch2_minCurrentInAmp = -18.0;
 
 	maxValue.ch1_maxCurrentInAmp =
 			maxValue.ch2_maxCurrentInAmp = 18.0;
@@ -179,9 +180,7 @@ HAL_StatusTypeDef BatteryTester_ConversionData_initDecorator(
 		BatteryTester_ConversionData_initCallback_t initCallback,
 		BatteryTester_ConversionData_setDACCallback_t setDacCallback,
 		 BatteryTester_ConversionData_stopCallback_t stopCallback){
-	HAL_StatusTypeDef res = BatteryTester_ConversionData_readDataFromEEPROM();
-	if (res != HAL_OK){
-//		return res;
+	if(!BatteryTester_ConversionData_readDataFromEEPROM()){
 		BatteryTester_ConversionData_initScaleFactorsStruct();
 	}
 	BatteryTester_ConversionData_calcScale();
@@ -203,11 +202,12 @@ HAL_StatusTypeDef BatteryTester_ConversionData_initDecorator(
 /*@brief:
  * @Todo: Implementation required
  */
-HAL_StatusTypeDef BatteryTester_ConversionData_readDataFromEEPROM(){
+eBool_t BatteryTester_ConversionData_readDataFromEEPROM(){
 #ifdef TESTING
-	BatteryTester_ConversionData_initScaleFactorsStruct(); //
+
 #endif
-	return HAL_OK;
+	return BatteryTester_EEPROM_readSetMeasurement(
+			&minValue, &maxValue, &offset, ntcParams, &valueRefOffsetInVolts);
 }
 
 void BatteryTester_ConversionData_setDacDecorator(BatteryTester_ConversionData_setDACCallback_t callback){

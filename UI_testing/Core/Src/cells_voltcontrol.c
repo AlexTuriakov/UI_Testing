@@ -8,6 +8,7 @@
 #include "regulator_cell_one.h"
 #include "regulator_cell_two.h"
 #include "auxiliary_function.h"
+#include "flash_operation.h"
 
 #define TESTING
 
@@ -139,7 +140,7 @@ void BatteryTester_CellsVoltcontrol_initDecorator(
 	g_isStartCh1Callback = isStartCh1Callback;
 	g_isStartCh2Callback = isStartCh2Callback;
 
-	if(BatteryTester_CellsVoltcontrol_readDataFromEEPROM() != HAL_OK){
+	if(!BatteryTester_CellsVoltcontrol_readDataFromEEPROM()){
 		voltRangeCellOne.minVoltageInVolts = 2.5;
 		voltRangeCellOne.maxVoltageInVolts = 3.65;
 
@@ -150,15 +151,11 @@ void BatteryTester_CellsVoltcontrol_initDecorator(
 	/*implement reading parameters from flash memory*/
 }
 
-HAL_StatusTypeDef BatteryTester_CellsVoltcontrol_readDataFromEEPROM(){
+eBool_t BatteryTester_CellsVoltcontrol_readDataFromEEPROM(){
 #ifdef TESTING
-	voltRangeCellOne.minVoltageInVolts = 2.5;
-	voltRangeCellOne.maxVoltageInVolts = 3.65;
 
-	voltRangeCellTwo.minVoltageInVolts = 2.5;
-	voltRangeCellTwo.maxVoltageInVolts = 3.65;
 #endif
-	return HAL_OK;
+	return BatteryTester_EEPROM_readSetVoltcontrol(&voltRangeCellOne, &voltRangeCellTwo);
 }
 
 eBool_t BatteryTester_CellsVoltcontrol_isStartCellOne(){

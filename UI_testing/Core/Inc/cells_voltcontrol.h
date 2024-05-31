@@ -32,7 +32,7 @@ void BatteryTester_CellsVoltcontrol_setVoltRangeCellx(
 void BatteryTester_CellsVoltcontrol_initDecorator(
 		BatteryTester_CellsVoltcontrol_isStartHardwareCallback_t,
 		BatteryTester_CellsVoltcontrol_isStartHardwareCallback_t);
-HAL_StatusTypeDef BatteryTester_CellsVoltcontrol_readDataFromEEPROM();
+eBool_t BatteryTester_CellsVoltcontrol_readDataFromEEPROM();
 eBool_t BatteryTester_CellsVoltcontrol_isStartCellOne();
 eBool_t BatteryTester_CellsVoltcontrol_isStartCellTwo();
 void BatteryTester_CellsVoltcontrol_stopPWMCh1();

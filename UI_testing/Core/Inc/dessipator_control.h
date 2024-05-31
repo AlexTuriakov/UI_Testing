@@ -23,7 +23,7 @@ void BatteryTester_DessipatorControl_initDecorator(
 		BatteryTester_DessipatorControl_toggleHardware_t,
 		BatteryTester_DessipatorControl_toggleHardware_t,
 		BatteryTester_DessipatorControl_toggleHardware_t);
-HAL_StatusTypeDef BatteryTester_DessipatorControl_readDataFromEEPROM();
+eBool_t BatteryTester_DessipatorControl_readDataFromEEPROM();
 void BattetyTester_DessipatorControl_onHeaterControl(float);
 void BatteryTester_DessipatorControl_onHeater();
 void BatteryTester_DessipatorControl_offHeater();
