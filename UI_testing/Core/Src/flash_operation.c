@@ -314,7 +314,8 @@ eBool_t BatteryTester_EEPROM_isBusySpi(){
 	return TRUE;
 }
 
-void BatteryTester_EEPROM_eraseBlockCommand(unsigned char* pBuffer, unsigned int address, unsigned int size){
+void BatteryTester_EEPROM_eraseBlockCommand(
+		unsigned char* pBuffer, unsigned int address, unsigned int size){
 	//g_lastError = 0;
 	if(!pBuffer || !g_transmitDmaCallback){
 		g_lastError |= ERROR_BAD_MEMORY_POINTER | ERROR_NOT_TRANSMIT_CALLBACK;
@@ -328,7 +329,8 @@ void BatteryTester_EEPROM_eraseBlockCommand(unsigned char* pBuffer, unsigned int
 /*
  * @private
  */
-static inline void _BatteryTester_EEPROM_transmitDmaWithSetWELb(unsigned char* pBuffer, unsigned int size){
+static inline void _BatteryTester_EEPROM_transmitDmaWithSetWELb(
+		unsigned char* pBuffer, unsigned int size){
 	unsigned char command = COMMAND_WRITE_ENABLE;
 	g_transmitDmaCallback(&command, NULL, 1);
 	for(int i = 0; i < SPI_WAIT_CYCLE; i++){
@@ -719,7 +721,7 @@ eBool_t BatteryTester_EEPROM_begin(){
 	if(!g_readWriteBuffer){
 		g_readWriteBuffer = (unsigned char*)malloc(PAGE_BUFFER_SIZE * sizeof(unsigned char));
 		if(!g_readWriteBuffer){
-			g_lastError |= ERROR_BUFFER_READWRITE | ERROR_MEMORY_OUT;
+	 		g_lastError |= ERROR_BUFFER_READWRITE | ERROR_MEMORY_OUT;
 		}
 		return (eBool_t)g_readWriteBuffer;
 	}
@@ -870,6 +872,7 @@ eBool_t BatteryTester_EEPROM_readSetMeasurement(
 
 eBool_t BatteryTester_EEPROM_readSetDessipator(sVoltRange_t* set1){
 	if(g_readWriteBuffer){
+		// opcode + address + marker + data + crc
 		unsigned int size = 4 + 2 + sizeof(sVoltRange_t) + 1;
 		if(_BatteryTester_EEPROM_checkWrite(ADDRESS_DESSIPATOR_CONTROL_SETTINGS, size)){
 			memcpy(set1, &g_readWriteBuffer[6], sizeof(sVoltRange_t));

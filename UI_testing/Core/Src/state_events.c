@@ -23,7 +23,7 @@
 	static eStates_t currentState;
 	static eStates_t stateFrom;
 	static eEvents_t currentEvent;
-	static char flagPushEventThroughIteration = 0;
+	static char flagContinueEvent = 0;
 
 	//char strPostParam[SIZE_LINE_BUFFER_LCD] = "";
 
@@ -93,7 +93,7 @@ void BatteryTester_State_handlerSetParams(eEvents_t event, void* param){
 			return;
 		case EVENT_KEY_OK:
 			BatteryTester_SetParam_ok();
-			BatteryTester_State_pushEventThroughIteration(EVENT_KEY_OK);
+			BatteryTester_State_continueEvent(EVENT_KEY_OK);
 			return;
 		case EVENT_KEY_UP:
 			BatteryTester_SetParam_up();
@@ -126,6 +126,8 @@ void BatteryTester_State_handlerWorkStatus(eEvents_t event, void* param){
 	case EVENT_KEY_LEFT:
 		BatteryTester_WorkStatus_returnToPreviousState((void*) param);
 		break;
+	default:
+		break;
 	}
 }
 
@@ -149,9 +151,9 @@ void BatteryTester_State_setCurrentEvent(eEvents_t newEvent){
 	currentEvent = newEvent;
 }
 
-void BatteryTester_State_pushEventThroughIteration(eEvents_t newEvent){ //continueEvent
+void BatteryTester_State_continueEvent(eEvents_t newEvent){ //continueEvent
 	BatteryTester_State_setCurrentEvent(newEvent);
-	flagPushEventThroughIteration = 1;
+	flagContinueEvent = 1;
 }
 
 /*void BatteryTester_State_postStrParamForState(const char* sParam){
@@ -219,11 +221,11 @@ void BatteryTester_State_processInputs(){
 		currentEvent = EVENT_KEY_LEFT;
 		return;
 	}
-	if(!flagPushEventThroughIteration){
+	if(!flagContinueEvent){
 		currentEvent = EVENT_NONE;
 	}
 	else{
-		flagPushEventThroughIteration = 0;
+		flagContinueEvent = 0;
 	}
 
 }

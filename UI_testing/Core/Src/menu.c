@@ -46,7 +46,9 @@ MENU_ITEM(menuSetsClimat, menuSetsThermometr, menuSetsDessipator, menuSettings, 
 MENU_ITEM(menuSetsThermometr, menuSetsRefOffset, menuSetsClimat, menuSettings, menuT1,
 		0, 0, "Thermometers...");
 /*SUBMENU Start... LEVEL 1*/
-MENU_ITEM(menuStartCh1, menuStartCh2, menuResetAlarm, menuStart, menuStartCh1Sp,
+MENU_ITEM(menuMeasuring, menuStartCh1, menuResetAlarm, menuStart, menuMeasuringState1,
+		0, 0, "Measuring...");
+MENU_ITEM(menuStartCh1, menuStartCh2, menuMeasuring, menuStart, menuStartCh1Sp,
 		0, 0, "Ch1 start...");
 MENU_ITEM(menuStartCh2, menuStartThermostat, menuStartCh1, menuStart, menuStartCh2Sp,
 		0, 0, "Ch2 start...");
@@ -54,8 +56,19 @@ MENU_ITEM(menuStartThermostat, menuStatusDessipator, menuStartCh2, menuStart, me
 		0, 0, "Thermostat      start...");
 MENU_ITEM(menuStatusDessipator, menuResetAlarm, menuStartThermostat, menuStart, menuDessipatorState,
 		0, 0, "Dessipator      status...");
-MENU_ITEM(menuResetAlarm, menuStartCh1, menuStatusDessipator, menuStart, menuAlarmState,
+MENU_ITEM(menuResetAlarm, menuMeasuring, menuStatusDessipator, menuStart, menuAlarmState,
 		0, 0, "Reset Alarm...");
+/*submenu Measuring...*/
+MENU_ITEM(menuMeasuringState1, menuMeasuringState2, menuMeasuringState5, menuMeasuring, NULL_MENU,
+		BatteryTester_Menu_selectMeasuringState1, 0, "");
+MENU_ITEM(menuMeasuringState2, menuMeasuringState3, menuMeasuringState1, menuMeasuring, NULL_MENU,
+		BatteryTester_Menu_selectMeasuringState2, 0, "");
+MENU_ITEM(menuMeasuringState3, menuMeasuringState4, menuMeasuringState2, menuMeasuring, NULL_MENU,
+		BatteryTester_Menu_selectMeasuringState3, 0, "");
+MENU_ITEM(menuMeasuringState4, menuMeasuringState5, menuMeasuringState3, menuMeasuring, NULL_MENU,
+		BatteryTester_Menu_selectMeasuringState4, 0, "");
+MENU_ITEM(menuMeasuringState5, menuMeasuringState1, menuMeasuringState4, menuMeasuring, NULL_MENU,
+		BatteryTester_Menu_selectMeasuringState5, 0, "");
 /*SUBMENU Ch1 settings...  LEVEL 2*/
 MENU_ITEM(menuCh1Buck, menuCh1Boost, menuCh1VRange, menuSetsChannel1, menuCh1BuckKp,
 		0, 0, "Ch1 buck regul. settings...");
@@ -211,6 +224,13 @@ MENU_ITEM(menuStartCh1On, menuStartCh1State, menuStartCh1Sp, menuStartCh1, NULL_
 		"");
 MENU_ITEM(menuStartCh1State, menuStartCh1Sp, menuStartCh1On, menuStartCh1, NULL_MENU,
 		0, 0, "Start channel 1 status...");
+/*submenu Start channel 1 status...*/
+MENU_ITEM(menuStartCh1State1, menuStartCh1State2, menuStartCh1State3, menuStartCh1State, NULL_MENU,
+		BatteryTester_Menu_selectState1Ch1, 0, "");
+MENU_ITEM(menuStartCh1State2, menuStartCh1State3, menuStartCh1State1, menuStartCh1State, NULL_MENU,
+		BatteryTester_Menu_selectState2Ch1, 0, "");
+MENU_ITEM(menuStartCh1State3, menuStartCh1State1, menuStartCh1State2, menuStartCh1State, NULL_MENU,
+		BatteryTester_Menu_selectState3Ch1, 0, "");
 /*SUBMENU Start Ch2... LEVEL 3*/
 MENU_ITEM(menuStartCh2Sp, menuStartCh2On, menuStartCh2State, menuStartCh2, menuSetCh2Sp,
 		0, 0, "Start channel 2 setpoint...");
@@ -218,6 +238,13 @@ MENU_ITEM(menuStartCh2On, menuStartCh2State, menuStartCh2Sp, menuStartCh2, NULL_
 		BatteryTester_Menu_selectToggleRunCh2, BatteryTester_Menu_enterToggleRunCh2, "");
 MENU_ITEM(menuStartCh2State, menuStartCh2Sp, menuStartCh2On, menuStartCh2, NULL_MENU,
 		0, 0, "Start channel 2 status...");
+/*submenu Start channel 2 status...*/
+MENU_ITEM(menuStartCh2State1, menuStartCh2State2, menuStartCh2State3, menuStartCh2State, NULL_MENU,
+		BatteryTester_Menu_selectState1Ch2, 0, "");
+MENU_ITEM(menuStartCh2State2, menuStartCh2State3, menuStartCh2State1, menuStartCh2State, NULL_MENU,
+		BatteryTester_Menu_selectState2Ch2, 0, "");
+MENU_ITEM(menuStartCh2State3, menuStartCh2State1, menuStartCh2State2, menuStartCh2State, NULL_MENU,
+		BatteryTester_Menu_selectState3Ch1, 0, "");
 /*SUBMENU Start Tstat... LEVEL 3*/
 MENU_ITEM(menuStartTstatSp, menuStartTstatOn, menuStartTstatState, menuStartThermostat, menuSetTstatSp,
 		0, 0, "Start thermostatsetpoint...");
@@ -225,6 +252,15 @@ MENU_ITEM(menuStartTstatOn, menuStartTstatState, menuStartTstatSp, menuStartTher
 		BatteryTester_Menu_selectToggleThermostat, BatteryTester_Menu_enterToggleThermostat, "");
 MENU_ITEM(menuStartTstatState, menuStartTstatSp, menuStartTstatOn, menuStartThermostat, NULL_MENU,
 		0, 0, "Start thermostatstatus...");
+/*submenu Start thermostatstatus...*/
+MENU_ITEM(menuStartTstatState1, menuStartTstatState2, menuStartTstatState4, menuStartTstatState, NULL_MENU,
+		BatteryTester_Menu_selectState1Tstat, 0, "");
+MENU_ITEM(menuStartTstatState2, menuStartTstatState3, menuStartTstatState1, menuStartTstatState, NULL_MENU,
+		BatteryTester_Menu_selectState2Tstat, 0, "");
+MENU_ITEM(menuStartTstatState3, menuStartTstatState4, menuStartTstatState2, menuStartTstatState, NULL_MENU,
+		BatteryTester_Menu_selectState3Tstat, 0, "");
+MENU_ITEM(menuStartTstatState4, menuStartTstatState1, menuStartTstatState3, menuStartTstatState, NULL_MENU,
+		BatteryTester_Menu_selectState4Tstat, 0, "");
 /*SUBMENU Start Dessipator... LEVEL 3*/
 /*MENU_ITEM(menuStartDessipatorOn, menuStartDessipatorState, menuStartDessipatorState, menuStartDessipator, NULL_MENU,
 		0, 0, "Start dessipatoron/off...");*/
@@ -1503,6 +1539,212 @@ void BatteryTester_Menu_enterToggleThermostat(void){
 	BatteryTester_ClimatRegulator_toggleRunMode();
 //	BatteryTester_Menu_returnInMenu(&menuStartTstatOn);
 	BatteryTester_Menu_returnInMenu(&menuStartTstatState);
+}
+
+
+void BatteryTester_Menu_selectState1Ch1(void){
+	if (MenuWriteFunc){
+		char buf[33];
+		if(BatteryTester_RegulatorCellOne_getRunStatus()){
+			snprintf(buf, 33, "mode: on        volt: %f.2, V",
+					BatteryTester_ConversionData_getPhisicValues().ch1_VoltageInV);
+			MenuWriteFunc(buf);
+		}
+		else{
+			snprintf(buf, 33, "mode: off       volt: %f.2, V",
+					BatteryTester_ConversionData_getPhisicValues().ch1_VoltageInV);
+			MenuWriteFunc(buf);
+		}
+	}
+}
+
+void BatteryTester_Menu_selectState2Ch1(void){
+	if (MenuWriteFunc){
+		char buf1[33];
+		char buf2[17];
+		int len = snprintf(buf1, 17, "sp: %.2f, A",
+				BatteryTester_RegulatorCellOne_getSetpoint());
+		memset(buf1 + len, ' ', 16 - len);
+		len = snprintf(buf2, 17, "fb: %.2f, A",
+					BatteryTester_ConversionData_getPhisicValues().ch1_CurrentInA);
+		memcpy(&buf1[16], buf2, len);
+		MenuWriteFunc(buf1);
+	}
+}
+
+void BatteryTester_Menu_selectState3Ch1(void){
+	if (MenuWriteFunc){
+		char buf1[33];
+		char buf2[17];
+		int len = snprintf(buf1, 17, "bus: %.2f, V",
+				BatteryTester_ConversionData_getPhisicValues().busVoltageInV);
+		memset(buf1 + len, ' ', 16 - len);
+		if(BatteryTester_ConverterFault_isConverterFault()){
+			memcpy(&buf1[16], "fault: yes", 10);
+		}
+		else{
+			memcpy(&buf1[16], "fault: no", 9);
+		}
+		MenuWriteFunc(buf1);
+	}
+}
+
+void BatteryTester_Menu_selectState1Ch2(void){
+	if (MenuWriteFunc){
+		char buf[33];
+		if(BatteryTester_RegulatorCellTwo_getRunStatus()){
+			snprintf(buf, 33, "mode: on        volt: %f.2, V",
+					BatteryTester_ConversionData_getPhisicValues().ch2_VoltageInV);
+			MenuWriteFunc(buf);
+		}
+		else{
+			snprintf(buf, 33, "mode: off       volt: %f.2, V",
+					BatteryTester_ConversionData_getPhisicValues().ch2_VoltageInV);
+			MenuWriteFunc(buf);
+		}
+	}
+}
+
+void BatteryTester_Menu_selectState2Ch2(void){
+	if (MenuWriteFunc){
+		char buf1[33];
+		char buf2[17];
+		int len = snprintf(buf1, 17, "sp: %.2f, A",
+				BatteryTester_RegulatorCellTwo_getSetpoint());
+		memset(buf1 + len, ' ', 16 - len);
+		len = snprintf(buf2, 17, "fb: %.2f, A",
+					BatteryTester_ConversionData_getPhisicValues().ch2_CurrentInA);
+		memcpy(&buf1[16], buf2, len);
+		MenuWriteFunc(buf1);
+	}
+}
+
+void BatteryTester_Menu_selectState1Tstat(void){
+	if (MenuWriteFunc){
+		char buf[33];
+		if(BatteryTester_ClimatRegulator_getRunStatus()){
+			snprintf(buf, 33, "mode: on        Tavg: %f.2, \xdf\x43",
+					BatteryTester_ConversionData_getPhisicValues().AverageTemps);
+			MenuWriteFunc(buf);
+		}
+		else{
+			snprintf(buf, 33, "mode: off       Tavg: %f.2, \xdf\x43",
+					BatteryTester_ConversionData_getPhisicValues().AverageTemps);
+			MenuWriteFunc(buf);
+		}
+	}
+}
+
+void BatteryTester_Menu_selectState2Tstat(void){
+	if (MenuWriteFunc){
+		char buf1[33];
+		char buf2[17];
+		int len = snprintf(buf1, 17, "sp: %.2f, \xdf\x43",
+				BatteryTester_ClimatRegulator_getSetpoint());
+		memset(buf1 + len, ' ', 16 - len);
+		len = snprintf(buf2, 17, "fb: %.2f, \xdf\x43",
+					BatteryTester_ConversionData_getPhisicValues().AverageTemps);
+		memcpy(&buf1[16], buf2, len);
+		MenuWriteFunc(buf1);
+	}
+}
+
+void BatteryTester_Menu_selectState3Tstat(void){
+	if (MenuWriteFunc){
+		char buf1[33];
+		char buf2[17];
+		int len = snprintf(buf1, 17, "T1: %.2f, \xdf\x43",
+				BatteryTester_ConversionData_getPhisicValues().temp1IndegC);
+		memset(buf1 + len, ' ', 16 - len);
+		len = snprintf(buf2, 17, "T2: %.2f, \xdf\x43",
+					BatteryTester_ConversionData_getPhisicValues().temp2IndegC);
+		memcpy(&buf1[16], buf2, len);
+		MenuWriteFunc(buf1);
+	}
+}
+
+void BatteryTester_Menu_selectState4Tstat(void){
+	if (MenuWriteFunc){
+		char buf1[33];
+		char buf2[17];
+		int len = snprintf(buf1, 17, "T3: %.2f, \xdf\x43",
+				BatteryTester_ConversionData_getPhisicValues().temp3IndegC);
+		memset(buf1 + len, ' ', 16 - len);
+		len = snprintf(buf2, 17, "T4: %.2f, \xdf\x43",
+					BatteryTester_ConversionData_getPhisicValues().temp4IndegC);
+		memcpy(&buf1[16], buf2, len);
+		MenuWriteFunc(buf1);
+	}
+}
+
+void BatteryTester_Menu_selectMeasuringState1(void){
+	if (MenuWriteFunc){
+		char buf1[33];
+		char buf2[17];
+		int len = snprintf(buf1, 17, "Ich1: %.2f, A",
+				BatteryTester_ConversionData_getPhisicValues().ch1_CurrentInA);
+		memset(buf1 + len, ' ', 16 - len);
+		len = snprintf(buf2, 17, "Vch1: %.2f, V",
+					BatteryTester_ConversionData_getPhisicValues().ch1_VoltageInV);
+		memcpy(&buf1[16], buf2, len);
+		MenuWriteFunc(buf1);
+	}
+}
+
+void BatteryTester_Menu_selectMeasuringState2(void){
+	if (MenuWriteFunc){
+		char buf1[33];
+		char buf2[17];
+		int len = snprintf(buf1, 17, "Ich2: %.2f, A",
+				BatteryTester_ConversionData_getPhisicValues().ch2_CurrentInA);
+		memset(buf1 + len, ' ', 16 - len);
+		len = snprintf(buf2, 17, "Vch2: %.2f, V",
+					BatteryTester_ConversionData_getPhisicValues().ch2_VoltageInV);
+		memcpy(&buf1[16], buf2, len);
+		MenuWriteFunc(buf1);
+	}
+}
+
+void BatteryTester_Menu_selectMeasuringState3(void){
+	if (MenuWriteFunc){
+		char buf1[33];
+		char buf2[17];
+		int len = snprintf(buf1, 17, "Vbus: %.2f, V",
+				BatteryTester_ConversionData_getPhisicValues().busVoltageInV);
+		memset(buf1 + len, ' ', 16 - len);
+		len = snprintf(buf2, 17, "Tavg: %.2f, \xdf\x43",
+					BatteryTester_ConversionData_getPhisicValues().AverageTemps);
+		memcpy(&buf1[16], buf2, len);
+		MenuWriteFunc(buf1);
+	}
+}
+
+void BatteryTester_Menu_selectMeasuringState4(void){
+	if (MenuWriteFunc){
+		char buf1[33];
+		char buf2[17];
+		int len = snprintf(buf1, 17, "T1: %.2f, \xdf\x43",
+				BatteryTester_ConversionData_getPhisicValues().temp1IndegC);
+		memset(buf1 + len, ' ', 16 - len);
+		len = snprintf(buf2, 17, "T2: %.2f, \xdf\x43",
+					BatteryTester_ConversionData_getPhisicValues().temp2IndegC);
+		memcpy(&buf1[16], buf2, len);
+		MenuWriteFunc(buf1);
+	}
+}
+
+void BatteryTester_Menu_selectMeasuringState5(void){
+	if (MenuWriteFunc){
+		char buf1[33];
+		char buf2[17];
+		int len = snprintf(buf1, 17, "T3: %.2f, \xdf\x43",
+				BatteryTester_ConversionData_getPhisicValues().temp3IndegC);
+		memset(buf1 + len, ' ', 16 - len);
+		len = snprintf(buf2, 17, "T4: %.2f, \xdf\x43",
+					BatteryTester_ConversionData_getPhisicValues().temp4IndegC);
+		memcpy(&buf1[16], buf2, len);
+		MenuWriteFunc(buf1);
+	}
 }
 /*@brief:
  * Fill in the top line of the display.
