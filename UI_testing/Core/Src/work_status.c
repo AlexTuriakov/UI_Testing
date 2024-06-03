@@ -42,7 +42,7 @@ static unsigned int tick = 0;
 void BatteryTester_WorkStatus_updateStatus(void* param){
 	//start timer
 	//current menu navigate
-	if(HAL_GetTick() - tick >= 500){
+	if(HAL_GetTick() - tick >= 1500){
 		tick = HAL_GetTick();
 		BatteryTester_Menu_Navigate(BatteryTester_Menu_GetCurrentMenu());
 	}

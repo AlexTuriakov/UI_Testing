@@ -28,7 +28,7 @@ MENU_ITEM(menuSettings, menuLogs, menuStart, NULL_MENU, menuSetsRefOffset ,
 		0, 0, "Settings...");
 MENU_ITEM(menuLogs, menuStart, menuSettings, NULL_MENU, NULL_MENU,
 		0, 0, "Logs...");
-MENU_ITEM(menuStart, menuSettings, menuLogs, NULL_MENU, menuStartCh1,
+MENU_ITEM(menuStart, menuSettings, menuLogs, NULL_MENU, menuMeasuring,
 		0, 0, "Start...");
 /*SUBMENU Settings... LEVEL 1*/
 MENU_ITEM(menuSetsConversionData, menuSetsRefOffset, menuSetsThermometr, menuSettings, menuSetRefOffset,
@@ -1568,7 +1568,7 @@ void BatteryTester_Menu_selectState2Ch1(void){
 		memset(buf1 + len, ' ', 16 - len);
 		len = snprintf(buf2, 17, "fb: %.2f, A",
 					BatteryTester_ConversionData_getPhisicValues().ch1_CurrentInA);
-		memcpy(&buf1[16], buf2, len);
+		memcpy(&buf1[16], buf2, len + 1);
 		MenuWriteFunc(buf1);
 		//BatteryTester_State_moveFromToState(MENU_NAVIGATE, WORK_STATUS);
 	}
@@ -1618,7 +1618,7 @@ void BatteryTester_Menu_selectState2Ch2(void){
 		memset(buf1 + len, ' ', 16 - len);
 		len = snprintf(buf2, 17, "fb: %.2f, A",
 					BatteryTester_ConversionData_getPhisicValues().ch2_CurrentInA);
-		memcpy(&buf1[16], buf2, len);
+		memcpy(&buf1[16], buf2, len + 1);
 		MenuWriteFunc(buf1);
 		//BatteryTester_State_moveFromToState(MENU_NAVIGATE, WORK_STATUS);
 	}
@@ -1650,7 +1650,7 @@ void BatteryTester_Menu_selectState2Tstat(void){
 		memset(buf1 + len, ' ', 16 - len);
 		len = snprintf(buf2, 17, "fb: %.2f, \xdf\x43",
 					BatteryTester_ConversionData_getPhisicValues().AverageTemps);
-		memcpy(&buf1[16], buf2, len);
+		memcpy(&buf1[16], buf2, len + 1);
 		MenuWriteFunc(buf1);
 		//BatteryTester_State_moveFromToState(MENU_NAVIGATE, WORK_STATUS);
 	}
@@ -1665,7 +1665,7 @@ void BatteryTester_Menu_selectState3Tstat(void){
 		memset(buf1 + len, ' ', 16 - len);
 		len = snprintf(buf2, 17, "T2: %.2f, \xdf\x43",
 					BatteryTester_ConversionData_getPhisicValues().temp2IndegC);
-		memcpy(&buf1[16], buf2, len);
+		memcpy(&buf1[16], buf2, len + 1);
 		MenuWriteFunc(buf1);
 		//BatteryTester_State_moveFromToState(MENU_NAVIGATE, WORK_STATUS);
 	}
@@ -1680,7 +1680,7 @@ void BatteryTester_Menu_selectState4Tstat(void){
 		memset(buf1 + len, ' ', 16 - len);
 		len = snprintf(buf2, 17, "T4: %.2f, \xdf\x43",
 					BatteryTester_ConversionData_getPhisicValues().temp4IndegC);
-		memcpy(&buf1[16], buf2, len);
+		memcpy(&buf1[16], buf2, len + 1);
 		MenuWriteFunc(buf1);
 		//BatteryTester_State_moveFromToState(MENU_NAVIGATE, WORK_STATUS);
 	}
@@ -1695,7 +1695,7 @@ void BatteryTester_Menu_selectMeasuringState1(void){
 		memset(buf1 + len, ' ', 16 - len);
 		len = snprintf(buf2, 17, "Vch1: %.2f, V",
 					BatteryTester_ConversionData_getPhisicValues().ch1_VoltageInV);
-		memcpy(&buf1[16], buf2, len);
+		memcpy(&buf1[16], buf2, len + 1);
 		MenuWriteFunc(buf1);
 		BatteryTester_State_moveFromToState(MENU_NAVIGATE, WORK_STATUS);
 	}
@@ -1710,7 +1710,7 @@ void BatteryTester_Menu_selectMeasuringState2(void){
 		memset(buf1 + len, ' ', 16 - len);
 		len = snprintf(buf2, 17, "Vch2: %.2f, V",
 					BatteryTester_ConversionData_getPhisicValues().ch2_VoltageInV);
-		memcpy(&buf1[16], buf2, len);
+		memcpy(&buf1[16], buf2, len + 1);
 		MenuWriteFunc(buf1);
 		//BatteryTester_State_moveFromToState(MENU_NAVIGATE, WORK_STATUS);
 	}
@@ -1725,7 +1725,7 @@ void BatteryTester_Menu_selectMeasuringState3(void){
 		memset(buf1 + len, ' ', 16 - len);
 		len = snprintf(buf2, 17, "Tavg: %.2f, \xdf\x43",
 					BatteryTester_ConversionData_getPhisicValues().AverageTemps);
-		memcpy(&buf1[16], buf2, len);
+		memcpy(&buf1[16], buf2, len + 1);
 		MenuWriteFunc(buf1);
 		//BatteryTester_State_moveFromToState(MENU_NAVIGATE, WORK_STATUS);
 	}
@@ -1740,7 +1740,7 @@ void BatteryTester_Menu_selectMeasuringState4(void){
 		memset(buf1 + len, ' ', 16 - len);
 		len = snprintf(buf2, 17, "T2: %.2f, \xdf\x43",
 					BatteryTester_ConversionData_getPhisicValues().temp2IndegC);
-		memcpy(&buf1[16], buf2, len);
+		memcpy(&buf1[16], buf2, len + 1);
 		MenuWriteFunc(buf1);
 		//BatteryTester_State_moveFromToState(MENU_NAVIGATE, WORK_STATUS);
 	}
@@ -1755,7 +1755,7 @@ void BatteryTester_Menu_selectMeasuringState5(void){
 		memset(buf1 + len, ' ', 16 - len);
 		len = snprintf(buf2, 17, "T4: %.2f, \xdf\x43",
 					BatteryTester_ConversionData_getPhisicValues().temp4IndegC);
-		memcpy(&buf1[16], buf2, len);
+		memcpy(&buf1[16], buf2, len + 1);
 		MenuWriteFunc(buf1);
 		//BatteryTester_State_moveFromToState(MENU_NAVIGATE, WORK_STATUS);
 	}
