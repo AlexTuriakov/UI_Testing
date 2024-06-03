@@ -31,18 +31,36 @@
  * 															T4: ..., oC
  * 															=============
 */
+#include "work_status.h"
+#include "menu.h"
+#include "stm32f0xx_hal.h"
+
+
+static unsigned int tick = 0;
+
+
 void BatteryTester_WorkStatus_updateStatus(void* param){
+	//start timer
+	//current menu navigate
+	if(HAL_GetTick() - tick >= 500){
+		tick = HAL_GetTick();
+		BatteryTester_Menu_Navigate(BatteryTester_Menu_GetCurrentMenu());
+	}
 
 }
 
 void BatteryTester_WorkStatus_returnToPreviousState(void* param){
-
+	// navigate menu currentmenu -> parent
+	BatteryTester_State_returnFromState();
+	BatteryTester_Menu_Navigate(MENU_PARENT);
 }
 
 void BatteryTester_WorkStatus_upStatus(void* param){
-
+	//navigate menu current menu -> previous
+	BatteryTester_Menu_Navigate(MENU_PREVIOUS);
 }
 
 void BatteryTester_WorkStatus_downStatus(void* param){
-
+	// navigate menu current menu -> next
+	BatteryTester_Menu_Navigate(MENU_NEXT);
 }
