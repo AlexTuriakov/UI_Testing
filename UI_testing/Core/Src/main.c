@@ -187,9 +187,9 @@ int main(void)
   if(BatteryTester_EEPROM_begin()){
 		BatteryTester_AuxiliaryFunction_initLogger();
 		BatteryTester_RegulatorCellOne_initDecorator(
-				  BatteryTester_HAL_startCh1PwmCallback,
-				  BatteryTester_HAL_stopCh1PwmCallback,
-				  BatteryTester_HAL_setCh1PwmPulseCallback);
+			  BatteryTester_HAL_startCh1PwmCallback,
+			  BatteryTester_HAL_stopCh1PwmCallback,
+			  BatteryTester_HAL_setCh1PwmPulseCallback);
 		BatteryTester_RegulatorCellTwo_initDecorator(
 			  BatteryTester_HAL_startCh2PwmCallback,
 			  BatteryTester_HAL_stopCh2PwmCallback,
@@ -224,7 +224,6 @@ int main(void)
 			BatteryTester_HAL_stopAdcCallback) != HAL_OK){
 		  Error_Handler();
 	     }
-
 
 	     BatteryTester_EEPROM_end();
   }

@@ -8,6 +8,9 @@
 #ifndef INC_STATE_EVENTS_H_
 #define INC_STATE_EVENTS_H_
 
+#include "set_param.h"
+
+
 /**************type declaration****************/
 typedef enum {
 	MENU_NAVIGATE,
@@ -42,7 +45,7 @@ void BatteryTester_State_setCurrentEvent(eEvents_t);
 void* BatteryTester_State_getCurrentParams();
 void BatteryTester_State_setCurrentParams(void*);
 //void BatteryTester_State_postStrParamForState(const char*);
-void BatteryTester_State_postParamForSet(float);
+void BatteryTester_State_postParamForSet(sParamSets_t);
 float BatteryTester_State_sendNewParamFromState();
 void BatteryTester_State_writeMenuItem(const char*);
 void BatteryTester_State_moveFromToState(eStates_t, eStates_t);

@@ -12,6 +12,7 @@
 #include <math.h>
 #include "set_param.h"
 #include "lcd_wc1602a.h"
+#include "state_events.h"
 
 #define SET_PARAM_ACCURACY 6
 #define SET_PARAM_SIZE 11
@@ -19,23 +20,47 @@
 /*@brief^
  * using float gives an error in the low-order bits.
  * */
-static double settingParam;
+//static double settingParam;
 static short currentOrder;
+static sParamSets_t currentParameter;
 
-void BatteryTester_SetParam_init(float initParam){
+static inline void _BatteryTester_SetParam_display();
+static inline void _BatteryTester_moveCursor();
+
+/*
+ * @deprecated
+ */
+/*void BatteryTester_SetParam_init(float initParam){
 	settingParam = initParam;
 	currentOrder = -6;
-	BatteryTester_SetParam_display();
+	_BatteryTester_SetParam_display();
 	BatteryTester_WC1602A_Setpos(1, 10);
+	BatteryTester_WC1602A_onCursor();
+}*/
+
+void BatteryTester_SetParam_init(sParamSets_t init){
+	currentParameter = init;
+	currentOrder = -currentParameter.decimalOrder;
+	_BatteryTester_SetParam_display();
+	BatteryTester_WC1602A_Setpos(1,
+			currentParameter.decimalOrder + currentParameter.integerOrder);
 	BatteryTester_WC1602A_onCursor();
 }
 
 float BatteryTester_SetParam_getParam(){
-	return settingParam;
+//	return settingParam;
+	return currentParameter.value;
 }
 
-void BatteryTester_SetParam_setParam(float param){
+/*
+ * @deprecated
+ */
+/*void BatteryTester_SetParam_setParam(float param){
 	settingParam = param;
+}*/
+
+void BatteryTester_SetParam_setParam(sParamSets_t param){
+	currentParameter = param;
 }
 
 void BatteryTester_SetParam_ok(){
@@ -44,72 +69,103 @@ void BatteryTester_SetParam_ok(){
 	BatteryTester_State_returnFromState();
 }
 
-inline void BatteryTester_SetParam_display(){
+/*
+ * @deprecated
+ */
+/*inline void _BatteryTester_SetParam_display(){
 	char str[17];
 	str[0]='\0';
 	sprintf(str, "%+011.6f", settingParam);
 	str[16] = '\0';
 	BatteryTester_WC1602A_writeLine(1, str, strlen(str));
-	BatteryTester_moveCursor();
+	_BatteryTester_moveCursor();
+}*/
+
+static inline void _BatteryTester_SetParam_display(){
+	char str[20];// becase warnings compiler
+	char buf[17];
+	snprintf(str, 20, "%%+0%d.%df",
+			(currentParameter.integerOrder + currentParameter.decimalOrder + 2),
+			currentParameter.decimalOrder);
+	snprintf(buf, 17, str, currentParameter.value);
+	BatteryTester_WC1602A_writeLine(1, buf, strlen(buf));
+	_BatteryTester_moveCursor();
 }
 
-inline void BatteryTester_moveCursor(){
+static inline void _BatteryTester_moveCursor(){
 	if(currentOrder <= 0){
 		if(currentOrder == 0){
-			BatteryTester_WC1602A_Setpos(1, 3);
+			BatteryTester_WC1602A_Setpos(1, currentParameter.integerOrder);
 		}
 		else{
-			BatteryTester_WC1602A_Setpos(1, 4 - currentOrder);
+			BatteryTester_WC1602A_Setpos(1,
+					currentParameter.integerOrder - currentOrder + 1);
 		}
 	}
 	else{
-		if(currentOrder == 4){
+		if(currentOrder == currentParameter.integerOrder + 1){
 				BatteryTester_WC1602A_Setpos(1, 0);
 		}
 		else{
-			BatteryTester_WC1602A_Setpos(1, 3 - currentOrder);
+			BatteryTester_WC1602A_Setpos(1,
+					currentParameter.integerOrder - currentOrder);
 		}
 	}
 }
 
 void BatteryTester_SetParam_left(){
-	if(currentOrder < 3){
-		currentOrder++;
-		BatteryTester_moveCursor();
+	if(currentParameter.sign){
+		if(currentOrder < currentParameter.integerOrder){
+			currentOrder++;
+			_BatteryTester_moveCursor();
+		}
 	}
+	else{
+		if(currentOrder < currentParameter.integerOrder - 1){
+			currentOrder++;
+			_BatteryTester_moveCursor();
+		}
+	}
+
 }
 
 void BatteryTester_SetParam_right(){
-	if(currentOrder > -6){
+	if(currentOrder > -currentParameter.decimalOrder){
 		currentOrder--;
-		BatteryTester_moveCursor();
+		_BatteryTester_moveCursor();
 	}
 }
 
 void BatteryTester_SetParam_up(){
-	double temp = settingParam;
-	if(currentOrder == 3){
-		settingParam *= -1;
+	double temp = currentParameter.value;
+	if(currentOrder == currentParameter.integerOrder){
+		temp = currentParameter.value;
+		temp = -temp;
+		if(temp >= currentParameter.minValue && temp <= currentParameter.maxValue)
+			currentParameter.value = temp;
 	}
 	else{
 		temp += pow(10, currentOrder);
-		if(temp <= 999.999999){
-			settingParam = temp;
+		if(temp <= currentParameter.maxValue){
+			currentParameter.value = temp;
 		}
 	}
-	BatteryTester_SetParam_display();
+	_BatteryTester_SetParam_display();
 }
 
 void BatteryTester_SetParam_down(){
-	double temp = settingParam;
-	if(currentOrder == 3){
-		settingParam = -settingParam;
+	double temp = currentParameter.value;
+	if(currentOrder == currentParameter.integerOrder){
+		temp = currentParameter.value;
+		temp = -temp;
+		if(temp >= currentParameter.minValue && temp <= currentParameter.maxValue)
+			currentParameter.value = temp;
 	}
 	else{
 		temp -= pow(10, currentOrder);
-		if(temp >= -999.999999){
-			settingParam = temp;
+		if(temp >= currentParameter.minValue){
+			currentParameter.value = temp;
 		}
 	}
-	BatteryTester_SetParam_display();
+	_BatteryTester_SetParam_display();
 }

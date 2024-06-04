@@ -160,7 +160,7 @@ void BatteryTester_State_continueEvent(eEvents_t newEvent){ //continueEvent
 	strncpy(strPostParam, sParam, SIZE_LINE_BUFFER_LCD);
 }*/
 
-void BatteryTester_State_postParamForSet(float param){
+void BatteryTester_State_postParamForSet(sParamSets_t param){
 	 BatteryTester_SetParam_init(param);
 }
 
