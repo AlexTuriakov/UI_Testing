@@ -271,5 +271,6 @@
 	void BatteryTester_Menu_updateMeasuringState5(void);
 	void BatteryTester_Menu_updateDessipatorState(void);
 	void BatteryTester_Menu_selectDessipatorState(void);
+	void BatteryTester_Menu_saveAllSettings(void);
 	void BatteryTester_Menu_init();
 #endif /* INC_MENU_H_ */

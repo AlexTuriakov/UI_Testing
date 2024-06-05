@@ -43,7 +43,7 @@ void BatteryTester_SetParam_init(sParamSets_t init){
 	currentOrder = -currentParameter.decimalOrder;
 	_BatteryTester_SetParam_display();
 	BatteryTester_WC1602A_Setpos(1,
-			currentParameter.decimalOrder + currentParameter.integerOrder);
+			currentParameter.decimalOrder + currentParameter.integerOrder + 1);
 	BatteryTester_WC1602A_onCursor();
 }
 
@@ -149,6 +149,9 @@ void BatteryTester_SetParam_up(){
 		if(temp <= currentParameter.maxValue){
 			currentParameter.value = temp;
 		}
+		else{
+			currentParameter.value = currentParameter.maxValue;
+		}
 	}
 	_BatteryTester_SetParam_display();
 }
@@ -165,6 +168,10 @@ void BatteryTester_SetParam_down(){
 		temp -= pow(10, currentOrder);
 		if(temp >= currentParameter.minValue){
 			currentParameter.value = temp;
+		}
+		else{//reset error float value
+			if(currentOrder == -currentParameter.decimalOrder)
+				currentParameter.value = currentParameter.minValue;
 		}
 	}
 	_BatteryTester_SetParam_display();

@@ -101,7 +101,7 @@ void BatteryTester_ClimatRegulator_initDecorator(
 		regulatorClimatSettings.Ki = -0.1;
 		regulatorClimatSettings.Kp = 10.0;
 		regulatorClimatSettings.dt = 1.0 / 16000;
-		regulatorClimatSettings.maxLimit = 100.0;
+		regulatorClimatSettings.maxLimit = 99.0;
 		regulatorClimatSettings.minLimit = -30.0;
 
 		pwmClimatSettings.maxDutyCycle = 95;

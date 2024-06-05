@@ -70,6 +70,13 @@ eBool_t BatteryTester_EEPROM_readSetLogger(unsigned int*, unsigned int*);
 eBool_t BatteryTester_EEPROM_readSetVoltcontrol(sVoltRange_t*, sVoltRange_t*);
 eBool_t BatteryTester_EEPROM_readSetClimatcontrol(sPIDController_t*, sPWMSettings_t*);
 eBool_t BatteryTester_EEPROM_readSetMeasurement(sMinValueFromRange_t*, sMaxValueFromRange_t*,
+
+
+
+
+
+
+
 		sValueCalibrationOffset_t*, ntcSchemeParameters_t*,	float*);
 eBool_t BatteryTester_EEPROM_readSetDessipator(sVoltRange_t*);
 eBool_t BatteryTester_EEPROM_readSetRegCellOne(sPIDController_t*, sPIDController_t*,

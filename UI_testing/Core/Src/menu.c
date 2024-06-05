@@ -18,6 +18,7 @@
 #include "cells_voltcontrol.h"
 #include "converter_fault.h"
 #include "work_status.h"
+#include "flash_operation.h"
 
 /** This is used when an invalid menu handle is required in
  *  a \ref MENU_ITEM() definition, i.e. to indicate that a
@@ -44,8 +45,13 @@ MENU_ITEM(menuSetsDessipator, menuSetsClimat, menuSetsChannel2, menuSettings, me
 		0, 0, "Dessipator...");
 MENU_ITEM(menuSetsClimat, menuSetsThermometr, menuSetsDessipator, menuSettings, menuClimReg,
 		0, 0, "Thermostat...");
-MENU_ITEM(menuSetsThermometr, menuSetsRefOffset, menuSetsClimat, menuSettings, menuT1,
+MENU_ITEM(menuSetsThermometr, menuSetsSave, menuSetsClimat, menuSettings, menuT1,
 		0, 0, "Thermometers...");
+MENU_ITEM(menuSetsSave, menuSetsRefOffset, menuSetsThermometr, menuSettings, menuT1,
+		0, 0, "Save settings...");
+/*submenu Save settings...*/
+MENU_ITEM(menuSetsSaveCommand, NULL_MENU, NULL_MENU, menuSetsSave, NULL_MENU,
+		0, BatteryTester_Menu_saveAllSettings, "Save all sets?  ok:yes/left:no");
 /*SUBMENU Start... LEVEL 1*/
 MENU_ITEM(menuMeasuring, menuStartCh1, menuResetAlarm, menuStart, menuMeasuringState1,
 		0, 0, "Measuring...");
@@ -734,9 +740,10 @@ void BatteryTester_Menu_enterSetThermostatSp(void){
 void BatteryTester_Menu_selectSetThermostatMinLim(void){
 	sParamSets_t par = {
 		.decimalOrder = 1,
-		.integerOrder = 3,
+		.integerOrder = 2,
 		.minValue = -99.9,
-		.maxValue = BatteryTester_ClimatRegulator_getRegulatorSettings().maxLimit,
+		//.maxValue = BatteryTester_ClimatRegulator_getRegulatorSettings().maxLimit,
+		.maxValue = BatteryTester_ClimatRegulator_getRegulatorSettings().setpoint,
 		.sign = 1,
 		.value = BatteryTester_ClimatRegulator_getRegulatorSettings().minLimit
 	};
@@ -752,11 +759,12 @@ void BatteryTester_Menu_enterSetThermostatMinLim(void){
 
 void BatteryTester_Menu_selectSetThermostatMaxLim(void){
 	sParamSets_t par = {
-		.decimalOrder = 6,
-		.integerOrder = 3,
-		.minValue = BatteryTester_ClimatRegulator_getRegulatorSettings().minLimit,
-		.maxValue = 999.9,
-		.sign = BatteryTester_ClimatRegulator_getRegulatorSettings().minLimit < 0? 1: 0,
+		.decimalOrder = 1,
+		.integerOrder = 2,
+		//.minValue = BatteryTester_ClimatRegulator_getRegulatorSettings().minLimit,
+		.minValue = BatteryTester_ClimatRegulator_getRegulatorSettings().setpoint,
+		.maxValue = 99.9,
+		.sign = 1,
 		.value = BatteryTester_ClimatRegulator_getRegulatorSettings().maxLimit
 	};
 	BatteryTester_Menu_selectSetNewValue("Tstat. max, \xdf\x43", par);
@@ -1076,7 +1084,7 @@ void BatteryTester_Menu_enterSetTemp4FactorB(void){
 void BatteryTester_Menu_selectSetThermostatMinDutyCycle(void){
 	sParamSets_t par = {
 		.decimalOrder = 2,
-		.integerOrder = 2,
+		.integerOrder = 3,
 		.minValue = 0,
 		.maxValue = BattetyTester_ClimatRegulator_getPWMSettings().maxDutyCycle,
 		.sign = 0,
@@ -1094,8 +1102,8 @@ void BatteryTester_Menu_enterSetThermostatMinDutyCycle(void){
 
 void BatteryTester_Menu_selectSetThermostatMaxDutyCycle(void){
 	sParamSets_t par = {
-		.decimalOrder = 3,
-		.integerOrder = 2,
+		.decimalOrder = 2,
+		.integerOrder = 3,
 		.minValue = BattetyTester_ClimatRegulator_getPWMSettings().minDutyCycle,
 		.maxValue = 100,
 		.sign = 0,
@@ -2406,6 +2414,11 @@ void BatteryTester_Menu_updateDessipatorState(void){
 		BatteryTester_WC1602A_writeInPos(1, 6, buf, 5);
 	}
 }
+
+void BatteryTester_Menu_saveAllSettings(void){
+
+}
+
 /*@brief:
  * Fill in the top line of the display.
  * Change the state and pass the parameter.
