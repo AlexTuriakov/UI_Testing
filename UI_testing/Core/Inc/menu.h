@@ -255,5 +255,21 @@
 	void BatteryTester_Menu_selectMeasuringState3(void);
 	void BatteryTester_Menu_selectMeasuringState4(void);
 	void BatteryTester_Menu_selectMeasuringState5(void);
+	void BatteryTester_Menu_updateState1Ch1(void);
+	void BatteryTester_Menu_updateState2Ch1(void);
+	void BatteryTester_Menu_updateState3Ch1(void);
+	void BatteryTester_Menu_updateState1Ch2(void);
+	void BatteryTester_Menu_updateState2Ch2(void);
+	void BatteryTester_Menu_updateState1Tstat(void);
+	void BatteryTester_Menu_updateState2Tstat(void);
+	void BatteryTester_Menu_updateState3Tstat(void);
+	void BatteryTester_Menu_updateState4Tstat(void);
+	void BatteryTester_Menu_updateMeasuringState1(void);
+	void BatteryTester_Menu_updateMeasuringState2(void);
+	void BatteryTester_Menu_updateMeasuringState3(void);
+	void BatteryTester_Menu_updateMeasuringState4(void);
+	void BatteryTester_Menu_updateMeasuringState5(void);
+	void BatteryTester_Menu_updateDessipatorState(void);
+	void BatteryTester_Menu_selectDessipatorState(void);
 	void BatteryTester_Menu_init();
 #endif /* INC_MENU_H_ */

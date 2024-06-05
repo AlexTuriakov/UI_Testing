@@ -209,9 +209,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 }
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc){
-	sphisicValueEx_t measuringValue =
-			BatteryTester_ConversionData_calcPhisicValueFromAdcCodeEx(
-				rawAdcData, LENGTH_DATA_ADC);
+	sphisicValueEx_t measuringValue = {0};
+			/*BatteryTester_ConversionData_calcPhisicValueFromAdcCodeEx(
+				rawAdcData, LENGTH_DATA_ADC);*/
 	BatteryTester_ConverterFault_faultHandler();
 	BattetyTester_DessipatorControl_onHeaterControl(
 				measuringValue.busVoltageInV);

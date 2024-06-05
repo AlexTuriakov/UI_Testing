@@ -37,14 +37,18 @@
 
 
 static unsigned int tick = 0;
-
+static BatteryTester_WorkStatus_updateCallback_t g_updateCallback = 0;
 
 void BatteryTester_WorkStatus_updateStatus(void* param){
 	//start timer
 	//current menu navigate
 	if(HAL_GetTick() - tick >= 1500){
 		tick = HAL_GetTick();
-		BatteryTester_Menu_Navigate(BatteryTester_Menu_GetCurrentMenu());
+		if(g_updateCallback){
+			g_updateCallback();
+		}
+		// horror blink display
+//		BatteryTester_Menu_Navigate(BatteryTester_Menu_GetCurrentMenu());
 	}
 
 }
@@ -63,4 +67,9 @@ void BatteryTester_WorkStatus_upStatus(void* param){
 void BatteryTester_WorkStatus_downStatus(void* param){
 	// navigate menu current menu -> next
 	BatteryTester_Menu_Navigate(MENU_NEXT);
+}
+
+void BatteryTester_WorkStatus_setUpdateCallback(
+		BatteryTester_WorkStatus_updateCallback_t updateCallback){
+	g_updateCallback = updateCallback;
 }

@@ -17,6 +17,7 @@
 #include "regulator_cell_two.h"
 #include "cells_voltcontrol.h"
 #include "converter_fault.h"
+#include "work_status.h"
 
 /** This is used when an invalid menu handle is required in
  *  a \ref MENU_ITEM() definition, i.e. to indicate that a
@@ -222,7 +223,7 @@ MENU_ITEM(menuStartCh1Sp, menuStartCh1On, menuStartCh1State, menuStartCh1, menuS
 MENU_ITEM(menuStartCh1On, menuStartCh1State, menuStartCh1Sp, menuStartCh1, NULL_MENU,
 		BatteryTester_Menu_selectToggleRunCh1, BatteryTester_Menu_enterToggleRunCh1,
 		"");
-MENU_ITEM(menuStartCh1State, menuStartCh1Sp, menuStartCh1On, menuStartCh1, NULL_MENU,
+MENU_ITEM(menuStartCh1State, menuStartCh1Sp, menuStartCh1On, menuStartCh1, menuStartCh1State1,
 		0, 0, "Start channel 1 status...");
 /*submenu Start channel 1 status...*/
 MENU_ITEM(menuStartCh1State1, menuStartCh1State2, menuStartCh1State3, menuStartCh1State, NULL_MENU,
@@ -236,7 +237,7 @@ MENU_ITEM(menuStartCh2Sp, menuStartCh2On, menuStartCh2State, menuStartCh2, menuS
 		0, 0, "Start channel 2 setpoint...");
 MENU_ITEM(menuStartCh2On, menuStartCh2State, menuStartCh2Sp, menuStartCh2, NULL_MENU,
 		BatteryTester_Menu_selectToggleRunCh2, BatteryTester_Menu_enterToggleRunCh2, "");
-MENU_ITEM(menuStartCh2State, menuStartCh2Sp, menuStartCh2On, menuStartCh2, NULL_MENU,
+MENU_ITEM(menuStartCh2State, menuStartCh2Sp, menuStartCh2On, menuStartCh2, menuStartCh2State1,
 		0, 0, "Start channel 2 status...");
 /*submenu Start channel 2 status...*/
 MENU_ITEM(menuStartCh2State1, menuStartCh2State2, menuStartCh2State3, menuStartCh2State, NULL_MENU,
@@ -250,7 +251,7 @@ MENU_ITEM(menuStartTstatSp, menuStartTstatOn, menuStartTstatState, menuStartTher
 		0, 0, "Start thermostatsetpoint...");
 MENU_ITEM(menuStartTstatOn, menuStartTstatState, menuStartTstatSp, menuStartThermostat, NULL_MENU,
 		BatteryTester_Menu_selectToggleThermostat, BatteryTester_Menu_enterToggleThermostat, "");
-MENU_ITEM(menuStartTstatState, menuStartTstatSp, menuStartTstatOn, menuStartThermostat, NULL_MENU,
+MENU_ITEM(menuStartTstatState, menuStartTstatSp, menuStartTstatOn, menuStartThermostat, menuStartTstatState1,
 		0, 0, "Start thermostatstatus...");
 /*submenu Start thermostatstatus...*/
 MENU_ITEM(menuStartTstatState1, menuStartTstatState2, menuStartTstatState4, menuStartTstatState, NULL_MENU,
@@ -265,7 +266,7 @@ MENU_ITEM(menuStartTstatState4, menuStartTstatState1, menuStartTstatState3, menu
 /*MENU_ITEM(menuStartDessipatorOn, menuStartDessipatorState, menuStartDessipatorState, menuStartDessipator, NULL_MENU,
 		0, 0, "Start dessipatoron/off...");*/
 MENU_ITEM(menuDessipatorState, NULL_MENU, NULL_MENU, menuStatusDessipator, NULL_MENU,
-		0, 0, "Sorry, dessipator status not release");
+		BatteryTester_Menu_selectDessipatorState, 0, "");
 /*SUBMENU Reset Alarm... LEVEL 3*/
 MENU_ITEM(menuAlarmState, menuAlarmReset, menuAlarmReset, menuResetAlarm, NULL_MENU,
 		0, 0, "Hardware alarm  status...");
@@ -1534,13 +1535,13 @@ void BatteryTester_Menu_enterSetCh2BoostKi(void){
 
 void BatteryTester_Menu_selectSetCh2BoostKd(void){
 	sParamSets_t par = {
-					.decimalOrder = 6,
-					.integerOrder = 3,
-					.minValue = -999.999999,
-					.maxValue = 999.999999,
-					.sign = 1,
-					.value = BatteryTester_RegulatorCellTwo_getBoostRegulatorSettings().Kd
-				};
+		.decimalOrder = 6,
+		.integerOrder = 3,
+		.minValue = -999.999999,
+		.maxValue = 999.999999,
+		.sign = 1,
+		.value = BatteryTester_RegulatorCellTwo_getBoostRegulatorSettings().Kd
+	};
 	BatteryTester_Menu_selectSetNewValue("Ch2 boost Kd, r", par);
 }
 
@@ -1553,13 +1554,13 @@ void BatteryTester_Menu_enterSetCh2BoostKd(void){
 
 void BatteryTester_Menu_selectSetCh2BoostSp(void){
 	sParamSets_t par = {
-				.decimalOrder = 3,
-				.integerOrder = 2,
-				.minValue = BatteryTester_RegulatorCellTwo_getBoostRegulatorSettings().minLimit,
-				.maxValue = BatteryTester_RegulatorCellTwo_getBoostRegulatorSettings().maxLimit,
-				.sign = 0,
-				.value = BatteryTester_RegulatorCellTwo_getBoostRegulatorSettings().setpoint
-			};
+		.decimalOrder = 3,
+		.integerOrder = 2,
+		.minValue = BatteryTester_RegulatorCellTwo_getBoostRegulatorSettings().minLimit,
+		.maxValue = BatteryTester_RegulatorCellTwo_getBoostRegulatorSettings().maxLimit,
+		.sign = 0,
+		.value = BatteryTester_RegulatorCellTwo_getBoostRegulatorSettings().setpoint
+	};
 	BatteryTester_Menu_selectSetNewValue("Ch2 boost Sp, A", par);
 }
 
@@ -1572,13 +1573,13 @@ void BatteryTester_Menu_enterSetCh2BoostSp(void){
 
 void BatteryTester_Menu_selectSetCh2BoostMinLim(void){
 	sParamSets_t par = {
-				.decimalOrder = 3,
-				.integerOrder = 2,
-				.minValue = 0,
-				.maxValue = BatteryTester_RegulatorCellTwo_getBoostRegulatorSettings().maxLimit,
-				.sign = 0,
-				.value = BatteryTester_RegulatorCellTwo_getBoostRegulatorSettings().minLimit
-			};
+		.decimalOrder = 3,
+		.integerOrder = 2,
+		.minValue = 0,
+		.maxValue = BatteryTester_RegulatorCellTwo_getBoostRegulatorSettings().maxLimit,
+		.sign = 0,
+		.value = BatteryTester_RegulatorCellTwo_getBoostRegulatorSettings().minLimit
+	};
 	BatteryTester_Menu_selectSetNewValue("Ch2 bst Lmin, A", par);
 }
 
@@ -1591,13 +1592,13 @@ void BatteryTester_Menu_enterSetCh2BoostMinLim(void){
 
 void BatteryTester_Menu_selectSetCh2BoostMaxLim(void){
 	sParamSets_t par = {
-				.decimalOrder = 3,
-				.integerOrder = 2,
-				.minValue = BatteryTester_RegulatorCellTwo_getBoostRegulatorSettings().minLimit,
-				.maxValue = 99.999,
-				.sign = 0,
-				.value = BatteryTester_RegulatorCellTwo_getBoostRegulatorSettings().maxLimit
-			};
+		.decimalOrder = 3,
+		.integerOrder = 2,
+		.minValue = BatteryTester_RegulatorCellTwo_getBoostRegulatorSettings().minLimit,
+		.maxValue = 99.999,
+		.sign = 0,
+		.value = BatteryTester_RegulatorCellTwo_getBoostRegulatorSettings().maxLimit
+	};
 	BatteryTester_Menu_selectSetNewValue("Ch2 bst Lmax, A", par);
 }
 
@@ -1610,13 +1611,13 @@ void BatteryTester_Menu_enterSetCh2BoostMaxLim(void){
 
 void BatteryTester_Menu_selectSetCh2BoostMinDutyCycle(void){
 	sParamSets_t par = {
-				.decimalOrder = 2,
-				.integerOrder = 3,
-				.minValue = 0,
-				.maxValue = BattetyTester_RegulatorCellTwo_getBoostPWMSettings().maxDutyCycle,
-				.sign = 0,
-				.value = BattetyTester_RegulatorCellTwo_getBoostPWMSettings().minDutyCycle
-			};
+		.decimalOrder = 2,
+		.integerOrder = 3,
+		.minValue = 0,
+		.maxValue = BattetyTester_RegulatorCellTwo_getBoostPWMSettings().maxDutyCycle,
+		.sign = 0,
+		.value = BattetyTester_RegulatorCellTwo_getBoostPWMSettings().minDutyCycle
+	};
 	BatteryTester_Menu_selectSetNewValue("Ch2 bst Dmin, %", par);
 }
 
@@ -1629,13 +1630,13 @@ void BatteryTester_Menu_enterSetCh2BoostMinDutyCycle(void){
 
 void BatteryTester_Menu_selectSetCh2BoostMaxDutyCycle(void){
 	sParamSets_t par = {
-				.decimalOrder = 2,
-				.integerOrder = 3,
-				.minValue = BattetyTester_RegulatorCellTwo_getBoostPWMSettings().minDutyCycle,
-				.maxValue = 100,
-				.sign = 0,
-				.value = BattetyTester_RegulatorCellTwo_getBoostPWMSettings().maxDutyCycle
-			};
+		.decimalOrder = 2,
+		.integerOrder = 3,
+		.minValue = BattetyTester_RegulatorCellTwo_getBoostPWMSettings().minDutyCycle,
+		.maxValue = 100,
+		.sign = 0,
+		.value = BattetyTester_RegulatorCellTwo_getBoostPWMSettings().maxDutyCycle
+	};
 	BatteryTester_Menu_selectSetNewValue("Ch2 bst Dmax, %", par);
 }
 
@@ -1648,13 +1649,13 @@ void BatteryTester_Menu_enterSetCh2BoostMaxDutyCycle(void){
 
 void BatteryTester_Menu_selectSetCh2BuckKp(void){
 	sParamSets_t par = {
-				.decimalOrder = 6,
-				.integerOrder = 3,
-				.minValue = -999.999999,
-				.maxValue = 999.999999,
-				.sign = 1,
-				.value = BatteryTester_RegulatorCellTwo_getBuckRegulatorSettings().Kp
-			};
+		.decimalOrder = 6,
+		.integerOrder = 3,
+		.minValue = -999.999999,
+		.maxValue = 999.999999,
+		.sign = 1,
+		.value = BatteryTester_RegulatorCellTwo_getBuckRegulatorSettings().Kp
+	};
 	BatteryTester_Menu_selectSetNewValue("Ch2 buck Kp, r", par);
 }
 
@@ -1667,13 +1668,13 @@ void BatteryTester_Menu_enterSetCh2BuckKp(void){
 
 void BatteryTester_Menu_selectSetCh2BuckKi(void){
 	sParamSets_t par = {
-					.decimalOrder = 6,
-					.integerOrder = 3,
-					.minValue = -999.999999,
-					.maxValue = 999.999999,
-					.sign = 1,
-					.value = BatteryTester_RegulatorCellTwo_getBuckRegulatorSettings().Ki
-				};
+		.decimalOrder = 6,
+		.integerOrder = 3,
+		.minValue = -999.999999,
+		.maxValue = 999.999999,
+		.sign = 1,
+		.value = BatteryTester_RegulatorCellTwo_getBuckRegulatorSettings().Ki
+	};
 	BatteryTester_Menu_selectSetNewValue("Ch2 buck Ki, r", par);
 }
 
@@ -1686,13 +1687,13 @@ void BatteryTester_Menu_enterSetCh2BuckKi(void){
 
 void BatteryTester_Menu_selectSetCh2BuckKd(void){
 	sParamSets_t par = {
-					.decimalOrder = 6,
-					.integerOrder = 3,
-					.minValue = -999.999999,
-					.maxValue = 999.999999,
-					.sign = 1,
-					.value = BatteryTester_RegulatorCellTwo_getBuckRegulatorSettings().Kd
-				};
+		.decimalOrder = 6,
+		.integerOrder = 3,
+		.minValue = -999.999999,
+		.maxValue = 999.999999,
+		.sign = 1,
+		.value = BatteryTester_RegulatorCellTwo_getBuckRegulatorSettings().Kd
+	};
 	BatteryTester_Menu_selectSetNewValue("Ch2 buck Kd, r", par);
 }
 
@@ -1705,13 +1706,13 @@ void BatteryTester_Menu_enterSetCh2BuckKd(void){
 
 void BatteryTester_Menu_selectSetCh2BuckSp(void){
 	sParamSets_t par = {
-				.decimalOrder = 3,
-				.integerOrder = 2,
-				.minValue = BatteryTester_RegulatorCellTwo_getBuckRegulatorSettings().minLimit,
-				.maxValue = BatteryTester_RegulatorCellTwo_getBuckRegulatorSettings().maxLimit,
-				.sign = 1,
-				.value = BatteryTester_RegulatorCellTwo_getBuckRegulatorSettings().setpoint
-			};
+		.decimalOrder = 3,
+		.integerOrder = 2,
+		.minValue = BatteryTester_RegulatorCellTwo_getBuckRegulatorSettings().minLimit,
+		.maxValue = BatteryTester_RegulatorCellTwo_getBuckRegulatorSettings().maxLimit,
+		.sign = 1,
+		.value = BatteryTester_RegulatorCellTwo_getBuckRegulatorSettings().setpoint
+	};
 	BatteryTester_Menu_selectSetNewValue("Ch2 buck Sp, A", par);
 }
 
@@ -1724,13 +1725,13 @@ void BatteryTester_Menu_enterSetCh2BuckSp(void){
 
 void BatteryTester_Menu_selectSetCh2BuckMinLim(void){
 	sParamSets_t par = {
-				.decimalOrder = 3,
-				.integerOrder = 2,
-				.minValue = -99.999,
-				.maxValue = BatteryTester_RegulatorCellTwo_getBuckRegulatorSettings().maxLimit,
-				.sign = 1,
-				.value = BatteryTester_RegulatorCellTwo_getBuckRegulatorSettings().minLimit
-			};
+		.decimalOrder = 3,
+		.integerOrder = 2,
+		.minValue = -99.999,
+		.maxValue = BatteryTester_RegulatorCellTwo_getBuckRegulatorSettings().maxLimit,
+		.sign = 1,
+		.value = BatteryTester_RegulatorCellTwo_getBuckRegulatorSettings().minLimit
+	};
 	BatteryTester_Menu_selectSetNewValue("Ch2 buck Lmin, A", par);
 }
 
@@ -1743,13 +1744,13 @@ void BatteryTester_Menu_enterSetCh2BuckMinLim(void){
 
 void BatteryTester_Menu_selectSetCh2BuckMaxLim(void){
 	sParamSets_t par = {
-				.decimalOrder = 3,
-				.integerOrder = 2,
-				.minValue = BatteryTester_RegulatorCellTwo_getBuckRegulatorSettings().minLimit,
-				.maxValue = -0,
-				.sign = 1,
-				.value = BatteryTester_RegulatorCellTwo_getBuckRegulatorSettings().maxLimit
-			};
+		.decimalOrder = 3,
+		.integerOrder = 2,
+		.minValue = BatteryTester_RegulatorCellTwo_getBuckRegulatorSettings().minLimit,
+		.maxValue = -0,
+		.sign = 1,
+		.value = BatteryTester_RegulatorCellTwo_getBuckRegulatorSettings().maxLimit
+	};
 	BatteryTester_Menu_selectSetNewValue("Ch2 buck Lmax, A", par);
 }
 
@@ -1762,13 +1763,13 @@ void BatteryTester_Menu_enterSetCh2BuckMaxLim(void){
 
 void BatteryTester_Menu_selectSetCh2BuckMinDutyCycle(void){
 	sParamSets_t par = {
-					.decimalOrder = 2,
-					.integerOrder = 3,
-					.minValue = 0,
-					.maxValue = BattetyTester_RegulatorCellTwo_getBuckPWMSettings().maxDutyCycle,
-					.sign = 0,
-					.value = BattetyTester_RegulatorCellTwo_getBuckPWMSettings().minDutyCycle
-				};
+		.decimalOrder = 2,
+		.integerOrder = 3,
+		.minValue = 0,
+		.maxValue = BattetyTester_RegulatorCellTwo_getBuckPWMSettings().maxDutyCycle,
+		.sign = 0,
+		.value = BattetyTester_RegulatorCellTwo_getBuckPWMSettings().minDutyCycle
+	};
 	BatteryTester_Menu_selectSetNewValue("Ch2 buck Dmin, %", par);
 }
 
@@ -1781,13 +1782,13 @@ void BatteryTester_Menu_enterSetCh2BuckMinDutyCycle(void){
 
 void BatteryTester_Menu_selectSetCh2BuckMaxDutyCycle(void){
 	sParamSets_t par = {
-					.decimalOrder = 2,
-					.integerOrder = 3,
-					.minValue = BattetyTester_RegulatorCellTwo_getBuckPWMSettings().minDutyCycle,
-					.maxValue = 100,
-					.sign = 0,
-					.value = BattetyTester_RegulatorCellTwo_getBuckPWMSettings().maxDutyCycle
-				};
+		.decimalOrder = 2,
+		.integerOrder = 3,
+		.minValue = BattetyTester_RegulatorCellTwo_getBuckPWMSettings().minDutyCycle,
+		.maxValue = 100,
+		.sign = 0,
+		.value = BattetyTester_RegulatorCellTwo_getBuckPWMSettings().maxDutyCycle
+	};
 	BatteryTester_Menu_selectSetNewValue("Ch2 buck Dmax, %", par);
 }
 
@@ -1926,12 +1927,12 @@ void BatteryTester_Menu_enterToggleRunCh2(void){
 
 void BatteryTester_Menu_selectSetThermostatSetpoint(void){
 	sParamSets_t par = {
-			.decimalOrder = 1,
-			.integerOrder = 3,
-			.minValue = BatteryTester_ClimatRegulator_getRegulatorSettings().minLimit,
-			.maxValue = BatteryTester_ClimatRegulator_getRegulatorSettings().maxLimit,
-			.sign = 1,
-			.value = BatteryTester_ClimatRegulator_getSetpoint()
+		.decimalOrder = 1,
+		.integerOrder = 3,
+		.minValue = BatteryTester_ClimatRegulator_getRegulatorSettings().minLimit,
+		.maxValue = BatteryTester_ClimatRegulator_getRegulatorSettings().maxLimit,
+		.sign = 1,
+		.value = BatteryTester_ClimatRegulator_getSetpoint()
 	};
 	BatteryTester_Menu_selectSetNewValue("Thermost. Sp, \xdf\x43", par);
 }
@@ -1964,16 +1965,32 @@ void BatteryTester_Menu_selectState1Ch1(void){
 	if (MenuWriteFunc){
 		char buf[33];
 		if(BatteryTester_RegulatorCellOne_getRunStatus()){
-			snprintf(buf, 33, "mode: on        volt: %.2f, V",
+			snprintf(buf, 33, "mode: on        volt: %4.2f, V",
 					BatteryTester_ConversionData_getPhisicValues().ch1_VoltageInV);
 			MenuWriteFunc(buf);
 		}
 		else{
-			snprintf(buf, 33, "mode: off       volt: %.2f, V",
+			snprintf(buf, 33, "mode: off       volt: %4.2f, V",
 					BatteryTester_ConversionData_getPhisicValues().ch1_VoltageInV);
 			MenuWriteFunc(buf);
 		}
 		BatteryTester_State_moveFromToState(MENU_NAVIGATE, WORK_STATUS);
+		BatteryTester_WorkStatus_setUpdateCallback(BatteryTester_Menu_updateState1Ch1);
+	}
+}
+
+void BatteryTester_Menu_updateState1Ch1(void){
+	if (MenuWriteFunc){
+		char buf[5];
+		if(BatteryTester_RegulatorCellOne_getRunStatus()){
+			BatteryTester_WC1602A_writeInPos(0, 6, "on ", 3);
+		}
+		else{
+			BatteryTester_WC1602A_writeInPos(0, 6, "off", 3);
+		}
+		snprintf(buf, 5, "%4.2f",
+					BatteryTester_ConversionData_getPhisicValues().ch1_VoltageInV);
+		BatteryTester_WC1602A_writeInPos(1, 6, buf, 4);
 	}
 }
 
@@ -1981,21 +1998,34 @@ void BatteryTester_Menu_selectState2Ch1(void){
 	if (MenuWriteFunc){
 		char buf1[33];
 		char buf2[17];
-		int len = snprintf(buf1, 17, "sp: %.2f, A",
+		int len = snprintf(buf1, 17, "sp: %+06.2f, A",
 				BatteryTester_RegulatorCellOne_getSetpoint());
 		memset(buf1 + len, ' ', 16 - len);
-		len = snprintf(buf2, 17, "fb: %.2f, A",
+		len = snprintf(buf2, 17, "fb: %+06.2f, A",
 					BatteryTester_ConversionData_getPhisicValues().ch1_CurrentInA);
 		memcpy(&buf1[16], buf2, len + 1);
 		MenuWriteFunc(buf1);
 		//BatteryTester_State_moveFromToState(MENU_NAVIGATE, WORK_STATUS);
+		BatteryTester_WorkStatus_setUpdateCallback(BatteryTester_Menu_updateState2Ch1);
+	}
+}
+
+void BatteryTester_Menu_updateState2Ch1(void){
+	if (MenuWriteFunc){
+		char buf[7];
+		snprintf(buf, 7, "%+06.2f",
+					BatteryTester_RegulatorCellOne_getSetpoint());
+		BatteryTester_WC1602A_writeInPos(0, 4, buf, 6);
+		snprintf(buf, 7, "%+06.2f",
+					BatteryTester_ConversionData_getPhisicValues().ch1_CurrentInA);
+		BatteryTester_WC1602A_writeInPos(1, 4, buf, 6);
 	}
 }
 
 void BatteryTester_Menu_selectState3Ch1(void){
 	if (MenuWriteFunc){
 		char buf1[33];
-		int len = snprintf(buf1, 17, "bus: %.2f, V",
+		int len = snprintf(buf1, 17, "bus: %05.2f, V",
 				BatteryTester_ConversionData_getPhisicValues().busVoltageInV);
 		memset(buf1 + len, ' ', 16 - len);
 		if(BatteryTester_ConverterFault_isConverterFault()){
@@ -2006,24 +2036,57 @@ void BatteryTester_Menu_selectState3Ch1(void){
 		}
 		MenuWriteFunc(buf1);
 		//BatteryTester_State_moveFromToState(MENU_NAVIGATE, WORK_STATUS);
+		BatteryTester_WorkStatus_setUpdateCallback(BatteryTester_Menu_updateState3Ch1);
 	}
 
+}
+
+void BatteryTester_Menu_updateState3Ch1(void){
+	if (MenuWriteFunc){
+		char buf[7];
+		snprintf(buf, 7, "%05.2f",
+				BatteryTester_ConversionData_getPhisicValues().busVoltageInV);
+		BatteryTester_WC1602A_writeInPos(0, 5, buf, 5);
+		if(BatteryTester_ConverterFault_isConverterFault()){
+			BatteryTester_WC1602A_writeInPos(1, 7, "yes", 3);
+		}
+		else{
+			BatteryTester_WC1602A_writeInPos(1, 7, "no ", 3);
+		}
+
+	}
 }
 
 void BatteryTester_Menu_selectState1Ch2(void){
 	if (MenuWriteFunc){
 		char buf[33];
 		if(BatteryTester_RegulatorCellTwo_getRunStatus()){
-			snprintf(buf, 33, "mode: on        volt: %.2f, V",
+			snprintf(buf, 33, "mode: on        volt: %4.2f, V",
 					BatteryTester_ConversionData_getPhisicValues().ch2_VoltageInV);
 			MenuWriteFunc(buf);
 		}
 		else{
-			snprintf(buf, 33, "mode: off       volt: %.2f, V",
+			snprintf(buf, 33, "mode: off       volt: %4.2f, V",
 					BatteryTester_ConversionData_getPhisicValues().ch2_VoltageInV);
 			MenuWriteFunc(buf);
 		}
 		BatteryTester_State_moveFromToState(MENU_NAVIGATE, WORK_STATUS);
+		BatteryTester_WorkStatus_setUpdateCallback(BatteryTester_Menu_updateState1Ch2);
+	}
+}
+
+void BatteryTester_Menu_updateState1Ch2(void){
+	if (MenuWriteFunc){
+		char buf[5];
+		if(BatteryTester_RegulatorCellTwo_getRunStatus()){
+			BatteryTester_WC1602A_writeInPos(0, 6, "on ", 3);
+		}
+		else{
+			BatteryTester_WC1602A_writeInPos(0, 6, "off", 3);
+		}
+		snprintf(buf, 5, "%4.2f",
+					BatteryTester_ConversionData_getPhisicValues().ch2_VoltageInV);
+		BatteryTester_WC1602A_writeInPos(1, 6, buf, 4);
 	}
 }
 
@@ -2031,14 +2094,27 @@ void BatteryTester_Menu_selectState2Ch2(void){
 	if (MenuWriteFunc){
 		char buf1[33];
 		char buf2[17];
-		int len = snprintf(buf1, 17, "sp: %.2f, A",
+		int len = snprintf(buf1, 17, "sp: %+06.2f, A",
 				BatteryTester_RegulatorCellTwo_getSetpoint());
 		memset(buf1 + len, ' ', 16 - len);
-		len = snprintf(buf2, 17, "fb: %.2f, A",
+		len = snprintf(buf2, 17, "fb: %+06.2f, A",
 					BatteryTester_ConversionData_getPhisicValues().ch2_CurrentInA);
 		memcpy(&buf1[16], buf2, len + 1);
 		MenuWriteFunc(buf1);
 		//BatteryTester_State_moveFromToState(MENU_NAVIGATE, WORK_STATUS);
+		BatteryTester_WorkStatus_setUpdateCallback(BatteryTester_Menu_updateState2Ch2);
+	}
+}
+
+void BatteryTester_Menu_updateState2Ch2(void){
+	if (MenuWriteFunc){
+		char buf[7];
+		snprintf(buf, 7, "%+06.2f",
+				BatteryTester_RegulatorCellTwo_getSetpoint());
+		BatteryTester_WC1602A_writeInPos(0, 4, buf, 6);
+		snprintf(buf, 7, "%+06.2f",
+					BatteryTester_ConversionData_getPhisicValues().ch2_CurrentInA);
+		BatteryTester_WC1602A_writeInPos(1, 4, buf, 6);
 	}
 }
 
@@ -2046,16 +2122,32 @@ void BatteryTester_Menu_selectState1Tstat(void){
 	if (MenuWriteFunc){
 		char buf[33];
 		if(BatteryTester_ClimatRegulator_getRunStatus()){
-			snprintf(buf, 33, "mode: on        Tavg: %.2f, \xdf\x43",
+			snprintf(buf, 33, "mode: on        Tavg: %+06.2f, \xdf\x43",
 					BatteryTester_ConversionData_getPhisicValues().AverageTemps);
 			MenuWriteFunc(buf);
 		}
 		else{
-			snprintf(buf, 33, "mode: off       Tavg: %.2f, \xdf\x43",
+			snprintf(buf, 33, "mode: off       Tavg: %+06.2f, \xdf\x43",
 					BatteryTester_ConversionData_getPhisicValues().AverageTemps);
 			MenuWriteFunc(buf);
 		}
 		BatteryTester_State_moveFromToState(MENU_NAVIGATE, WORK_STATUS);
+		BatteryTester_WorkStatus_setUpdateCallback(BatteryTester_Menu_updateState1Tstat);
+	}
+}
+
+void BatteryTester_Menu_updateState1Tstat(void){
+	if (MenuWriteFunc){
+		char buf[7];
+		if(BatteryTester_ClimatRegulator_getRunStatus()){
+			BatteryTester_WC1602A_writeInPos(0, 6, "on ", 3);
+		}
+		else{
+			BatteryTester_WC1602A_writeInPos(0, 6, "off", 3);
+		}
+		snprintf(buf, 7, "%+06.2f",
+					BatteryTester_ConversionData_getPhisicValues().AverageTemps);
+		BatteryTester_WC1602A_writeInPos(1, 6, buf, 6);
 	}
 }
 
@@ -2063,14 +2155,27 @@ void BatteryTester_Menu_selectState2Tstat(void){
 	if (MenuWriteFunc){
 		char buf1[33];
 		char buf2[17];
-		int len = snprintf(buf1, 17, "sp: %.2f, \xdf\x43",
+		int len = snprintf(buf1, 17, "sp: %+06.2f, \xdf\x43",
 				BatteryTester_ClimatRegulator_getSetpoint());
 		memset(buf1 + len, ' ', 16 - len);
-		len = snprintf(buf2, 17, "fb: %.2f, \xdf\x43",
+		len = snprintf(buf2, 17, "fb: %+06.2f, \xdf\x43",
 					BatteryTester_ConversionData_getPhisicValues().AverageTemps);
 		memcpy(&buf1[16], buf2, len + 1);
 		MenuWriteFunc(buf1);
 		//BatteryTester_State_moveFromToState(MENU_NAVIGATE, WORK_STATUS);
+		BatteryTester_WorkStatus_setUpdateCallback(BatteryTester_Menu_updateState2Tstat);
+	}
+}
+
+void BatteryTester_Menu_updateState2Tstat(void){
+	if (MenuWriteFunc){
+		char buf[7];
+		snprintf(buf, 7, "%+06.2f",
+				BatteryTester_ClimatRegulator_getSetpoint());
+		BatteryTester_WC1602A_writeInPos(0, 4, buf, 6);
+		snprintf(buf, 7, "%+06.2f",
+					BatteryTester_ConversionData_getPhisicValues().AverageTemps);
+		BatteryTester_WC1602A_writeInPos(1, 4, buf, 6);
 	}
 }
 
@@ -2078,14 +2183,27 @@ void BatteryTester_Menu_selectState3Tstat(void){
 	if (MenuWriteFunc){
 		char buf1[33];
 		char buf2[17];
-		int len = snprintf(buf1, 17, "T1: %.2f, \xdf\x43",
+		int len = snprintf(buf1, 17, "T1: %+06.2f, \xdf\x43",
 				BatteryTester_ConversionData_getPhisicValues().temp1IndegC);
 		memset(buf1 + len, ' ', 16 - len);
-		len = snprintf(buf2, 17, "T2: %.2f, \xdf\x43",
+		len = snprintf(buf2, 17, "T2: %+06.2f, \xdf\x43",
 					BatteryTester_ConversionData_getPhisicValues().temp2IndegC);
 		memcpy(&buf1[16], buf2, len + 1);
 		MenuWriteFunc(buf1);
 		//BatteryTester_State_moveFromToState(MENU_NAVIGATE, WORK_STATUS);
+		BatteryTester_WorkStatus_setUpdateCallback(BatteryTester_Menu_updateState3Tstat);
+	}
+}
+
+void BatteryTester_Menu_updateState3Tstat(void){
+	if (MenuWriteFunc){
+		char buf[7];
+		snprintf(buf, 7, "%+06.2f",
+				BatteryTester_ConversionData_getPhisicValues().temp1IndegC);
+		BatteryTester_WC1602A_writeInPos(0, 4, buf, 6);
+		snprintf(buf, 7, "%+06.2f",
+					BatteryTester_ConversionData_getPhisicValues().temp2IndegC);
+		BatteryTester_WC1602A_writeInPos(1, 4, buf, 6);
 	}
 }
 
@@ -2093,14 +2211,27 @@ void BatteryTester_Menu_selectState4Tstat(void){
 	if (MenuWriteFunc){
 		char buf1[33];
 		char buf2[17];
-		int len = snprintf(buf1, 17, "T3: %.2f, \xdf\x43",
+		int len = snprintf(buf1, 17, "T3: %+06.2f, \xdf\x43",
 				BatteryTester_ConversionData_getPhisicValues().temp3IndegC);
 		memset(buf1 + len, ' ', 16 - len);
-		len = snprintf(buf2, 17, "T4: %.2f, \xdf\x43",
+		len = snprintf(buf2, 17, "T4: %+06.2f, \xdf\x43",
 					BatteryTester_ConversionData_getPhisicValues().temp4IndegC);
 		memcpy(&buf1[16], buf2, len + 1);
 		MenuWriteFunc(buf1);
 		//BatteryTester_State_moveFromToState(MENU_NAVIGATE, WORK_STATUS);
+		BatteryTester_WorkStatus_setUpdateCallback(BatteryTester_Menu_updateState4Tstat);
+	}
+}
+
+void BatteryTester_Menu_updateState4Tstat(void){
+	if (MenuWriteFunc){
+		char buf[7];
+		snprintf(buf, 7, "%+06.2f",
+				BatteryTester_ConversionData_getPhisicValues().temp3IndegC);
+		BatteryTester_WC1602A_writeInPos(0, 4, buf, 6);
+		snprintf(buf, 7, "%+06.2f",
+					BatteryTester_ConversionData_getPhisicValues().temp4IndegC);
+		BatteryTester_WC1602A_writeInPos(1, 4, buf, 6);
 	}
 }
 
@@ -2108,14 +2239,27 @@ void BatteryTester_Menu_selectMeasuringState1(void){
 	if (MenuWriteFunc){
 		char buf1[33];
 		char buf2[17];
-		int len = snprintf(buf1, 17, "Ich1: %.2f, A",
+		int len = snprintf(buf1, 17, "Ich1: %+06.2f, A",
 				BatteryTester_ConversionData_getPhisicValues().ch1_CurrentInA);
 		memset(buf1 + len, ' ', 16 - len);
-		len = snprintf(buf2, 17, "Vch1: %.2f, V",
+		len = snprintf(buf2, 17, "Vch1: %4.2f, V",
 					BatteryTester_ConversionData_getPhisicValues().ch1_VoltageInV);
 		memcpy(&buf1[16], buf2, len + 1);
 		MenuWriteFunc(buf1);
 		BatteryTester_State_moveFromToState(MENU_NAVIGATE, WORK_STATUS);
+		BatteryTester_WorkStatus_setUpdateCallback(BatteryTester_Menu_updateMeasuringState1);
+	}
+}
+
+void BatteryTester_Menu_updateMeasuringState1(void){
+	if (MenuWriteFunc){
+		char buf[7];
+		snprintf(buf, 7, "%+06.2f",
+				BatteryTester_ConversionData_getPhisicValues().ch1_CurrentInA);
+		BatteryTester_WC1602A_writeInPos(0, 6, buf, 6);
+		snprintf(buf, 7, "%4.2f",
+					BatteryTester_ConversionData_getPhisicValues().ch1_VoltageInV);
+		BatteryTester_WC1602A_writeInPos(1, 6, buf, 4);
 	}
 }
 
@@ -2123,14 +2267,27 @@ void BatteryTester_Menu_selectMeasuringState2(void){
 	if (MenuWriteFunc){
 		char buf1[33];
 		char buf2[17];
-		int len = snprintf(buf1, 17, "Ich2: %.2f, A",
+		int len = snprintf(buf1, 17, "Ich2: %+06.2f, A",
 				BatteryTester_ConversionData_getPhisicValues().ch2_CurrentInA);
 		memset(buf1 + len, ' ', 16 - len);
-		len = snprintf(buf2, 17, "Vch2: %.2f, V",
+		len = snprintf(buf2, 17, "Vch2: %4.2f, V",
 					BatteryTester_ConversionData_getPhisicValues().ch2_VoltageInV);
 		memcpy(&buf1[16], buf2, len + 1);
 		MenuWriteFunc(buf1);
 		//BatteryTester_State_moveFromToState(MENU_NAVIGATE, WORK_STATUS);
+		BatteryTester_WorkStatus_setUpdateCallback(BatteryTester_Menu_updateMeasuringState2);
+	}
+}
+
+void BatteryTester_Menu_updateMeasuringState2(void){
+	if (MenuWriteFunc){
+		char buf[7];
+		snprintf(buf, 7, "%+06.2f",
+				BatteryTester_ConversionData_getPhisicValues().ch2_CurrentInA);
+		BatteryTester_WC1602A_writeInPos(0, 6, buf, 6);
+		snprintf(buf, 7, "%4.2f",
+					BatteryTester_ConversionData_getPhisicValues().ch2_VoltageInV);
+		BatteryTester_WC1602A_writeInPos(1, 6, buf, 4);
 	}
 }
 
@@ -2138,14 +2295,27 @@ void BatteryTester_Menu_selectMeasuringState3(void){
 	if (MenuWriteFunc){
 		char buf1[33];
 		char buf2[17];
-		int len = snprintf(buf1, 17, "Vbus: %.2f, V",
+		int len = snprintf(buf1, 17, "Vbus: %5.2f, V",
 				BatteryTester_ConversionData_getPhisicValues().busVoltageInV);
 		memset(buf1 + len, ' ', 16 - len);
-		len = snprintf(buf2, 17, "Tavg: %.2f, \xdf\x43",
+		len = snprintf(buf2, 17, "Tavg: %+06.2f, \xdf\x43",
 					BatteryTester_ConversionData_getPhisicValues().AverageTemps);
 		memcpy(&buf1[16], buf2, len + 1);
 		MenuWriteFunc(buf1);
 		//BatteryTester_State_moveFromToState(MENU_NAVIGATE, WORK_STATUS);
+		BatteryTester_WorkStatus_setUpdateCallback(BatteryTester_Menu_updateMeasuringState3);
+	}
+}
+
+void BatteryTester_Menu_updateMeasuringState3(void){
+	if (MenuWriteFunc){
+		char buf[7];
+		snprintf(buf, 7, "%5.2f",
+				BatteryTester_ConversionData_getPhisicValues().busVoltageInV);
+		BatteryTester_WC1602A_writeInPos(0, 6, buf, 5);
+		snprintf(buf, 7, "%+06.2f",
+					BatteryTester_ConversionData_getPhisicValues().AverageTemps);
+		BatteryTester_WC1602A_writeInPos(1, 6, buf, 6);
 	}
 }
 
@@ -2153,14 +2323,27 @@ void BatteryTester_Menu_selectMeasuringState4(void){
 	if (MenuWriteFunc){
 		char buf1[33];
 		char buf2[17];
-		int len = snprintf(buf1, 17, "T1: %.2f, \xdf\x43",
+		int len = snprintf(buf1, 17, "T1: %+06.2f, \xdf\x43",
 				BatteryTester_ConversionData_getPhisicValues().temp1IndegC);
 		memset(buf1 + len, ' ', 16 - len);
-		len = snprintf(buf2, 17, "T2: %.2f, \xdf\x43",
+		len = snprintf(buf2, 17, "T2: %+06.2f, \xdf\x43",
 					BatteryTester_ConversionData_getPhisicValues().temp2IndegC);
 		memcpy(&buf1[16], buf2, len + 1);
 		MenuWriteFunc(buf1);
 		//BatteryTester_State_moveFromToState(MENU_NAVIGATE, WORK_STATUS);
+		BatteryTester_WorkStatus_setUpdateCallback(BatteryTester_Menu_updateMeasuringState4);
+	}
+}
+
+void BatteryTester_Menu_updateMeasuringState4(void){
+	if (MenuWriteFunc){
+		char buf[7];
+		snprintf(buf, 7, "%+06.2f",
+				BatteryTester_ConversionData_getPhisicValues().temp1IndegC);
+		BatteryTester_WC1602A_writeInPos(0, 4, buf, 6);
+		snprintf(buf, 7, "%+06.2f",
+					BatteryTester_ConversionData_getPhisicValues().temp2IndegC);
+		BatteryTester_WC1602A_writeInPos(1, 4, buf, 6);
 	}
 }
 
@@ -2168,14 +2351,59 @@ void BatteryTester_Menu_selectMeasuringState5(void){
 	if (MenuWriteFunc){
 		char buf1[33];
 		char buf2[17];
-		int len = snprintf(buf1, 17, "T3: %.2f, \xdf\x43",
+		int len = snprintf(buf1, 17, "T3: %+06.2f, \xdf\x43",
 				BatteryTester_ConversionData_getPhisicValues().temp3IndegC);
 		memset(buf1 + len, ' ', 16 - len);
-		len = snprintf(buf2, 17, "T4: %.2f, \xdf\x43",
+		len = snprintf(buf2, 17, "T4: %+06.2f, \xdf\x43",
 					BatteryTester_ConversionData_getPhisicValues().temp4IndegC);
 		memcpy(&buf1[16], buf2, len + 1);
 		MenuWriteFunc(buf1);
 		//BatteryTester_State_moveFromToState(MENU_NAVIGATE, WORK_STATUS);
+		BatteryTester_WorkStatus_setUpdateCallback(BatteryTester_Menu_updateMeasuringState5);
+	}
+}
+
+void BatteryTester_Menu_updateMeasuringState5(void){
+	if (MenuWriteFunc){
+		char buf[7];
+		snprintf(buf, 7, "%+06.2f",
+				BatteryTester_ConversionData_getPhisicValues().temp3IndegC);
+		BatteryTester_WC1602A_writeInPos(0, 4, buf, 6);
+		snprintf(buf, 7, "%+06.2f",
+					BatteryTester_ConversionData_getPhisicValues().temp4IndegC);
+		BatteryTester_WC1602A_writeInPos(1, 4, buf, 6);
+	}
+}
+
+void BatteryTester_Menu_selectDessipatorState(void){
+	if (MenuWriteFunc){
+		char buf[33];
+		if(BatteryTester_DessipatorControl_getDessipatorStatus()){
+			snprintf(buf, 33, "mode: on        Vbus: %05.2f, V",
+					BatteryTester_ConversionData_getPhisicValues().busVoltageInV);
+		}
+		else{
+			snprintf(buf, 33, "mode: off       Vbus: %05.2f, V",
+					BatteryTester_ConversionData_getPhisicValues().busVoltageInV);
+		}
+		MenuWriteFunc(buf);
+		BatteryTester_State_moveFromToState(MENU_NAVIGATE, WORK_STATUS);
+		BatteryTester_WorkStatus_setUpdateCallback(BatteryTester_Menu_updateDessipatorState);
+	}
+}
+
+void BatteryTester_Menu_updateDessipatorState(void){
+	if (MenuWriteFunc){
+		char buf[7];
+		if(BatteryTester_DessipatorControl_getDessipatorStatus()){
+			BatteryTester_WC1602A_writeInPos(0, 6, "on ", 3);
+		}
+		else{
+			BatteryTester_WC1602A_writeInPos(0, 6, "off", 3);
+		}
+		snprintf(buf, 7, "%+05.2f",
+					BatteryTester_ConversionData_getPhisicValues().busVoltageInV);
+		BatteryTester_WC1602A_writeInPos(1, 6, buf, 5);
 	}
 }
 /*@brief:
@@ -2183,7 +2411,8 @@ void BatteryTester_Menu_selectMeasuringState5(void){
  * Change the state and pass the parameter.
  * The rest is controlled by the parameter setting handler
  * */
-inline void BatteryTester_Menu_selectSetNewValue(const char* header, sParamSets_t oldValue/*, unsigned short accuracy*/){
+inline void BatteryTester_Menu_selectSetNewValue(
+		const char* header, sParamSets_t oldValue/*, unsigned short accuracy*/){
 	/*if(accuracy > 6){
 		accuracy = 6;
 	}*/
