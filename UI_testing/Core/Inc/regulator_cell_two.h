@@ -17,16 +17,17 @@ typedef enum{
 	CELL_TWO_RUN_ON
 } eCellTwoRun_t;
 typedef void (*BatteryTester_RegulatorCellTwo_HardwareCallback_t)(void);
-typedef void (*BatteryTester_RegulatorCellTwo_setHardwarePwmPulseCallback_t)(unsigned int pulse);
-
+typedef void (*BatteryTester_RegulatorCellTwo_setHardwarePwmPulseCallback_t)(unsigned int);
+typedef eBool_t (*BatteryTester_RegulatorCellTwo_isStateCallback_t)(void);
 
 /****************Function declaration****************/
 void BatteryTester_RegulatorCellTwo_initDecorator(
 		BatteryTester_RegulatorCellTwo_HardwareCallback_t,
 		BatteryTester_RegulatorCellTwo_HardwareCallback_t,
-		BatteryTester_RegulatorCellTwo_setHardwarePwmPulseCallback_t);
-unsigned int BatteryTester_RegulatorCellTwo_updateBuck(float, float);
-unsigned int BatteryTester_RegulatorCellTwo_updateBoost(float, float);
+		BatteryTester_RegulatorCellTwo_setHardwarePwmPulseCallback_t,
+		BatteryTester_RegulatorCellTwo_isStateCallback_t);
+int BatteryTester_RegulatorCellTwo_updateBuck(float, float);
+int BatteryTester_RegulatorCellTwo_updateBoost(float, float);
 sPIDController_t BatteryTester_RegulatorCellTwo_getBuckRegulatorSettings();
 void BatteryTester_RegulatorCellTwo_setBuckRegulatorSettings(sPIDController_t*);
 sPWMSettings_t BattetyTester_RegulatorCellTwo_getBuckPWMSettings();
@@ -45,5 +46,6 @@ eBool_t BatteryTester_RegulatorCellTwo_readDataFromEEPROM();
 void BatteryTester_RegulatorCellTwo_startHardware();
 void BatteryTester_RegulatorCellTwo_stopHardware();
 void BatteryTester_RegulatorCellTwo_setPulse(int);
+eBool_t BatteryTester_RegulatorCellTwo_isStartHardware(void);
 
 #endif /* INC_REGULATOR_CELL_TWO_H_ */

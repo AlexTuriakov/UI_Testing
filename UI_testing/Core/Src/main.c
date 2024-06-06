@@ -189,11 +189,13 @@ int main(void)
 		BatteryTester_RegulatorCellOne_initDecorator(
 			  BatteryTester_HAL_startCh1PwmCallback,
 			  BatteryTester_HAL_stopCh1PwmCallback,
-			  BatteryTester_HAL_setCh1PwmPulseCallback);
+			  BatteryTester_HAL_setCh1PwmPulseCallback,
+			  BatteryTester_HAL_isStartCh1PwmCallback);
 		BatteryTester_RegulatorCellTwo_initDecorator(
 			  BatteryTester_HAL_startCh2PwmCallback,
 			  BatteryTester_HAL_stopCh2PwmCallback,
-			  BatteryTester_HAL_setCh2PwmPulseCallback);
+			  BatteryTester_HAL_setCh2PwmPulseCallback,
+			  BatteryTester_HAL_isStartCh2PwmCallback);
 		BatteryTester_ClimatRegulator_initDecorator(
 			  BatteryTester_HAL_startThermostatCallback,
 			  BatteryTester_HAL_stopThermostatCallback,

@@ -44,6 +44,7 @@
 typedef void (*BatteryTester_EEPROM_HardwareOperationCallback_t)(unsigned char*, unsigned char*, unsigned int);
 typedef eBool_t (*BatteryTester_EEPROM_HardwareStateCallback_t)(void);
 typedef unsigned char (*BatteryTester_EEPROM_HardwareCalculateCrcCallback_t)(unsigned char*, unsigned int);
+typedef void (*BatteryTester_EEPROM_displayStatusCallback_t)(const char*);
 
 void BatteryTester_EEPROM_logTestingDatasCellOne(unsigned int, float, float, float);
 void BatteryTester_EEPROM_logTestingDatasCellTwo(unsigned int, float, float, float);
@@ -70,18 +71,13 @@ eBool_t BatteryTester_EEPROM_readSetLogger(unsigned int*, unsigned int*);
 eBool_t BatteryTester_EEPROM_readSetVoltcontrol(sVoltRange_t*, sVoltRange_t*);
 eBool_t BatteryTester_EEPROM_readSetClimatcontrol(sPIDController_t*, sPWMSettings_t*);
 eBool_t BatteryTester_EEPROM_readSetMeasurement(sMinValueFromRange_t*, sMaxValueFromRange_t*,
-
-
-
-
-
-
-
 		sValueCalibrationOffset_t*, ntcSchemeParameters_t*,	float*);
 eBool_t BatteryTester_EEPROM_readSetDessipator(sVoltRange_t*);
 eBool_t BatteryTester_EEPROM_readSetRegCellOne(sPIDController_t*, sPIDController_t*,
 		sPWMSettings_t*, sPWMSettings_t*);
 eBool_t BatteryTester_EEPROM_readSetRegCellTwo(sPIDController_t*, sPIDController_t*,
 		sPWMSettings_t*, sPWMSettings_t*);
+void BatteryTester_EEPROM_setDisplayStatusCallback(
+		BatteryTester_EEPROM_displayStatusCallback_t);
 
 #endif /* INC_FLASH_OPERATION_H_ */

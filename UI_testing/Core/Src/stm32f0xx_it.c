@@ -223,7 +223,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc){
 					HAL_GetTick(), measuringValue.ch1_CurrentInA,
 					measuringValue.ch1_VoltageInV, measuringValue.AverageTemps);
 		}
-		float sp = BatteryTester_RegulatorCellOne_getSetpoint();
+		/*float sp = BatteryTester_RegulatorCellOne_getSetpoint();
 
 		if(sp > 0.0){
 			BatteryTester_RegulatorCellOne_setPulse(
@@ -238,7 +238,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc){
 			}
 			else{
 				BatteryTester_RegulatorCellOne_setPulse(0);
-			}
+			}*/
 	}
 	BatteryTester_CellsVoltcontrol_protectVoltageCellx(
 				CELL_TWO, measuringValue.ch2_VoltageInV);
@@ -248,7 +248,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc){
 					HAL_GetTick(), measuringValue.ch2_CurrentInA,
 					measuringValue.ch2_VoltageInV, measuringValue.AverageTemps);
 		}
-		float sp = BatteryTester_RegulatorCellTwo_getSetpoint();
+		/*float sp = BatteryTester_RegulatorCellTwo_getSetpoint();
 		if(sp > 0.0){
 			BatteryTester_RegulatorCellTwo_setPulse(
 					BatteryTester_RegulatorCellTwo_updateBuck(sp,
@@ -262,13 +262,13 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc){
 			}
 			else{
 				BatteryTester_RegulatorCellTwo_setPulse(0);
-			}
+			}*/
 	}
 	if(BatteryTester_ClimatRegulator_getRunStatus()){
-		float sp = BatteryTester_ClimatRegulator_getSetpoint();
+		/*float sp = BatteryTester_ClimatRegulator_getSetpoint();
 		BatteryTester_ClimatRegulator_setPulse(
 				BatteryTester_ClimatRegulator_update(sp,
-						measuringValue.AverageTemps));
+						measuringValue.AverageTemps));*/
 	}
 }
 /* USER CODE END 1 */

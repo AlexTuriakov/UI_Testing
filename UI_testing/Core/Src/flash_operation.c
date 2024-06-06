@@ -52,6 +52,7 @@ static BatteryTester_EEPROM_HardwareOperationCallback_t g_transmitDmaCallback = 
 static BatteryTester_EEPROM_HardwareOperationCallback_t g_transmitRecieveDmaCallback = 0;
 static BatteryTester_EEPROM_HardwareStateCallback_t g_isBusySpiCallback = 0;
 static BatteryTester_EEPROM_HardwareCalculateCrcCallback_t g_calculateCrcCallback = 0;
+static BatteryTester_EEPROM_displayStatusCallback_t g_displayStatusCallback = 0;
 static unsigned int g_addressCurrentPageForCellOne = ADDRESS_TESTING_DATA_CELL_ONE;
 static unsigned int g_addressCurrentPageForCellTwo = ADDRESS_TESTING_DATA_CELL_TWO;
 static eBool_t g_flagTransmitCellOne = FALSE;
@@ -621,22 +622,37 @@ eBool_t BatteryTester_EEPROM_programAllSettingsSecure(){
 	BatteryTester_EEPROM_resetLastError();
 	if(BatteryTester_EEPROM_begin()){
 		BatteryTester_EEPROM_eraseSectorCommand(g_readWriteBuffer, ADDRESS_SETTINGS_PAGES);
+		if(g_displayStatusCallback){
+			g_displayStatusCallback("\xff            12%clear ok        ");
+		}
 		// write and read for check
 		/*****************************************************/
 		if(_BatteryTester_EEPROM_programSettingsRegCellOne()){
 			HAL_Delay(1);
 			//size =
 			ret &= _BatteryTester_EEPROM_checkWrite(ADDRESS_REGULATOR_CELL_ONE_SETTINGS, size);
+			if(g_displayStatusCallback){
+				g_displayStatusCallback("\xff\xff           25%save cell1 ok   ");
+			}
 		}
 		else{
+			if(g_displayStatusCallback){
+				g_displayStatusCallback("\xff\xff           25%save cell1 error");
+			}
 			ret = FALSE;
 		}
 		/****************************************************/
 		if(_BatteryTester_EEPROM_programSettingsRegCellTwo()){
 			HAL_Delay(1);
 			ret &= _BatteryTester_EEPROM_checkWrite(ADDRESS_REGULATOR_CELL_TWO_SETTINGS, size);
+			if(g_displayStatusCallback){
+				g_displayStatusCallback("\xff\xff\xff          37%save cell2 ok   ");
+			}
 		}
 		else{
+			if(g_displayStatusCallback){
+				g_displayStatusCallback("\xff\xff\xff          37%save cell2 error");
+			}
 			ret = FALSE;
 		}
 		/*****************************************************/
@@ -644,8 +660,14 @@ eBool_t BatteryTester_EEPROM_programAllSettingsSecure(){
 			HAL_Delay(1);
 			size = 4 + 2 + sizeof(sPIDController_t) + sizeof(sPWMSettings_t) + 1;
 			ret &= _BatteryTester_EEPROM_checkWrite(ADDRESS_CLIMAT_REGULATOR_SETTINGS, size);
+			if(g_displayStatusCallback){
+				g_displayStatusCallback("\xff\xff\xff\xff         50%save climat ok  ");
+			}
 		}
 		else{
+			if(g_displayStatusCallback){
+				g_displayStatusCallback("\xff\xff\xff\xff         50%save climat erro");
+			}
 			ret = FALSE;
 		}
 		/************************************************/
@@ -656,8 +678,15 @@ eBool_t BatteryTester_EEPROM_programAllSettingsSecure(){
 					NUM_TEMPERATURE * sizeof(ntcSchemeParameters_t) +
 					sizeof(float) + 1;
 			ret &= _BatteryTester_EEPROM_checkWrite(ADDRESS_CONVERSION_DATA_SETTINGS, size);
+			if(g_displayStatusCallback){
+				g_displayStatusCallback("\xff\xff\xff\xff\xff        62%save measur. ok ");
+			}
 		}
 		else{
+			if(g_displayStatusCallback){
+				g_displayStatusCallback("\xff\xff\xff\xff\xff        62%save measur. err");
+			}
+
 			ret = FALSE;
 		}
 		/*******************************************************/
@@ -665,8 +694,15 @@ eBool_t BatteryTester_EEPROM_programAllSettingsSecure(){
 			HAL_Delay(1);
 			size = 4 + 2 + sizeof(sVoltRange_t) + 1;
 			ret &= _BatteryTester_EEPROM_checkWrite(ADDRESS_DESSIPATOR_CONTROL_SETTINGS, size);
+			if(g_displayStatusCallback){
+				g_displayStatusCallback("\xff\xff\xff\xff\xff\xff       75%save dessip. ok ");
+			}
+
 		}
 		else{
+			if(g_displayStatusCallback){
+				g_displayStatusCallback("\xff\xff\xff\xff\xff\xff       75%save dessip. err");
+			}
 			ret = FALSE;
 		}
 		/******************************************************/
@@ -674,8 +710,15 @@ eBool_t BatteryTester_EEPROM_programAllSettingsSecure(){
 			HAL_Delay(1);
 			size = 4 + 2 + 2 * sizeof(sVoltRange_t) + 1;
 			ret &= _BatteryTester_EEPROM_checkWrite(ADDRESS_VOLT_CONTROL_SETTINGS, size);
+			if(g_displayStatusCallback){
+				g_displayStatusCallback("\xff\xff\xff\xff\xff\xff\xff      87%save voltc. ok  ");
+			}
+
 		}
 		else{
+			if(g_displayStatusCallback){
+				g_displayStatusCallback("\xff\xff\xff\xff\xff\xff\xff      87%save voltc. erro");
+			}
 			ret = FALSE;
 		}
 		/******************************************************/
@@ -683,8 +726,15 @@ eBool_t BatteryTester_EEPROM_programAllSettingsSecure(){
 			HAL_Delay(1);
 			size = 4 + 2 + 2 * sizeof(unsigned int) + 1;
 			ret &= _BatteryTester_EEPROM_checkWrite(ADDRESS_LOGGER_SETTINGS, size);
+			if(g_displayStatusCallback){
+				g_displayStatusCallback("\xff\xff\xff\xff\xff\xff\xff\xff    100%save logg. ok   ");
+			}
 		}
 		else{
+			if(g_displayStatusCallback){
+				g_displayStatusCallback("\xff\xff\xff\xff\xff\xff\xff\xff    100%save logg. error");
+			}
+
 			ret = FALSE;
 		}
 		/******************************************************/
@@ -940,4 +990,9 @@ eBool_t BatteryTester_EEPROM_readSetRegCellTwo(
 		g_lastError |= ERROR_BUFFER_READWRITE | ERROR_BAD_MEMORY_POINTER;
 		return FALSE;
 	}
+}
+
+void BatteryTester_EEPROM_setDisplayStatusCallback(
+		BatteryTester_EEPROM_displayStatusCallback_t displayStatusCallback){
+	g_displayStatusCallback = displayStatusCallback;
 }

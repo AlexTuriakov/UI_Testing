@@ -26,6 +26,7 @@
 	static BatteryTester_RegulatorCellTwo_HardwareCallback_t g_startHardware = 0;
 	static BatteryTester_RegulatorCellTwo_HardwareCallback_t g_stopHardware = 0;
 	static BatteryTester_RegulatorCellTwo_setHardwarePwmPulseCallback_t g_setPulse = 0;
+	static BatteryTester_RegulatorCellTwo_isStateCallback_t g_isStartHardware = 0;
 /*
  * @brief Extern variables
 */
@@ -37,10 +38,12 @@
 void BatteryTester_RegulatorCellTwo_initDecorator(
 		BatteryTester_RegulatorCellTwo_HardwareCallback_t startHardware,
 		BatteryTester_RegulatorCellTwo_HardwareCallback_t stopHardware,
-		BatteryTester_RegulatorCellTwo_setHardwarePwmPulseCallback_t setPulse){
+		BatteryTester_RegulatorCellTwo_setHardwarePwmPulseCallback_t setPulse,
+		BatteryTester_RegulatorCellTwo_isStateCallback_t isStartHardware){
 	g_startHardware = startHardware;
 	g_stopHardware = stopHardware;
 	g_setPulse = setPulse;
+	g_isStartHardware = isStartHardware;
 	if(!BatteryTester_RegulatorCellTwo_readDataFromEEPROM()){
 	//// BUCK CONVERTER ///////////////
 		regulatorBuckSettingsCellTwo.Ki = -0.1;
@@ -61,8 +64,8 @@ void BatteryTester_RegulatorCellTwo_initDecorator(
 		regulatorBoostSettingsCellTwo.Ki = -0.1;
 		regulatorBoostSettingsCellTwo.Kp = 10.0;
 		regulatorBoostSettingsCellTwo.dt = 1.0 / 16000;
-		regulatorBoostSettingsCellTwo.maxLimit = -18;
-		regulatorBoostSettingsCellTwo.minLimit = 0.0;
+		regulatorBoostSettingsCellTwo.maxLimit = 0;
+		regulatorBoostSettingsCellTwo.minLimit = -18;
 
 		pwmBoostSettingsCellTwo.maxDutyCycle = 90;
 		pwmBoostSettingsCellTwo.minDutyCycle = 50;
@@ -100,7 +103,7 @@ void BatteryTester_RegulatorCellTwo_initDecorator(
  *
  * 	if(setpoint >= 0.0 )
 */
-unsigned int BatteryTester_RegulatorCellTwo_updateBuck(float setpoint, float feedback){
+int BatteryTester_RegulatorCellTwo_updateBuck(float setpoint, float feedback){
 	return PID_calcOutputToPWM((sPWMSettings_t*) &pwmBuckSettingsCellTwo,
 			PID_update((sPIDController_t *) &regulatorBuckSettingsCellTwo,
 			setpoint, feedback));
@@ -115,7 +118,7 @@ unsigned int BatteryTester_RegulatorCellTwo_updateBuck(float setpoint, float fee
  *
  * 	if(setpoint < 0.0 )
 */
-unsigned int BatteryTester_RegulatorCellTwo_updateBoost(float setpoint, float feedback){
+int BatteryTester_RegulatorCellTwo_updateBoost(float setpoint, float feedback){
 	return PID_calcOutputToPWM((sPWMSettings_t*) &pwmBoostSettingsCellTwo,
 				PID_update((sPIDController_t *) &regulatorBoostSettingsCellTwo,
 				setpoint, feedback));
@@ -187,7 +190,7 @@ float BatteryTester_RegulatorCellTwo_getSetpoint(){
 
 void BatteryTester_RegulatorCellTwo_setSetpoint(float setpoint){
 	if(setpoint < regulatorBuckSettingsCellTwo.maxLimit &&
-			setpoint > -regulatorBoostSettingsCellTwo.maxLimit){
+			setpoint > regulatorBoostSettingsCellTwo.minLimit){
 		startSetpoint = setpoint;
 	}
 }
@@ -220,7 +223,8 @@ eBool_t BatteryTester_RegulatorCellTwo_readDataFromEEPROM(){
 void BatteryTester_RegulatorCellTwo_startHardware(){
 	if(g_startHardware){
 		g_startHardware();
-		on = CELL_TWO_RUN_ON;
+		if(BatteryTester_RegulatorCellTwo_isStartHardware())
+			on = CELL_TWO_RUN_ON;
 	}
 }
 
@@ -237,3 +241,9 @@ void BatteryTester_RegulatorCellTwo_setPulse(int pulse){
 	}
 }
 
+eBool_t BatteryTester_RegulatorCellTwo_isStartHardware(void){
+	if(g_isStartHardware){
+		return g_isStartHardware();
+	}
+	return FALSE;
+}
