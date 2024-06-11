@@ -1,0 +1,51 @@
+/*
+ * regulator_cell_two.h
+ *
+ *  Created on: Apr 16, 2024
+ *      Author: Tyuryakov_OA
+ */
+
+#ifndef INC_REGULATOR_CELL_TWO_H_
+#define INC_REGULATOR_CELL_TWO_H_
+
+#include "pid_regulator.h"
+#include "auxiliary_function.h"
+
+/**************type declaration****************/
+typedef enum{
+	CELL_TWO_RUN_OFF,
+	CELL_TWO_RUN_ON
+} eCellTwoRun_t;
+typedef void (*BatteryTester_RegulatorCellTwo_HardwareCallback_t)(void);
+typedef void (*BatteryTester_RegulatorCellTwo_setHardwarePwmPulseCallback_t)(unsigned int);
+typedef eBool_t (*BatteryTester_RegulatorCellTwo_isStateCallback_t)(void);
+
+/****************Function declaration****************/
+void BatteryTester_RegulatorCellTwo_initDecorator(
+		BatteryTester_RegulatorCellTwo_HardwareCallback_t,
+		BatteryTester_RegulatorCellTwo_HardwareCallback_t,
+		BatteryTester_RegulatorCellTwo_setHardwarePwmPulseCallback_t,
+		BatteryTester_RegulatorCellTwo_isStateCallback_t);
+int BatteryTester_RegulatorCellTwo_updateBuck(float, float);
+int BatteryTester_RegulatorCellTwo_updateBoost(float, float);
+sPIDController_t BatteryTester_RegulatorCellTwo_getBuckRegulatorSettings();
+void BatteryTester_RegulatorCellTwo_setBuckRegulatorSettings(sPIDController_t*);
+sPWMSettings_t BattetyTester_RegulatorCellTwo_getBuckPWMSettings();
+void BatteryTester_RegulatorCellTwo_setBuckPWMSettings(sPWMSettings_t*);
+sPIDController_t BatteryTester_RegulatorCellTwo_getBoostRegulatorSettings();
+void BatteryTester_RegulatorCellTwo_setBoostRegulatorSettings(sPIDController_t*);
+sPWMSettings_t BattetyTester_RegulatorCellTwo_getBoostPWMSettings();
+void BatteryTester_RegulatorCellTwo_setBoostPWMSettings(sPWMSettings_t*);
+void BatteryTester_RegulatorCellTwo_resetBuckAccumulatedDeviation();
+void BatteryTester_RegulatorCellTwo_resetBoostAccumulatedDeviation();
+float BatteryTester_RegulatorCellTwo_getSetpoint();
+void BatteryTester_RegulatorCellTwo_setSetpoint(float);
+eCellTwoRun_t BatteryTester_RegulatorCellTwo_getRunStatus();
+void BatteryTester_RegulatorCellTwo_toggleRunMode();
+eBool_t BatteryTester_RegulatorCellTwo_readDataFromEEPROM();
+void BatteryTester_RegulatorCellTwo_startHardware();
+void BatteryTester_RegulatorCellTwo_stopHardware();
+void BatteryTester_RegulatorCellTwo_setPulse(int);
+eBool_t BatteryTester_RegulatorCellTwo_isStartHardware(void);
+
+#endif /* INC_REGULATOR_CELL_TWO_H_ */
