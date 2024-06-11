@@ -51,7 +51,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-
+extern volatile uint32_t rawAdcData[LENGTH_DATA_ADC];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -232,9 +232,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 }
 
 void HAL_ADC_MultiModeDMAConvCplt(ADC_HandleTypeDef* hadc){
-	sphisicValueEx_t measuringValue = {0};
-			/*BatteryTester_ConversionData_calcPhisicValueFromAdcCodeEx(
-				rawAdcData, LENGTH_DATA_ADC);*/
+	float sp;
+	sphisicValueEx_t measuringValue =
+				BatteryTester_ConversionData_calcPhisicValueFromAdcCodeEx(
+							rawAdcData, LENGTH_DATA_ADC);
 	BatteryTester_ConverterFault_faultHandler();
 	BattetyTester_DessipatorControl_onHeaterControl(
 				measuringValue.busVoltageInV);
@@ -246,7 +247,7 @@ void HAL_ADC_MultiModeDMAConvCplt(ADC_HandleTypeDef* hadc){
 					HAL_GetTick(), measuringValue.ch1_CurrentInA,
 					measuringValue.ch1_VoltageInV, measuringValue.AverageTemps);
 		}
-		float sp = BatteryTester_RegulatorCellOne_getSetpoint();
+		sp = BatteryTester_RegulatorCellOne_getSetpoint();
 
 		if(sp > 0.0){
 			BatteryTester_RegulatorCellOne_setPulse(
@@ -271,7 +272,7 @@ void HAL_ADC_MultiModeDMAConvCplt(ADC_HandleTypeDef* hadc){
 					HAL_GetTick(), measuringValue.ch2_CurrentInA,
 					measuringValue.ch2_VoltageInV, measuringValue.AverageTemps);
 		}
-		float sp = BatteryTester_RegulatorCellTwo_getSetpoint();
+		sp = BatteryTester_RegulatorCellTwo_getSetpoint();
 		if(sp > 0.0){
 			BatteryTester_RegulatorCellTwo_setPulse(
 					BatteryTester_RegulatorCellTwo_updateBuck(sp,
@@ -288,7 +289,7 @@ void HAL_ADC_MultiModeDMAConvCplt(ADC_HandleTypeDef* hadc){
 			}
 	}
 	if(BatteryTester_ClimatRegulator_getRunStatus()){
-		float sp = BatteryTester_ClimatRegulator_getSetpoint();
+		sp = BatteryTester_ClimatRegulator_getSetpoint();
 		BatteryTester_ClimatRegulator_setPulse(
 				BatteryTester_ClimatRegulator_update(sp,
 						measuringValue.AverageTemps));

@@ -58,6 +58,43 @@ typedef struct _sPWMSettings_t{
     float deadTime;
 } sPWMSettings_t;
 
+//chatgpt
+typedef struct {
+    float kp;
+    float ki;
+    float kd;
+    float dt;
+    float a0;
+    float a1;
+    float error;
+    float pre_error;
+    float pre_pre_error;
+    float pre_output;
+    float a0d;
+    float a1d;
+    float a2d;
+    float N;
+    float tau;
+    float alpha;
+    float d0;
+    float d1;
+    float fd0;
+    float fd1;
+} sPIDFController_t;
+
+typedef struct{
+	float kp;
+	float ki;
+	float kd;
+	float dt;
+	float a0;
+	float a1;
+	float a2;
+	float previous_error;
+	float pre_previous_error;
+	float error;
+	float previous_output;
+} sPIDrController_t;
 /**
  *  @brief Функция инициализации параметров PID
  *
@@ -92,4 +129,10 @@ void TA_setLimits(volatile sPIDController_t *, float, float);
 void PID_resetAccumulatedDeviation(volatile sPIDController_t *);
 float PID_updateDelta(volatile sPIDController_t *, float, float);
 
+float PIDF_Compute(sPIDFController_t*, float, float);
+void PIDF_Init(sPIDFController_t*, float, float,
+		float, float, float);
+
+float PIDr_update(sPIDrController_t*, float, float);
+void PIDr_init(sPIDrController_t*, float, float, float, float);
 #endif /* INC_PID_REGULATOR_H_ */

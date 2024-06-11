@@ -16,11 +16,11 @@ inline void PID_resetAccumulatedDeviation(volatile sPIDController_t *ppid){
 }
 
 /** @brief Функция расчета управляющего сигнала
- * Функція вигадує велосипед. Назову його піп-регулятор
+ * Назову його піп-регулятор
  * Нерекурентная реалізація ідеального безперервного
  * аналогового під-регулятора з великою похибкою
  * диференціюючої складової з відсутності фільтруючої
- * частини як в реальних аналогових регуляторах з
+ * частини, як в реальних аналогових регуляторах з
  * диференціюючим rc-ланцюгом
  *
  */
@@ -241,4 +241,85 @@ HAL_StatusTypeDef PID_initPWM(
 */
 void PID_deinitPWM(sPWMSettings_t* pwmSettings){
 //	free(pwmSettings);
+}
+
+/*
+ * @brief:
+ */
+float PIDF_update(sPIDFController_t *pid, float setpoint, float measured_value) {
+	pid->pre_pre_error = pid->pre_error;
+	pid->pre_error = pid->error;
+	pid->error = setpoint - measured_value;
+	// PI
+	float output = pid->pre_output +
+			pid->a0 * pid->error +
+			pid->a1 * pid->pre_error;
+	// Filtered D
+	pid->d1 = pid->d0;
+	pid->d0 = pid->a0d * pid->error +
+			pid->a1d * pid->pre_error +
+			pid->a2d * pid->pre_pre_error;
+	pid->fd1 = pid->fd0;
+	pid->fd0 = (pid->alpha / (pid->alpha + 1)) * (pid->d0 + pid->d1) -
+			((pid->alpha - 1) / (pid->alpha + 1)) * pid->fd1;
+	output += pid->fd0;
+	pid->pre_output = output;
+	return output;
+}
+
+void PIDF_Init(
+		sPIDFController_t *pid,
+		float kp, float ki,
+		float kd, float N,
+		float dt) {
+    pid->kp = kp;
+    pid->ki = ki;
+    pid->kd = kd;
+    pid->N = N; // 5
+    pid->dt = dt;
+    pid->a0 = kp + ki * dt;
+    pid->a1 = -kp;
+    pid->pre_pre_error = 0;
+    pid->pre_error = 0;
+    pid->error = 0;
+    pid->pre_output = 0;
+    pid->a0d = kd / dt;
+    pid->a1d = -2 * kd / dt;
+    pid->a2d = kd / dt;
+    pid->tau = kd / (kp * N);
+    pid->alpha = dt / (2 * pid->tau);
+    pid->d0 = 0;
+    pid->d1 = 0;
+    pid->fd0 = 0;
+    pid->fd1 = 0;
+}
+
+/*
+ * @brief: From wikipedia
+ */
+float PIDr_update(sPIDrController_t* pid, float setpoint, float measured_value){
+	pid->pre_previous_error = pid->previous_error;
+	pid->previous_error = pid->error;
+	pid->error = setpoint - measured_value;
+	float output = pid->previous_output +
+			pid->a0 * pid->error +
+			pid->a1 * pid->previous_error +
+			pid->a2 * pid->pre_previous_error;
+	pid->previous_output = output;
+	return output;
+}
+
+void PIDr_init(sPIDrController_t *pid,
+		float kp, float ki,
+		float kd, float dt){
+	pid->kp = kp;
+	pid->ki = ki;
+	pid->kd = kd;
+	pid->a0 = kp + ki * dt + kd / dt;
+	pid->a1 = -kp - 2 * kd / dt;
+	pid->a2 = kd / dt;
+	pid->previous_output = 0;
+	pid->pre_previous_error = 0;
+	pid->previous_error = 0;
+	pid->error = 0;
 }
