@@ -245,6 +245,7 @@ void PID_deinitPWM(sPWMSettings_t* pwmSettings){
 
 /*
  * @brief:
+ * https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_controller#Discrete_implementation
  */
 float PIDF_update(sPIDFController_t *pid, float setpoint, float measured_value) {
 	pid->pre_pre_error = pid->pre_error;
@@ -296,6 +297,7 @@ void PIDF_Init(
 
 /*
  * @brief: From wikipedia
+ * https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_controller#Discrete_implementation
  */
 float PIDr_update(sPIDrController_t* pid, float setpoint, float measured_value){
 	pid->pre_previous_error = pid->previous_error;

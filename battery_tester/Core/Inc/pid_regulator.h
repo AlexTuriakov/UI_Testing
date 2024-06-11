@@ -58,7 +58,7 @@ typedef struct _sPWMSettings_t{
     float deadTime;
 } sPWMSettings_t;
 
-//chatgpt
+//https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_controller#Discrete_implementation
 typedef struct {
     float kp;
     float ki;
@@ -82,6 +82,7 @@ typedef struct {
     float fd1;
 } sPIDFController_t;
 
+//https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_controller#Discrete_implementation
 typedef struct{
 	float kp;
 	float ki;
