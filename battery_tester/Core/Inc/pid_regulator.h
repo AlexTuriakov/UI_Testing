@@ -64,6 +64,7 @@ typedef struct {
     float ki;
     float kd;
     float dt;
+    float sp;
     float a0;
     float a1;
     float error;
@@ -88,6 +89,7 @@ typedef struct{
 	float ki;
 	float kd;
 	float dt;
+	float sp;
 	float a0;
 	float a1;
 	float a2;

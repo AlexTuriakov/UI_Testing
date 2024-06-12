@@ -56,7 +56,7 @@ extern volatile uint32_t rawAdcData[LENGTH_DATA_ADC];
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
-void HAL_ADC_MultiModeDMAConvCplt(ADC_HandleTypeDef*);
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef*);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -66,6 +66,8 @@ void HAL_ADC_MultiModeDMAConvCplt(ADC_HandleTypeDef*);
 
 /* External variables --------------------------------------------------------*/
 extern DMA_HandleTypeDef hdma_adc1;
+extern DMA_HandleTypeDef hdma_spi3_rx;
+extern DMA_HandleTypeDef hdma_spi3_tx;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -209,6 +211,34 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
+  * @brief This function handles DMA1 stream0 global interrupt.
+  */
+void DMA1_Stream0_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA1_Stream0_IRQn 0 */
+
+  /* USER CODE END DMA1_Stream0_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_spi3_rx);
+  /* USER CODE BEGIN DMA1_Stream0_IRQn 1 */
+
+  /* USER CODE END DMA1_Stream0_IRQn 1 */
+}
+
+/**
+  * @brief This function handles DMA1 stream5 global interrupt.
+  */
+void DMA1_Stream5_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA1_Stream5_IRQn 0 */
+
+  /* USER CODE END DMA1_Stream5_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_spi3_tx);
+  /* USER CODE BEGIN DMA1_Stream5_IRQn 1 */
+
+  /* USER CODE END DMA1_Stream5_IRQn 1 */
+}
+
+/**
   * @brief This function handles DMA2 stream0 global interrupt.
   */
 void DMA2_Stream0_IRQHandler(void)
@@ -218,9 +248,10 @@ void DMA2_Stream0_IRQHandler(void)
   /* USER CODE END DMA2_Stream0_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_adc1);
   /* USER CODE BEGIN DMA2_Stream0_IRQn 1 */
-  /*SET_BIT(hdma_adc1.DmaBaseAddress->IFCR, DMA_IFCR_CHTIF1);
-  SET_BIT(hdma_adc1.DmaBaseAddress->IFCR, DMA_IFCR_CTCIF1);
-  SET_BIT(hdma_adc1.DmaBaseAddress->IFCR, DMA_IFCR_CGIF1);*/
+  SET_BIT(DMA2->LIFCR, DMA_LIFCR_CTCIF0);
+  SET_BIT(DMA2->LIFCR, DMA_LIFCR_CHTIF0);
+  CLEAR_BIT(DMA2->LISR, DMA_LISR_TCIF0);
+  CLEAR_BIT(DMA2->LISR, DMA_LISR_HTIF0);
   /* USER CODE END DMA2_Stream0_IRQn 1 */
 }
 
@@ -231,8 +262,14 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 	}
 }
 
-void HAL_ADC_MultiModeDMAConvCplt(ADC_HandleTypeDef* hadc){
-	float sp;
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc){
+	if(hadc->Instance == ADC1){
+		float sp;
+		sphisicValueEx_t measuringValue =
+						BatteryTester_ConversionData_calcPhisicValueFromAdcCodeEx(
+									rawAdcData, LENGTH_DATA_ADC);
+	}
+	/*float sp;
 	sphisicValueEx_t measuringValue =
 				BatteryTester_ConversionData_calcPhisicValueFromAdcCodeEx(
 							rawAdcData, LENGTH_DATA_ADC);
@@ -293,6 +330,6 @@ void HAL_ADC_MultiModeDMAConvCplt(ADC_HandleTypeDef* hadc){
 		BatteryTester_ClimatRegulator_setPulse(
 				BatteryTester_ClimatRegulator_update(sp,
 						measuringValue.AverageTemps));
-	}
+	}*/
 }
 /* USER CODE END 1 */

@@ -55,7 +55,7 @@ void BatteryTester_RegulatorCellOne_initDecorator(
 
 		pwmBuckSettingsCellOne.maxDutyCycle = 50;
 		pwmBuckSettingsCellOne.minDutyCycle = 5;
-		pwmBuckSettingsCellOne.periodPwm = 1561;
+		pwmBuckSettingsCellOne.periodPwm = 999;
 		pwmBuckSettingsCellOne.minPidOutput = regulatorBuckSettingsCellOne.minLimit;
 		pwmBuckSettingsCellOne.maxPidOutput = regulatorBuckSettingsCellOne.maxLimit;
 		pwmBuckSettingsCellOne.scale = (float)(pwmBuckSettingsCellOne.maxDutyCycle - pwmBuckSettingsCellOne.minDutyCycle) /
@@ -70,7 +70,7 @@ void BatteryTester_RegulatorCellOne_initDecorator(
 
 		pwmBoostSettingsCellOne.maxDutyCycle = 95;
 		pwmBoostSettingsCellOne.minDutyCycle = 50;
-		pwmBoostSettingsCellOne.periodPwm = 1561;
+		pwmBoostSettingsCellOne.periodPwm = 999;
 		pwmBoostSettingsCellOne.minPidOutput = regulatorBoostSettingsCellOne.minLimit;
 		pwmBoostSettingsCellOne.maxPidOutput = regulatorBoostSettingsCellOne.maxLimit;
 		pwmBoostSettingsCellOne.scale = (float)(pwmBoostSettingsCellOne.maxDutyCycle - pwmBoostSettingsCellOne.minDutyCycle) /

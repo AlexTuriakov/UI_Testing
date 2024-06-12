@@ -10,6 +10,8 @@
 #include <stdlib.h>
 //#include <math.h>
 
+inline void PIDr_reInit(sPIDrController_t *, float);
+inline void PIDF_reInit(sPIDFController_t *, float);
 
 inline void PID_resetAccumulatedDeviation(volatile sPIDController_t *ppid){
 	ppid->prevError = ppid->integral = 0;
@@ -244,10 +246,15 @@ void PID_deinitPWM(sPWMSettings_t* pwmSettings){
 }
 
 /*
- * @brief:
+ * @brief: algorithm using an infinite impulse response (IIR) filter for the derivative
  * https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_controller#Discrete_implementation
  */
 float PIDF_update(sPIDFController_t *pid, float setpoint, float measured_value) {
+
+	if(pid->sp != setpoint){
+		PIDF_reInit(pid, setpoint);
+	}
+
 	pid->pre_pre_error = pid->pre_error;
 	pid->pre_error = pid->error;
 	pid->error = setpoint - measured_value;
@@ -293,13 +300,31 @@ void PIDF_Init(
     pid->d1 = 0;
     pid->fd0 = 0;
     pid->fd1 = 0;
+    pid->sp = 0;
+}
+
+inline void PIDF_reInit(sPIDFController_t *pid, float sp){
+	pid->pre_pre_error = 0;
+	pid->pre_error = 0;
+	pid->error = 0;
+	pid->pre_output = 0;
+	pid->d0 = 0;
+	pid->d1 = 0;
+	pid->fd0 = 0;
+	pid->fd1 = 0;
+	pid->sp = sp;
 }
 
 /*
  * @brief: From wikipedia
+ *  implement a PID considering the PID as an IIR filter
  * https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_controller#Discrete_implementation
  */
 float PIDr_update(sPIDrController_t* pid, float setpoint, float measured_value){
+	if(pid->sp != setpoint){
+		PIDr_reInit(pid, setpoint);
+	}
+
 	pid->pre_previous_error = pid->previous_error;
 	pid->previous_error = pid->error;
 	pid->error = setpoint - measured_value;
@@ -324,4 +349,13 @@ void PIDr_init(sPIDrController_t *pid,
 	pid->pre_previous_error = 0;
 	pid->previous_error = 0;
 	pid->error = 0;
+	pid->sp = 0;
+}
+
+inline void PIDr_reInit(sPIDrController_t *pid, float sp){
+	pid->previous_output = 0;
+	pid->pre_previous_error = 0;
+	pid->previous_error = 0;
+	pid->error = 0;
+	pid->sp = sp;
 }
