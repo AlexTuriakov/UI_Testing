@@ -194,6 +194,7 @@ HAL_StatusTypeDef BatteryTester_ConversionData_initDecorator(
 	if(!g_setDacCallback){
 		return HAL_ERROR;
 	}
+	//shutting down st-link?
 	BatteryTester_ConversionData_setDACRefOffset(valueRefOffsetInVolts);
 	g_stopCallback = stopCallback;
 	return HAL_OK;

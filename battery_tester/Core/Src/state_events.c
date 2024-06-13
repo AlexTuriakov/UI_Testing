@@ -202,8 +202,7 @@ void BatteryTester_State_processInputs(){
 	BUTTON_Process();
 	if (BUTTON_GetAction(BUTTON_UP) == BUTTON_VERY_LONG_PRESS)
 	{
-		//currentEvent = EVENT_KEY_UP;
-		currentEvent = EVENT_KEY_OK; // only for testing
+		currentEvent = EVENT_KEY_UP;
 		return;
 	}
 	if (BUTTON_GetAction(BUTTON_DOWN) == BUTTON_VERY_LONG_PRESS)
@@ -219,6 +218,11 @@ void BatteryTester_State_processInputs(){
 	if (BUTTON_GetAction(BUTTON_LEFT) == BUTTON_VERY_LONG_PRESS)
 	{
 		currentEvent = EVENT_KEY_LEFT;
+		return;
+	}
+	if (BUTTON_GetAction(BUTTON_OK) == BUTTON_VERY_LONG_PRESS)
+	{
+		currentEvent = EVENT_KEY_OK;
 		return;
 	}
 	if(!flagContinueEvent){

@@ -52,6 +52,9 @@
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
 extern volatile uint32_t rawAdcData[LENGTH_DATA_ADC];
+int beginTime = 0;
+int endTime = 0;
+extern TIM_HandleTypeDef htim2;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -66,8 +69,10 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef*);
 
 /* External variables --------------------------------------------------------*/
 extern DMA_HandleTypeDef hdma_adc1;
+extern DAC_HandleTypeDef hdac;
 extern DMA_HandleTypeDef hdma_spi3_rx;
 extern DMA_HandleTypeDef hdma_spi3_tx;
+extern TIM_HandleTypeDef htim6;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -239,6 +244,21 @@ void DMA1_Stream5_IRQHandler(void)
 }
 
 /**
+  * @brief This function handles TIM6 global interrupt, DAC1 and DAC2 underrun error interrupts.
+  */
+void TIM6_DAC_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM6_DAC_IRQn 0 */
+
+  /* USER CODE END TIM6_DAC_IRQn 0 */
+  HAL_DAC_IRQHandler(&hdac);
+  HAL_TIM_IRQHandler(&htim6);
+  /* USER CODE BEGIN TIM6_DAC_IRQn 1 */
+
+  /* USER CODE END TIM6_DAC_IRQn 1 */
+}
+
+/**
   * @brief This function handles DMA2 stream0 global interrupt.
   */
 void DMA2_Stream0_IRQHandler(void)
@@ -248,10 +268,38 @@ void DMA2_Stream0_IRQHandler(void)
   /* USER CODE END DMA2_Stream0_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_adc1);
   /* USER CODE BEGIN DMA2_Stream0_IRQn 1 */
-  SET_BIT(DMA2->LIFCR, DMA_LIFCR_CTCIF0);
+  // Скидання прапорців переривання
+/*	if (__HAL_DMA_GET_FLAG(&hdma_adc1, DMA_FLAG_TCIF0_4)) {
+	  __HAL_DMA_CLEAR_FLAG(&hdma_adc1, DMA_FLAG_TCIF0_4);  // Transfer complete flag
+	}
+	if (__HAL_DMA_GET_FLAG(&hdma_adc1, DMA_FLAG_HTIF0_4)) {
+	  __HAL_DMA_CLEAR_FLAG(&hdma_adc1, DMA_FLAG_HTIF0_4);  // Half transfer flag
+	}
+	if (__HAL_DMA_GET_FLAG(&hdma_adc1, DMA_FLAG_TEIF0_4)) {
+	  __HAL_DMA_CLEAR_FLAG(&hdma_adc1, DMA_FLAG_TEIF0_4);  // Transfer error flag
+	}
+	if (__HAL_DMA_GET_FLAG(&hdma_adc1, DMA_FLAG_DMEIF0_4)) {
+	  __HAL_DMA_CLEAR_FLAG(&hdma_adc1, DMA_FLAG_DMEIF0_4); // Direct mode error flag
+	}
+	if (__HAL_DMA_GET_FLAG(&hdma_adc1, DMA_FLAG_FEIF0_4)) {
+	  __HAL_DMA_CLEAR_FLAG(&hdma_adc1, DMA_FLAG_FEIF0_4);  // FIFO error flag
+	}*/
+  /*SET_BIT(DMA2->LIFCR, DMA_LIFCR_CTCIF0);
   SET_BIT(DMA2->LIFCR, DMA_LIFCR_CHTIF0);
   CLEAR_BIT(DMA2->LISR, DMA_LISR_TCIF0);
   CLEAR_BIT(DMA2->LISR, DMA_LISR_HTIF0);
+  CLEAR_BIT(TIM2->SR, TIM_SR_CC1IF);
+  CLEAR_BIT(TIM2->SR, TIM_SR_CC2IF);
+  CLEAR_BIT(TIM2->SR, TIM_SR_CC3IF);
+  CLEAR_BIT(TIM2->SR, TIM_SR_CC4IF);
+  CLEAR_BIT(TIM2->SR, TIM_SR_UIF);*/
+
+  // Скидання прапорців переривання вручну
+  /*DMA2->LIFCR = DMA_LIFCR_CTCIF0   // Скидання прапорця завершення передачі
+			  | DMA_LIFCR_CHTIF0   // Скидання прапорця завершення половинної передачі
+			  | DMA_LIFCR_CTEIF0   // Скидання прапорця помилки передачі
+			  | DMA_LIFCR_CDMEIF0  // Скидання прапорця помилки прямого режиму
+			  | DMA_LIFCR_CFEIF0;  // Скидання прапорця помилки FIFO*/
   /* USER CODE END DMA2_Stream0_IRQn 1 */
 }
 
@@ -263,73 +311,72 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 }
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc){
+	beginTime = __HAL_TIM_GET_COUNTER(&htim2);
+	BatteryTester_ConverterFault_faultHandler();
 	if(hadc->Instance == ADC1){
 		float sp;
 		sphisicValueEx_t measuringValue =
-						BatteryTester_ConversionData_calcPhisicValueFromAdcCodeEx(
-									rawAdcData, LENGTH_DATA_ADC);
-	}
-	/*float sp;
-	sphisicValueEx_t measuringValue =
-				BatteryTester_ConversionData_calcPhisicValueFromAdcCodeEx(
-							rawAdcData, LENGTH_DATA_ADC);
-	BatteryTester_ConverterFault_faultHandler();
-	BattetyTester_DessipatorControl_onHeaterControl(
-				measuringValue.busVoltageInV);
-	BatteryTester_CellsVoltcontrol_protectVoltageCellx(
-			CELL_ONE, measuringValue.ch1_VoltageInV);
-	if(BatteryTester_RegulatorCellOne_getRunStatus()){
-		if(BatteryTester_AuxiliaryFunction_isTimeLoggedCellOne()){
-			 BatteryTester_EEPROM_logTestingDatasCellOne(
-					HAL_GetTick(), measuringValue.ch1_CurrentInA,
-					measuringValue.ch1_VoltageInV, measuringValue.AverageTemps);
-		}
-		sp = BatteryTester_RegulatorCellOne_getSetpoint();
+					BatteryTester_ConversionData_calcPhisicValueFromAdcCodeEx(
+								rawAdcData, LENGTH_DATA_ADC);
+		BattetyTester_DessipatorControl_onHeaterControl(
+					measuringValue.busVoltageInV);
+		BatteryTester_CellsVoltcontrol_protectVoltageCellx(
+				CELL_ONE, measuringValue.ch1_VoltageInV);
+		if(BatteryTester_RegulatorCellOne_getRunStatus()){
+			if(BatteryTester_AuxiliaryFunction_isTimeLoggedCellOne()){
+				 BatteryTester_EEPROM_logTestingDatasCellOne(
+						HAL_GetTick(), measuringValue.ch1_CurrentInA,
+						measuringValue.ch1_VoltageInV, measuringValue.AverageTemps);
+			}
+			sp = BatteryTester_RegulatorCellOne_getSetpoint();
 
-		if(sp > 0.0){
-			BatteryTester_RegulatorCellOne_setPulse(
-					BatteryTester_RegulatorCellOne_updateBuck(sp,
-							measuringValue.ch1_CurrentInA));
-		}
-		else
-			if(sp < 0.0){
+			if(sp > 0.0){
 				BatteryTester_RegulatorCellOne_setPulse(
-						BatteryTester_RegulatorCellOne_updateBoost(sp,
+						BatteryTester_RegulatorCellOne_updateBuck(sp,
 								measuringValue.ch1_CurrentInA));
 			}
-			else{
-				BatteryTester_RegulatorCellOne_setPulse(0);
+			else
+				if(sp < 0.0){
+					BatteryTester_RegulatorCellOne_setPulse(
+							BatteryTester_RegulatorCellOne_updateBoost(sp,
+									measuringValue.ch1_CurrentInA));
+				}
+				else{
+					BatteryTester_RegulatorCellOne_setPulse(0);
+				}
+		}
+		BatteryTester_CellsVoltcontrol_protectVoltageCellx(
+					CELL_TWO, measuringValue.ch2_VoltageInV);
+		if(BatteryTester_RegulatorCellTwo_getRunStatus()){
+			if(BatteryTester_AuxiliaryFunction_isTimeLoggedCellTwo()){
+				 BatteryTester_EEPROM_logTestingDatasCellTwo(
+						HAL_GetTick(), measuringValue.ch2_CurrentInA,
+						measuringValue.ch2_VoltageInV, measuringValue.AverageTemps);
 			}
-	}
-	BatteryTester_CellsVoltcontrol_protectVoltageCellx(
-				CELL_TWO, measuringValue.ch2_VoltageInV);
-	if(BatteryTester_RegulatorCellTwo_getRunStatus()){
-		if(BatteryTester_AuxiliaryFunction_isTimeLoggedCellTwo()){
-			 BatteryTester_EEPROM_logTestingDatasCellTwo(
-					HAL_GetTick(), measuringValue.ch2_CurrentInA,
-					measuringValue.ch2_VoltageInV, measuringValue.AverageTemps);
-		}
-		sp = BatteryTester_RegulatorCellTwo_getSetpoint();
-		if(sp > 0.0){
-			BatteryTester_RegulatorCellTwo_setPulse(
-					BatteryTester_RegulatorCellTwo_updateBuck(sp,
-							measuringValue.ch2_CurrentInA));
-		}
-		else
-			if(sp < 0.0){
+			sp = BatteryTester_RegulatorCellTwo_getSetpoint();
+			if(sp > 0.0){
 				BatteryTester_RegulatorCellTwo_setPulse(
-						BatteryTester_RegulatorCellTwo_updateBoost(sp,
+						BatteryTester_RegulatorCellTwo_updateBuck(sp,
 								measuringValue.ch2_CurrentInA));
 			}
-			else{
-				BatteryTester_RegulatorCellTwo_setPulse(0);
-			}
+			else
+				if(sp < 0.0){
+					BatteryTester_RegulatorCellTwo_setPulse(
+							BatteryTester_RegulatorCellTwo_updateBoost(sp,
+									measuringValue.ch2_CurrentInA));
+				}
+				else{
+					BatteryTester_RegulatorCellTwo_setPulse(0);
+				}
+		}
+		if(BatteryTester_ClimatRegulator_getRunStatus()){
+			sp = BatteryTester_ClimatRegulator_getSetpoint();
+			BatteryTester_ClimatRegulator_setPulse(
+					BatteryTester_ClimatRegulator_update(sp,
+							measuringValue.AverageTemps));
+		}
+		__HAL_ADC_CLEAR_FLAG(hadc, ADC_FLAG_EOC);
 	}
-	if(BatteryTester_ClimatRegulator_getRunStatus()){
-		sp = BatteryTester_ClimatRegulator_getSetpoint();
-		BatteryTester_ClimatRegulator_setPulse(
-				BatteryTester_ClimatRegulator_update(sp,
-						measuringValue.AverageTemps));
-	}*/
+	endTime = (__HAL_TIM_GET_COUNTER(&htim2) - beginTime) / 168;
 }
 /* USER CODE END 1 */

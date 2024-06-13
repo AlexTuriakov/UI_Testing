@@ -26,14 +26,14 @@
  */
 Menu_Item_t  NULL_MENU = {0};
 /*MAIN MENU*/
-MENU_ITEM(menuSettings, menuStart, menuStart, NULL_MENU, menuSetsRefOffset ,
+MENU_ITEM(menuSettings, menuStart, menuStart, NULL_MENU, menuSetsConversionData ,
 		0, 0, "Settings...");
 /*MENU_ITEM(menuLogs, menuStart, menuSettings, NULL_MENU, NULL_MENU,
 		0, 0, "Logs...");*/
 MENU_ITEM(menuStart, menuSettings, menuSettings, NULL_MENU, menuMeasuring,
 		0, 0, "Start...");
 /*SUBMENU Settings... LEVEL 1*/
-MENU_ITEM(menuSetsConversionData, menuSetsRefOffset, menuSetsThermometr, menuSettings, menuSetRefOffset,
+MENU_ITEM(menuSetsConversionData, menuSetsRefOffset, menuSetsSave, menuSettings, menuSetRefOffset,
 		0, 0, "Measur. sets...");
 MENU_ITEM(menuSetsRefOffset, menuSetsChannel1, menuSetsConversionData, menuSettings, menuSetRefOffset,
 		0, 0, "Ref. offset...");
@@ -47,7 +47,7 @@ MENU_ITEM(menuSetsClimat, menuSetsThermometr, menuSetsDessipator, menuSettings, 
 		0, 0, "Thermostat...");
 MENU_ITEM(menuSetsThermometr, menuSetsSave, menuSetsClimat, menuSettings, menuT1,
 		0, 0, "Thermometers...");
-MENU_ITEM(menuSetsSave, menuSetsRefOffset, menuSetsThermometr, menuSettings, menuSetsSaveCommand,
+MENU_ITEM(menuSetsSave, menuSetsConversionData, menuSetsThermometr, menuSettings, menuSetsSaveCommand,
 		0, 0, "Save settings...");
 /*submenu Save settings...*/
 MENU_ITEM(menuSetsSaveCommand, NULL_MENU, NULL_MENU, menuSetsSave, NULL_MENU,

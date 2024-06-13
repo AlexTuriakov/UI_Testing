@@ -44,15 +44,15 @@ void BatteryTester_WC1602A_Delay(unsigned int us)
 }
 
 void BatteryTester_WC1602A_init(){
-	BatteryTester_WC1602A_Delay(30001);
+	BatteryTester_WC1602A_Delay(60001); //30001
 	BatteryTester_WC1602A_sendCommand(RS_OFF, FUNCTION_SET);
-	BatteryTester_WC1602A_Delay(40);
+	BatteryTester_WC1602A_Delay(80); //40
 	BatteryTester_WC1602A_sendCommand(RS_OFF, DISPLAY_CONTROL);
-	BatteryTester_WC1602A_Delay(40);
+	BatteryTester_WC1602A_Delay(80); //40
 	BatteryTester_WC1602A_sendCommand(RS_OFF, DISPLAY_CLEAR);
-	BatteryTester_WC1602A_Delay(1531);
+	BatteryTester_WC1602A_Delay(3531); //1531
 	BatteryTester_WC1602A_sendCommand(RS_OFF, ENTRY_MODE_SET);
-	BatteryTester_WC1602A_Delay(40);
+	BatteryTester_WC1602A_Delay(80); //40
 	BatteryTester_WC1602A_writeLine(0, "+<NESS GROUP", 12);
 	BatteryTester_WC1602A_writeLine(1, "RnD CENTER", 10);
 }
@@ -72,9 +72,9 @@ inline void BatteryTester_WC1602A_setDataOnBus(unsigned short data){
 
 inline void BatteryTester_WC1602A_enableSend(){
 	HAL_GPIO_WritePin(LCD_Enable_GPIO_Port,	LCD_Enable_Pin, GPIO_PIN_SET);
-	BatteryTester_WC1602A_Delay(1);
+	BatteryTester_WC1602A_Delay(2); //1
 	HAL_GPIO_WritePin(LCD_Enable_GPIO_Port,	LCD_Enable_Pin,	GPIO_PIN_RESET);
-	BatteryTester_WC1602A_Delay(1);
+	BatteryTester_WC1602A_Delay(2); //1
 }
 
 void BatteryTester_WC1602A_sendCommand(GPIO_PinState rs, unsigned short data){
@@ -82,7 +82,7 @@ void BatteryTester_WC1602A_sendCommand(GPIO_PinState rs, unsigned short data){
 	BatteryTester_WC1602A_setDataOnBus(data);
 	BatteryTester_WC1602A_enableSend();
 #ifndef LCD_8_BIT
-	BatteryTester_WC1602A_Delay(44);
+	BatteryTester_WC1602A_Delay(84); //44
 	BatteryTester_WC1602A_setDataOnBus(data << 4);
 	BatteryTester_WC1602A_enableSend();
 #endif
@@ -108,7 +108,7 @@ void BatteryTester_WC1602A_Setpos(unsigned short row, unsigned short col){
 	}
 	row = (row == 0)? 0x80: 0xC0;
 	BatteryTester_WC1602A_sendCommand(RS_OFF, row | col);
-	BatteryTester_WC1602A_Delay(40);
+	BatteryTester_WC1602A_Delay(80); //40
 }
 
 void BatteryTester_WC1602A_writeInPos(
@@ -130,20 +130,20 @@ void BatteryTester_WC1602A_writeInPos(
 
 inline void BatteryTester_WC1602A_writeChar(char ch){
 		BatteryTester_WC1602A_sendCommand(RS_ON, ch);
-		BatteryTester_WC1602A_Delay(45);
+		BatteryTester_WC1602A_Delay(95); //45
 }
 
 void BatteryTester_WC1602A_onCursor(){
 	BatteryTester_WC1602A_sendCommand(RS_OFF, CURSOR_ON);
-	BatteryTester_WC1602A_Delay(40);
+	BatteryTester_WC1602A_Delay(80); //40
 }
 
 void BatteryTester_WC1602A_offCursor(){
 	BatteryTester_WC1602A_sendCommand(RS_OFF, CURSOR_OFF);
-	BatteryTester_WC1602A_Delay(40);
+	BatteryTester_WC1602A_Delay(80); //40
 }
 
 void BatteryTester_WC1602A_clearDisplay(){
 	BatteryTester_WC1602A_sendCommand(RS_OFF, DISPLAY_CLEAR);
-	BatteryTester_WC1602A_Delay(1531);
+	BatteryTester_WC1602A_Delay(2531); //1531
 }
