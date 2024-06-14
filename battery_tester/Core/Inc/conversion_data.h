@@ -123,6 +123,7 @@ typedef struct _sValueCalibrationOffset{
 	float temp3IndegC;
 	float temp4IndegC;
 } sValueCalibrationOffset_t;
+
 typedef void (*BatteryTester_ConversionData_initCallback_t)(void);
 typedef void (*BatteryTester_ConversionData_setDACCallback_t)(unsigned int);
 typedef void (*BatteryTester_ConversionData_stopCallback_t)(void);
@@ -161,5 +162,8 @@ void BatteryTester_ConversionData_startHardware(void);
 void BatteryTester_ConversionData_stopHardware(void);
 void BatteryTester_ConversionData_setDACRefOffset(float);
 sphisicValueEx_t BatteryTester_ConversionData_getPhisicValues();
+sphisicValueEx_t* BatteryTester_ConversionData__calcPhisicValueFromAdcCodeEx(
+		volatile uint32_t*, uint32_t);
+void BatteryTester_ConversionData_processTemperatureDecimator();
 
 #endif /* INC_CONVERSION_DATA_H_ */

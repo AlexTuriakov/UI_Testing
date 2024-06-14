@@ -71,8 +71,6 @@ void Error_Handler(void);
 #define Temp3_GPIO_Port GPIOC
 #define Temp4_Pin GPIO_PIN_3
 #define Temp4_GPIO_Port GPIOC
-#define Ch1_Current_Pin GPIO_PIN_0
-#define Ch1_Current_GPIO_Port GPIOA
 #define Ch2_Current_Pin GPIO_PIN_1
 #define Ch2_Current_GPIO_Port GPIOA
 #define Ch1_Voltage_Pin GPIO_PIN_2
@@ -83,8 +81,6 @@ void Error_Handler(void);
 #define Offset_Ref_GPIO_Port GPIOA
 #define PhA_Lo_Pin GPIO_PIN_7
 #define PhA_Lo_GPIO_Port GPIOA
-#define Bus_Voltage_Pin GPIO_PIN_4
-#define Bus_Voltage_GPIO_Port GPIOC
 #define LCD_D0_Pin GPIO_PIN_0
 #define LCD_D0_GPIO_Port GPIOB
 #define LCD_D1_Pin GPIO_PIN_1

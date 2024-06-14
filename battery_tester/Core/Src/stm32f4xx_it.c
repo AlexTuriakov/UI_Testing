@@ -60,6 +60,7 @@ extern TIM_HandleTypeDef htim2;
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef*);
+void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef* hadc);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -310,73 +311,77 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 	}
 }
 
-void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc){
+void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef* hadc){
 	beginTime = __HAL_TIM_GET_COUNTER(&htim2);
-	BatteryTester_ConverterFault_faultHandler();
-	if(hadc->Instance == ADC1){
-		float sp;
-		sphisicValueEx_t measuringValue =
-					BatteryTester_ConversionData_calcPhisicValueFromAdcCodeEx(
-								rawAdcData, LENGTH_DATA_ADC);
-		BattetyTester_DessipatorControl_onHeaterControl(
-					measuringValue.busVoltageInV);
-		BatteryTester_CellsVoltcontrol_protectVoltageCellx(
-				CELL_ONE, measuringValue.ch1_VoltageInV);
-		if(BatteryTester_RegulatorCellOne_getRunStatus()){
-			if(BatteryTester_AuxiliaryFunction_isTimeLoggedCellOne()){
-				 BatteryTester_EEPROM_logTestingDatasCellOne(
-						HAL_GetTick(), measuringValue.ch1_CurrentInA,
-						measuringValue.ch1_VoltageInV, measuringValue.AverageTemps);
-			}
-			sp = BatteryTester_RegulatorCellOne_getSetpoint();
+		BatteryTester_ConverterFault_faultHandler();
+		if(hadc->Instance == ADC1){
+			float sp;
+			sphisicValueEx_t* measuringValue =
+						BatteryTester_ConversionData__calcPhisicValueFromAdcCodeEx(
+									rawAdcData, LENGTH_DATA_ADC);
+			BattetyTester_DessipatorControl_onHeaterControl(
+						measuringValue->busVoltageInV);
+			BatteryTester_CellsVoltcontrol_protectVoltageCellx(
+					CELL_ONE, measuringValue->ch1_VoltageInV);
+			if(BatteryTester_RegulatorCellOne_getRunStatus()){
+				if(BatteryTester_AuxiliaryFunction_isTimeLoggedCellOne()){
+					 BatteryTester_EEPROM_logTestingDatasCellOne(
+							HAL_GetTick(), measuringValue->ch1_CurrentInA,
+							measuringValue->ch1_VoltageInV, measuringValue->AverageTemps);
+				}
+				sp = BatteryTester_RegulatorCellOne_getSetpoint();
 
-			if(sp > 0.0){
-				BatteryTester_RegulatorCellOne_setPulse(
-						BatteryTester_RegulatorCellOne_updateBuck(sp,
-								measuringValue.ch1_CurrentInA));
-			}
-			else
-				if(sp < 0.0){
+				if(sp > 0.0){
 					BatteryTester_RegulatorCellOne_setPulse(
-							BatteryTester_RegulatorCellOne_updateBoost(sp,
-									measuringValue.ch1_CurrentInA));
+							BatteryTester_RegulatorCellOne_updateBuck(sp,
+									measuringValue->ch1_CurrentInA));
 				}
-				else{
-					BatteryTester_RegulatorCellOne_setPulse(0);
+				else
+					if(sp < 0.0){
+						BatteryTester_RegulatorCellOne_setPulse(
+								BatteryTester_RegulatorCellOne_updateBoost(sp,
+										measuringValue->ch1_CurrentInA));
+					}
+					else{
+						BatteryTester_RegulatorCellOne_setPulse(0);
+					}
+			}
+			BatteryTester_CellsVoltcontrol_protectVoltageCellx(
+						CELL_TWO, measuringValue->ch2_VoltageInV);
+			if(BatteryTester_RegulatorCellTwo_getRunStatus()){
+				if(BatteryTester_AuxiliaryFunction_isTimeLoggedCellTwo()){
+					 BatteryTester_EEPROM_logTestingDatasCellTwo(
+							HAL_GetTick(), measuringValue->ch2_CurrentInA,
+							measuringValue->ch2_VoltageInV, measuringValue->AverageTemps);
 				}
-		}
-		BatteryTester_CellsVoltcontrol_protectVoltageCellx(
-					CELL_TWO, measuringValue.ch2_VoltageInV);
-		if(BatteryTester_RegulatorCellTwo_getRunStatus()){
-			if(BatteryTester_AuxiliaryFunction_isTimeLoggedCellTwo()){
-				 BatteryTester_EEPROM_logTestingDatasCellTwo(
-						HAL_GetTick(), measuringValue.ch2_CurrentInA,
-						measuringValue.ch2_VoltageInV, measuringValue.AverageTemps);
-			}
-			sp = BatteryTester_RegulatorCellTwo_getSetpoint();
-			if(sp > 0.0){
-				BatteryTester_RegulatorCellTwo_setPulse(
-						BatteryTester_RegulatorCellTwo_updateBuck(sp,
-								measuringValue.ch2_CurrentInA));
-			}
-			else
-				if(sp < 0.0){
+				sp = BatteryTester_RegulatorCellTwo_getSetpoint();
+				if(sp > 0.0){
 					BatteryTester_RegulatorCellTwo_setPulse(
-							BatteryTester_RegulatorCellTwo_updateBoost(sp,
-									measuringValue.ch2_CurrentInA));
+							BatteryTester_RegulatorCellTwo_updateBuck(sp,
+									measuringValue->ch2_CurrentInA));
 				}
-				else{
-					BatteryTester_RegulatorCellTwo_setPulse(0);
-				}
+				else
+					if(sp < 0.0){
+						BatteryTester_RegulatorCellTwo_setPulse(
+								BatteryTester_RegulatorCellTwo_updateBoost(sp,
+										measuringValue->ch2_CurrentInA));
+					}
+					else{
+						BatteryTester_RegulatorCellTwo_setPulse(0);
+					}
+			}
+			if(BatteryTester_ClimatRegulator_getRunStatus()){
+				sp = BatteryTester_ClimatRegulator_getSetpoint();
+				BatteryTester_ClimatRegulator_setPulse(
+						BatteryTester_ClimatRegulator_update(sp,
+								measuringValue->AverageTemps));
+			}
+	//		__HAL_ADC_CLEAR_FLAG(hadc, ADC_FLAG_EOC);
 		}
-		if(BatteryTester_ClimatRegulator_getRunStatus()){
-			sp = BatteryTester_ClimatRegulator_getSetpoint();
-			BatteryTester_ClimatRegulator_setPulse(
-					BatteryTester_ClimatRegulator_update(sp,
-							measuringValue.AverageTemps));
-		}
-		__HAL_ADC_CLEAR_FLAG(hadc, ADC_FLAG_EOC);
-	}
-	endTime = (__HAL_TIM_GET_COUNTER(&htim2) - beginTime) / 168;
+		endTime = (__HAL_TIM_GET_COUNTER(&htim2) - beginTime) / 84;
+}
+
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc){
+
 }
 /* USER CODE END 1 */
