@@ -71,7 +71,7 @@ TIM_HandleTypeDef htim6;
 TIM_HandleTypeDef htim8;
 
 /* USER CODE BEGIN PV */
-volatile uint32_t rawAdcData[LENGTH_DATA_ADC * 10];
+volatile uint32_t rawAdcData[LENGTH_DATA_ADC * 2];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -947,7 +947,7 @@ void  BatteryTester_HAL_startAdcDmaCallback(void){
 	if(HAL_ADC_Start(&hadc3) != HAL_OK){
 		Error_Handler();
 	}
-	if(HAL_ADCEx_MultiModeStart_DMA(&hadc1, (uint32_t*) rawAdcData, LENGTH_DATA_ADC * 10) != HAL_OK){
+	if(HAL_ADCEx_MultiModeStart_DMA(&hadc1, (uint32_t*) rawAdcData, LENGTH_DATA_ADC * 2) != HAL_OK){
 		Error_Handler();
 	}
 }
