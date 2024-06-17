@@ -79,6 +79,7 @@ eBool_t _BatteryTester_EEPROM_programSettingsLogger();
 eBool_t _BatteryTester_EEPROM_readSettings(unsigned int,unsigned char*, unsigned int);
 eBool_t _BatteryTester_EEPROM_checkRead(unsigned char*, unsigned int);
 static inline eBool_t _BatteryTester_EEPROM_checkWrite(unsigned int, unsigned int);
+static inline void _BatteryTester_EEPROM_copyAddress(unsigned char*, unsigned int);
 /***************************************************************************/
 /*
  * @deprecated
@@ -230,7 +231,8 @@ void BatteryTester_EEPROM_processLogging(){
 
 void BatteryTester_EEPROM_writePageLogCellOne(){
 	if(g_transmitDmaCallback && g_bufferPageForCellOne){
-		memcpy(&g_bufferPageForCellOne[0], &g_addressCurrentPageForCellOne, 4);
+		//memcpy(&g_bufferPageForCellOne[0], &g_addressCurrentPageForCellOne, 4);
+		_BatteryTester_EEPROM_copyAddress(&g_bufferPageForCellOne[0], g_addressCurrentPageForCellOne);
 		g_bufferPageForCellOne[0] = COMMAND_PROGRAM_PAGE;
 		unsigned char command = COMMAND_WRITE_ENABLE;
 		g_transmitDmaCallback(&command, NULL, 1);
@@ -247,7 +249,8 @@ void BatteryTester_EEPROM_writePageLogCellOne(){
 
 void BatteryTester_EEPROM_writePageLogCellTwo(){
 	if(g_transmitDmaCallback && g_bufferPageForCellTwo){
-		memcpy(&g_bufferPageForCellTwo[0], &g_addressCurrentPageForCellTwo, 4);
+		//memcpy(&g_bufferPageForCellTwo[0], &g_addressCurrentPageForCellTwo, 4);
+		_BatteryTester_EEPROM_copyAddress(&g_bufferPageForCellTwo[0], g_addressCurrentPageForCellTwo);
 		g_bufferPageForCellTwo[0] = COMMAND_PROGRAM_PAGE;
 		unsigned char command = COMMAND_WRITE_ENABLE;
 		g_transmitDmaCallback(&command, NULL, 1);
@@ -322,7 +325,8 @@ void BatteryTester_EEPROM_eraseBlockCommand(
 		g_lastError |= ERROR_BAD_MEMORY_POINTER | ERROR_NOT_TRANSMIT_CALLBACK;
 		return;
 	}
-	memcpy(&pBuffer[0], &address, 4);
+	//memcpy(&pBuffer[0], &address, 4);
+	_BatteryTester_EEPROM_copyAddress(&pBuffer[0], address);
 	pBuffer[0] = COMMAND_ERASE_BLOCK;
 	_BatteryTester_EEPROM_transmitDmaWithSetWELb(pBuffer, 4);
 }
@@ -349,7 +353,8 @@ void BatteryTester_EEPROM_eraseSectorCommand(unsigned char* pBuffer, unsigned in
 		return;
 	}
 
-	memcpy(&pBuffer[0], &address, 4);
+	//memcpy(&pBuffer[0], &address, 4);
+	_BatteryTester_EEPROM_copyAddress(&pBuffer[0], address);
 	pBuffer[0] = COMMAND_ERASE_SECTOR;
 	_BatteryTester_EEPROM_transmitDmaWithSetWELb(pBuffer, 4);
 }
@@ -360,7 +365,8 @@ void BatteryTester_EEPROM_eraseSectorCommand(unsigned char* pBuffer, unsigned in
 eBool_t _BatteryTester_EEPROM_programSettingsRegCellOne(){
 	//g_lastError = 0;
 	unsigned int address = ADDRESS_REGULATOR_CELL_ONE_SETTINGS;
-	memcpy(&g_readWriteBuffer[0], &address, 4);
+	//memcpy(&g_readWriteBuffer[0], &address, 4);
+	_BatteryTester_EEPROM_copyAddress(&g_readWriteBuffer[0], address);
 	g_readWriteBuffer[0] = COMMAND_PROGRAM_PAGE;
 	// get settings and assign them to g_readWriteBuffer
 	sPIDController_t buck = BatteryTester_RegulatorCellOne_getBuckRegulatorSettings();
@@ -407,7 +413,8 @@ unsigned char BatteryTester_EEPROM_calculateCRC(unsigned char* pBuffer, unsigned
 eBool_t _BatteryTester_EEPROM_programSettingsRegCellTwo(){
 	//g_lastError = 0;
 	unsigned int address = ADDRESS_REGULATOR_CELL_TWO_SETTINGS;
-	memcpy(&g_readWriteBuffer[0], &address, 4);
+	//memcpy(&g_readWriteBuffer[0], &address, 4);
+	_BatteryTester_EEPROM_copyAddress(&g_readWriteBuffer[0], address);
 	g_readWriteBuffer[0] = COMMAND_PROGRAM_PAGE;
 	// get settings and assign them to g_readWriteBuffer
 	sPIDController_t buck = BatteryTester_RegulatorCellTwo_getBuckRegulatorSettings();
@@ -447,7 +454,8 @@ eBool_t _BatteryTester_EEPROM_programSettingsRegCellTwo(){
 eBool_t _BatteryTester_EEPROM_programSettingsRegClimat(){
 	//g_lastEror = 0;
 	unsigned int address = ADDRESS_CLIMAT_REGULATOR_SETTINGS;
-	memcpy(&g_readWriteBuffer[0], &address, 4);
+	//memcpy(&g_readWriteBuffer[0], &address, 4);
+	_BatteryTester_EEPROM_copyAddress(&g_readWriteBuffer[0], address);
 	g_readWriteBuffer[0] = COMMAND_PROGRAM_PAGE;
 	sPIDController_t reg = BatteryTester_ClimatRegulator_getRegulatorSettings();
 	sPWMSettings_t pwm = BattetyTester_ClimatRegulator_getPWMSettings();
@@ -480,7 +488,8 @@ eBool_t _BatteryTester_EEPROM_programSettingsRegClimat(){
 eBool_t _BatteryTester_EEPROM_programSettingsMeasurement(){
 	//g_lastError = 0;
 	unsigned int address = ADDRESS_CONVERSION_DATA_SETTINGS;
-	memcpy(&g_readWriteBuffer[0], &address, 4);
+	//memcpy(&g_readWriteBuffer[0], &address, 4);
+	_BatteryTester_EEPROM_copyAddress(&g_readWriteBuffer[0], address);
 	g_readWriteBuffer[0] = COMMAND_PROGRAM_PAGE;
 	sMinValueFromRange_t min = BatteryTester_ConversionData_getMinValueFromRange();
 	sMaxValueFromRange_t max = BatteryTester_ConversionData_getMaxValueFromRange();
@@ -527,7 +536,8 @@ eBool_t _BatteryTester_EEPROM_programSettingsMeasurement(){
 eBool_t _BatteryTester_EEPROM_programSettingsDessipator(){
 	//g_lastError = 0;
 	unsigned int address = ADDRESS_DESSIPATOR_CONTROL_SETTINGS;
-	memcpy(&g_readWriteBuffer[0], &address, 4);
+	//memcpy(&g_readWriteBuffer[0], &address, 4);
+	_BatteryTester_EEPROM_copyAddress(&g_readWriteBuffer[0], address);
 	g_readWriteBuffer[0] = COMMAND_PROGRAM_PAGE;
 	sVoltRange_t rng = BatteryTester_DessipatorControl_getHeaterControlRange();
 	unsigned int iter = 4, temp = sizeof(sVoltRange_t);
@@ -556,7 +566,8 @@ eBool_t _BatteryTester_EEPROM_programSettingsDessipator(){
 eBool_t _BatteryTester_EEPROM_programSettingsVoltControl(){
 	//g_lastError = 0;
 	unsigned int address = ADDRESS_VOLT_CONTROL_SETTINGS;
-	memcpy(&g_readWriteBuffer[0], &address, 4);
+	//memcpy(&g_readWriteBuffer[0], &address, 4);
+	_BatteryTester_EEPROM_copyAddress(&g_readWriteBuffer[0], address);
 	g_readWriteBuffer[0] = COMMAND_PROGRAM_PAGE;
 	sVoltRange_t rng1 = BatteryTester_CellsVoltcontrol_getVoltRangeCellx(CELL_ONE);
 	sVoltRange_t rng2 = BatteryTester_CellsVoltcontrol_getVoltRangeCellx(CELL_TWO);
@@ -582,13 +593,19 @@ eBool_t _BatteryTester_EEPROM_programSettingsVoltControl(){
 	return FALSE;
 }
 
+static inline void _BatteryTester_EEPROM_copyAddress(unsigned char* buffer, unsigned int address){
+	buffer[1] = (char)(address >> 16);
+	buffer[2] = (char)(address >> 8);
+	buffer[3] = (char)(address);
+}
 /*
  * @private
  */
 eBool_t _BatteryTester_EEPROM_programSettingsLogger(){
 	//g_lastError = 0;
 	unsigned int address = ADDRESS_LOGGER_SETTINGS;
-	memcpy(&g_readWriteBuffer[0], &address, 4);
+	//memcpy(&g_readWriteBuffer[0], &address, 4);
+	_BatteryTester_EEPROM_copyAddress(&g_readWriteBuffer[0], address);
 	g_readWriteBuffer[0] = COMMAND_PROGRAM_PAGE;
 	unsigned int set1 = BatteryTester_AuxiliaryFunction_getPeriodLoggingTestCellOneInMillisec();
 	unsigned int set2 = BatteryTester_AuxiliaryFunction_getPeriodLoggingTestCellTwoInMillisec();
@@ -788,8 +805,11 @@ void BatteryTester_EEPROM_end(){
  * @private
  */
 eBool_t _BatteryTester_EEPROM_readSettings(unsigned int address, unsigned char* pBuffer, unsigned int size){
-	memcpy(pBuffer, &address, 4);
+	//memcpy(pBuffer, &address, 4);
 	pBuffer[0] = COMMAND_READ_ARRAY;
+	//unsigned int contl;
+	//memcpy(&contl, pBuffer, 4);
+	_BatteryTester_EEPROM_copyAddress(pBuffer, address);
 	for(int i = 0; i < SPI_WAIT_CYCLE; i++){
 		if(!BatteryTester_EEPROM_isBusySpi()){
 			g_transmitRecieveDmaCallback(pBuffer, pBuffer, size);
@@ -807,7 +827,7 @@ eBool_t _BatteryTester_EEPROM_checkRead(unsigned char* pBuffer, unsigned int siz
 	for(int i = 0; i < SPI_WAIT_CYCLE; i++){
 		if(!BatteryTester_EEPROM_isBusySpi()){
 			unsigned short marker;
-			memcpy(&marker, &pBuffer[4], 2);
+			memcpy(&marker, &pBuffer[5], 2);
 			if(marker != MARK_DATA_WRITE){
 				g_lastError |= ERROR_CHECK_WRITE;
 				return FALSE;
@@ -833,11 +853,11 @@ unsigned int BatteryTester_EEPROM_getLastError(){
 
 eBool_t BatteryTester_EEPROM_readSetLogger(unsigned int* set1, unsigned int* set2){
 	if(g_readWriteBuffer){
-		unsigned int size = 4 + 2 + 2 * sizeof(unsigned int) + 1;
+		unsigned int size = 4 + 1 + 2 + 2 * sizeof(unsigned int) + 1;
 		if(_BatteryTester_EEPROM_checkWrite(ADDRESS_LOGGER_SETTINGS, size)){
 			//will need to be packaged into a structure
-			memcpy(set1, &g_readWriteBuffer[6], sizeof(unsigned int));
-			memcpy(set2, &g_readWriteBuffer[6 + sizeof(unsigned int)], sizeof(unsigned int));
+			memcpy(set1, &g_readWriteBuffer[7], sizeof(unsigned int));
+			memcpy(set2, &g_readWriteBuffer[7 + sizeof(unsigned int)], sizeof(unsigned int));
 			return TRUE;
 		}
 		else{
@@ -853,10 +873,10 @@ eBool_t BatteryTester_EEPROM_readSetLogger(unsigned int* set1, unsigned int* set
 
 eBool_t BatteryTester_EEPROM_readSetVoltcontrol(sVoltRange_t* set1, sVoltRange_t* set2){
 	if(g_readWriteBuffer){
-		unsigned int size = 4 + 2 + 2 * sizeof(sVoltRange_t) + 1;
+		unsigned int size = 4 + 1 + 2 + 2 * sizeof(sVoltRange_t) + 1;
 		if(_BatteryTester_EEPROM_checkWrite(ADDRESS_VOLT_CONTROL_SETTINGS, size)){
-			memcpy(set1, &g_readWriteBuffer[6], sizeof(sVoltRange_t));
-			memcpy(set2, &g_readWriteBuffer[6 + sizeof(sVoltRange_t)], sizeof(sVoltRange_t));
+			memcpy(set1, &g_readWriteBuffer[7], sizeof(sVoltRange_t));
+			memcpy(set2, &g_readWriteBuffer[7 + sizeof(sVoltRange_t)], sizeof(sVoltRange_t));
 			return TRUE;
 		}
 		else{
@@ -872,10 +892,10 @@ eBool_t BatteryTester_EEPROM_readSetVoltcontrol(sVoltRange_t* set1, sVoltRange_t
 
 eBool_t BatteryTester_EEPROM_readSetClimatcontrol(sPIDController_t* set1, sPWMSettings_t* set2){
 	if(g_readWriteBuffer){
-		unsigned int size = 4 + 2 + sizeof(sPIDController_t) + sizeof(sPWMSettings_t) + 1;
+		unsigned int size = 4 + 1 + 2 + sizeof(sPIDController_t) + sizeof(sPWMSettings_t) + 1;
 		if(_BatteryTester_EEPROM_checkWrite(ADDRESS_CLIMAT_REGULATOR_SETTINGS, size)){
-			memcpy(set1, &g_readWriteBuffer[6], sizeof(sPIDController_t));
-			memcpy(set2, &g_readWriteBuffer[6 + sizeof(sPIDController_t)], sizeof(sPWMSettings_t));
+			memcpy(set1, &g_readWriteBuffer[7], sizeof(sPIDController_t));
+			memcpy(set2, &g_readWriteBuffer[7 + sizeof(sPIDController_t)], sizeof(sPWMSettings_t));
 			return TRUE;
 		}
 		else{
@@ -894,11 +914,11 @@ eBool_t BatteryTester_EEPROM_readSetMeasurement(
 		sValueCalibrationOffset_t* set3, ntcSchemeParameters_t* set4,
 		float* set5){
 	if(g_readWriteBuffer){
-		unsigned int size = 4 + 2 + sizeof(sMinValueFromRange_t) +
+		unsigned int size = 4 + 1 + 2 + sizeof(sMinValueFromRange_t) +
 				sizeof(sMaxValueFromRange_t) + sizeof(sValueCalibrationOffset_t) +
 				NUM_TEMPERATURE * sizeof(ntcSchemeParameters_t) + sizeof(float) + 1;
 		if(_BatteryTester_EEPROM_checkWrite(ADDRESS_CONVERSION_DATA_SETTINGS, size)){
-			memcpy(set1, &g_readWriteBuffer[6], sizeof(sMinValueFromRange_t));
+			memcpy(set1, &g_readWriteBuffer[7], sizeof(sMinValueFromRange_t));
 			unsigned int iter = 6 + sizeof(sMinValueFromRange_t);
 			memcpy(set2, &g_readWriteBuffer[iter], sizeof(sMaxValueFromRange_t));
 			iter += sizeof(sMaxValueFromRange_t);
@@ -923,9 +943,9 @@ eBool_t BatteryTester_EEPROM_readSetMeasurement(
 eBool_t BatteryTester_EEPROM_readSetDessipator(sVoltRange_t* set1){
 	if(g_readWriteBuffer){
 		// opcode + address + marker + data + crc
-		unsigned int size = 4 + 2 + sizeof(sVoltRange_t) + 1;
+		unsigned int size = 4 + 1 + 2 + sizeof(sVoltRange_t) + 1;
 		if(_BatteryTester_EEPROM_checkWrite(ADDRESS_DESSIPATOR_CONTROL_SETTINGS, size)){
-			memcpy(set1, &g_readWriteBuffer[6], sizeof(sVoltRange_t));
+			memcpy(set1, &g_readWriteBuffer[7], sizeof(sVoltRange_t));
 			return TRUE;
 		}
 		else{
@@ -943,9 +963,9 @@ eBool_t BatteryTester_EEPROM_readSetRegCellOne(
 		sPIDController_t* set1, sPIDController_t* set2,
 		sPWMSettings_t* set3, sPWMSettings_t* set4){
 	if(g_readWriteBuffer){
-		unsigned int size = 4 + 2 + 2 * sizeof(sPIDController_t) + 2 * sizeof(sPWMSettings_t) + 1;
+		unsigned int size = 4 + 1 + 2 + 2 * sizeof(sPIDController_t) + 2 * sizeof(sPWMSettings_t) + 1;
 		if(_BatteryTester_EEPROM_checkWrite(ADDRESS_REGULATOR_CELL_ONE_SETTINGS, size)){
-			memcpy(set1, &g_readWriteBuffer[6], sizeof(sPIDController_t));
+			memcpy(set1, &g_readWriteBuffer[7], sizeof(sPIDController_t));
 			unsigned int iter = 6 + sizeof(sPIDController_t);
 			memcpy(set2, &g_readWriteBuffer[iter], sizeof(sPIDController_t));
 			iter += sizeof(sPIDController_t);
@@ -970,9 +990,9 @@ eBool_t BatteryTester_EEPROM_readSetRegCellTwo(
 		sPIDController_t* set1, sPIDController_t* set2,
 		sPWMSettings_t* set3, sPWMSettings_t* set4){
 	if(g_readWriteBuffer){
-		unsigned int size = 4 + 2 + 2 * sizeof(sPIDController_t) + 2 * sizeof(sPWMSettings_t) + 1;
+		unsigned int size = 4 + 1 + 2 + 2 * sizeof(sPIDController_t) + 2 * sizeof(sPWMSettings_t) + 1;
 		if(_BatteryTester_EEPROM_checkWrite(ADDRESS_REGULATOR_CELL_TWO_SETTINGS, size)){
-			memcpy(set1, &g_readWriteBuffer[6], sizeof(sPIDController_t));
+			memcpy(set1, &g_readWriteBuffer[7], sizeof(sPIDController_t));
 			unsigned int iter = 6 + sizeof(sPIDController_t);
 			memcpy(set2, &g_readWriteBuffer[iter], sizeof(sPIDController_t));
 			iter += sizeof(sPIDController_t);

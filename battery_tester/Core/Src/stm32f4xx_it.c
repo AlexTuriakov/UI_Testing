@@ -69,7 +69,9 @@ void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef* hadc);
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
-extern DMA_HandleTypeDef hdma_adc1;
+extern ADC_HandleTypeDef hadc1;
+extern ADC_HandleTypeDef hadc2;
+extern ADC_HandleTypeDef hadc3;
 extern DAC_HandleTypeDef hdac;
 extern DMA_HandleTypeDef hdma_spi3_rx;
 extern DMA_HandleTypeDef hdma_spi3_tx;
@@ -245,6 +247,22 @@ void DMA1_Stream5_IRQHandler(void)
 }
 
 /**
+  * @brief This function handles ADC1, ADC2 and ADC3 global interrupts.
+  */
+void ADC_IRQHandler(void)
+{
+  /* USER CODE BEGIN ADC_IRQn 0 */
+
+  /* USER CODE END ADC_IRQn 0 */
+  HAL_ADC_IRQHandler(&hadc1);
+  HAL_ADC_IRQHandler(&hadc2);
+  HAL_ADC_IRQHandler(&hadc3);
+  /* USER CODE BEGIN ADC_IRQn 1 */
+
+  /* USER CODE END ADC_IRQn 1 */
+}
+
+/**
   * @brief This function handles TIM6 global interrupt, DAC1 and DAC2 underrun error interrupts.
   */
 void TIM6_DAC_IRQHandler(void)
@@ -259,51 +277,6 @@ void TIM6_DAC_IRQHandler(void)
   /* USER CODE END TIM6_DAC_IRQn 1 */
 }
 
-/**
-  * @brief This function handles DMA2 stream0 global interrupt.
-  */
-void DMA2_Stream0_IRQHandler(void)
-{
-  /* USER CODE BEGIN DMA2_Stream0_IRQn 0 */
-
-  /* USER CODE END DMA2_Stream0_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_adc1);
-  /* USER CODE BEGIN DMA2_Stream0_IRQn 1 */
-  // Скидання прапорців переривання
-/*	if (__HAL_DMA_GET_FLAG(&hdma_adc1, DMA_FLAG_TCIF0_4)) {
-	  __HAL_DMA_CLEAR_FLAG(&hdma_adc1, DMA_FLAG_TCIF0_4);  // Transfer complete flag
-	}
-	if (__HAL_DMA_GET_FLAG(&hdma_adc1, DMA_FLAG_HTIF0_4)) {
-	  __HAL_DMA_CLEAR_FLAG(&hdma_adc1, DMA_FLAG_HTIF0_4);  // Half transfer flag
-	}
-	if (__HAL_DMA_GET_FLAG(&hdma_adc1, DMA_FLAG_TEIF0_4)) {
-	  __HAL_DMA_CLEAR_FLAG(&hdma_adc1, DMA_FLAG_TEIF0_4);  // Transfer error flag
-	}
-	if (__HAL_DMA_GET_FLAG(&hdma_adc1, DMA_FLAG_DMEIF0_4)) {
-	  __HAL_DMA_CLEAR_FLAG(&hdma_adc1, DMA_FLAG_DMEIF0_4); // Direct mode error flag
-	}
-	if (__HAL_DMA_GET_FLAG(&hdma_adc1, DMA_FLAG_FEIF0_4)) {
-	  __HAL_DMA_CLEAR_FLAG(&hdma_adc1, DMA_FLAG_FEIF0_4);  // FIFO error flag
-	}*/
-  /*SET_BIT(DMA2->LIFCR, DMA_LIFCR_CTCIF0);
-  SET_BIT(DMA2->LIFCR, DMA_LIFCR_CHTIF0);
-  CLEAR_BIT(DMA2->LISR, DMA_LISR_TCIF0);
-  CLEAR_BIT(DMA2->LISR, DMA_LISR_HTIF0);
-  CLEAR_BIT(TIM2->SR, TIM_SR_CC1IF);
-  CLEAR_BIT(TIM2->SR, TIM_SR_CC2IF);
-  CLEAR_BIT(TIM2->SR, TIM_SR_CC3IF);
-  CLEAR_BIT(TIM2->SR, TIM_SR_CC4IF);
-  CLEAR_BIT(TIM2->SR, TIM_SR_UIF);*/
-
-  // Скидання прапорців переривання вручну
-  /*DMA2->LIFCR = DMA_LIFCR_CTCIF0   // Скидання прапорця завершення передачі
-			  | DMA_LIFCR_CHTIF0   // Скидання прапорця завершення половинної передачі
-			  | DMA_LIFCR_CTEIF0   // Скидання прапорця помилки передачі
-			  | DMA_LIFCR_CDMEIF0  // Скидання прапорця помилки прямого режиму
-			  | DMA_LIFCR_CFEIF0;  // Скидання прапорця помилки FIFO*/
-  /* USER CODE END DMA2_Stream0_IRQn 1 */
-}
-
 /* USER CODE BEGIN 1 */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 	if(htim->Instance == TIM6){
@@ -312,7 +285,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 }
 
 void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef* hadc){
-	beginTime = __HAL_TIM_GET_COUNTER(&htim2);
+	/*beginTime = __HAL_TIM_GET_COUNTER(&htim2);
 		BatteryTester_ConverterFault_faultHandler();
 		if(hadc->Instance == ADC1){
 			float sp;
@@ -378,10 +351,12 @@ void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef* hadc){
 			}
 	//		__HAL_ADC_CLEAR_FLAG(hadc, ADC_FLAG_EOC);
 		}
-		endTime = (__HAL_TIM_GET_COUNTER(&htim2) - beginTime) / 84;
+		endTime = (__HAL_TIM_GET_COUNTER(&htim2) - beginTime) / 84;*/
 }
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc){
-
+	if(hadc->Instance == ADC1){
+//		rawAdcData[indx++%3] = HAL_ADC_GetValue(hadc);
+	}
 }
 /* USER CODE END 1 */
